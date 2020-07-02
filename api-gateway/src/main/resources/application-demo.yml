@@ -1,0 +1,12 @@
+
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: demo-microservice
+          uri: lb://DEMO-MICROSERVICE/
+          predicates:
+            - Path=/demo/**
+          filters:
+            - RewritePath=/demo/(?<segment>.*), /$\{segment}
