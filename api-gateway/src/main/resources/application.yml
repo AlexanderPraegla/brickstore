@@ -5,7 +5,12 @@ spring:
   cloud:
     gateway:
       routes:
-
+okta:
+  oauth2:
+    issuer: https://dev-720149.okta.com/oauth2/default
+    client-id: 0oaj9dy3u0j8p0RaP4x6
+    client-secret: j85ddp-75Dod0yzTtXw4Xzkd4kxB-4WTHz-aqebz
+    audience: api://default
 server:
   port: 8080
 eureka:

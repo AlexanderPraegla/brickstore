@@ -10,3 +10,5 @@ spring:
             - Path=/demo/**
           filters:
             - RewritePath=/demo/(?<segment>.*), /$\{segment}
+            - TokenRelay=
+            - RemoveRequestHeader=Cookie
