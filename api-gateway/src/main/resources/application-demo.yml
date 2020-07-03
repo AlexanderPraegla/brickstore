@@ -1,11 +1,10 @@
 
-
 spring:
   cloud:
     gateway:
       routes:
-        - id: demo-microservice
-          uri: lb://DEMO-MICROSERVICE/
+        - id: demo-service
+          uri: lb://demo-service/
           predicates:
             - Path=/demo/**
           filters:

@@ -1,0 +1,48 @@
+version: '3'
+services:
+  demo-service-1:
+    build: ./demo-service
+    container_name: demo-service
+    image: demo-service:latest
+    expose:
+      - "9000"
+    depends_on:
+      - discovery-service
+    links:
+      - discovery-service
+    environment:
+      - "SPRING_PROFILES_ACTIVE=demo-instance1,docker-compose"
+  demo-service-2:
+    build: ./demo-service
+    container_name: demo-service-2
+    image: demo-service:latest
+    expose:
+      - "9002"
+    depends_on:
+      - discovery-service
+    links:
+      - discovery-service
+    environment:
+      - "SPRING_PROFILES_ACTIVE=demo-instance2,docker-compose"
+  discovery-service:
+    build: ./discovery-service
+    container_name: discovery-service
+    image: discovery-service:latest
+    expose:
+      - "8761"
+    ports:
+      - "8761:8761"
+  gateway:
+    build: ./api-gateway
+    container_name: gateway
+    image: api-gateway:latest
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - discovery-service
+    links:
+      - discovery-service
+    environment:
+      - "SPRING_PROFILES_ACTIVE=demo,docker-compose"

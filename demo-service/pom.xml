@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>hm.edu.praegla</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>demo-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
+	<name>demo-service</name>
 	<description>Demo microservice for brickstore</description>
 
 	<properties>

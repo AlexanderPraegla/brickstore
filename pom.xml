@@ -13,8 +13,10 @@
         <module>event-sourcing-prototyp</module>
         <module>discovery-service</module>
         <module>api-gateway</module>
-        <module>demo</module>
+        <module>demo-service</module>
     </modules>
 
-
+    <build>
+        <defaultGoal>clean install</defaultGoal>
+    </build>
 </project>
