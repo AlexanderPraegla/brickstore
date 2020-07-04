@@ -4,7 +4,7 @@
 
 ### Start Up
 * _mvn clean install_ zum Bauen des gesamten Projekts
-* _ docker-compose -f docker-compose-demo.yml up --build_ baut die Docker Images neu und startet die Anwendung in docker compose
+* _docker-compose -f docker-compose-demo.yml up --build_ baut die Docker Images neu und startet die Anwendung in docker compose
 
 ### Endpoints
 * [http://localhost:8761](http://localhost:8761): Hier ist die Eureka Oberfläche zu finden. Dort sollten 2 verschiedene Services registriert sein. Das API Gateway und zwei Instancen vom demo-service
