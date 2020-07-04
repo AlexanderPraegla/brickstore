@@ -21,10 +21,7 @@ public class DemoSecurityConfiguration {
                 .permitAll()
                 .anyExchange().authenticated()
                 .and()
-                .oauth2Login()
-                .and()
-                .oauth2ResourceServer()
-                .jwt();
+                .oauth2Login();
         return http.build();
         // @formatter:on
     }

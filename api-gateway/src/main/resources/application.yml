@@ -5,12 +5,20 @@ spring:
   cloud:
     gateway:
       routes:
-okta:
-  oauth2:
-    issuer: https://dev-720149.okta.com/oauth2/default
-    client-id: 0oaj9dy3u0j8p0RaP4x6
-    client-secret: j85ddp-75Dod0yzTtXw4Xzkd4kxB-4WTHz-aqebz
-    audience: api://default
+  security:
+    oauth2:
+      client:
+        registration:
+          okta:
+            client-id: 0oaj9dy3u0j8p0RaP4x6
+            client-secret: j85ddp-75Dod0yzTtXw4Xzkd4kxB-4WTHz-aqebz
+        provider:
+          okta:
+            authorization-uri: https://dev-720149.okta.com/oauth2/default/v1/authorize
+            token-uri: https://dev-720149.okta.com/oauth2/default/v1/token
+            user-info-uri: https://dev-720149.okta.com/oauth2/default/v1/userinfo
+            jwk-set-uri: https://dev-720149.okta.com/oauth2/default/v1/keys
+
 server:
   port: 8080
 eureka:
@@ -19,3 +27,12 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
+#logging:
+#  level:
+#    root: INFO
+#    org.springframework.web: INFO
+#    org.springframework.web.HttpLogging: DEBUG
+#    org.springframework.security: DEBUG
+#    org.springframework.security.oauth2: DEBUG
+#    org.springframework.cloud.gateway: DEBUG
