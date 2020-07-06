@@ -3,11 +3,10 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: demo-service
-          uri: lb://demo-service/
+        - id: account-service
+          uri: lb://account-service/
           predicates:
-            - Path=/demo/**
+            - Path=/account/**
           filters:
-            - RewritePath=/demo/(?<segment>.*), /$\{segment}
 #            - TokenRelay=
             - RemoveRequestHeader=Cookie
