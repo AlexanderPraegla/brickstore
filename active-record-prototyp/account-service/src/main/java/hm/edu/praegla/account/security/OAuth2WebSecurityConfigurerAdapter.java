@@ -1,4 +1,4 @@
-package hm.edu.praegla.demo.security;
+package hm.edu.praegla.account.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;

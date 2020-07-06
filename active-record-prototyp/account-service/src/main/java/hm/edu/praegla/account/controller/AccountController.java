@@ -1,10 +1,10 @@
-package hm.edu.praegla.demo.controller;
+package hm.edu.praegla.account.controller;
 
-import hm.edu.praegla.demo.entity.Account;
-import hm.edu.praegla.demo.entity.AccountStatus;
-import hm.edu.praegla.demo.entity.Address;
-import hm.edu.praegla.demo.entity.Customer;
-import hm.edu.praegla.demo.service.AccountService;
+import hm.edu.praegla.account.entity.Account;
+import hm.edu.praegla.account.entity.AccountStatus;
+import hm.edu.praegla.account.entity.Address;
+import hm.edu.praegla.account.entity.Customer;
+import hm.edu.praegla.account.service.AccountService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -99,24 +99,24 @@ public class AccountController {
         return ResponseEntity.ok().build();
     }
 
-    static class ModifyAccountBalanceDTO {
+    private static class ModifyAccountBalanceDTO {
         @Min(1)
         public double amount;
     }
 
-    static class UpdateAccountStatusDTO {
+    private static class UpdateAccountStatusDTO {
         @NotNull
         public AccountStatus status;
     }
 
-    static class CreateAccountDTO {
+    private static class CreateAccountDTO {
         @NotNull
         public Customer customer;
         @NotNull
         public Address address;
     }
 
-    static class ModifyCustomerDTO {
+    private static class ModifyCustomerDTO {
         @NotNull
         public String firstname;
         @NotNull
@@ -125,7 +125,7 @@ public class AccountController {
         public String email;
     }
 
-    static class ModifyAddressDTO {
+    private static class ModifyAddressDTO {
         @NotNull
         public String street;
         @NotNull

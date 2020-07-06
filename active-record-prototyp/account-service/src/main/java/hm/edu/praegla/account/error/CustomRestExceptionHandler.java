@@ -1,4 +1,4 @@
-package hm.edu.praegla.demo.error;
+package hm.edu.praegla.account.error;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

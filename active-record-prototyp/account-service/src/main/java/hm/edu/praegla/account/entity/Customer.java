@@ -1,4 +1,4 @@
-package hm.edu.praegla.demo.entity;
+package hm.edu.praegla.account.entity;
 
 import lombok.Data;
 
@@ -6,15 +6,19 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Entity
-public class Address {
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private String street;
-    private String city;
-    private String postalCode;
+    @NotNull
+    private String firstname;
+    @NotNull
+    private String lastname;
+    @NotNull
+    private String email;
 }

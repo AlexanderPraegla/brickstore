@@ -1,4 +1,4 @@
-package hm.edu.praegla.demo;
+package hm.edu.praegla.account;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

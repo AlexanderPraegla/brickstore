@@ -1,4 +1,4 @@
-package hm.edu.praegla.demo.error;
+package hm.edu.praegla.account.error;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

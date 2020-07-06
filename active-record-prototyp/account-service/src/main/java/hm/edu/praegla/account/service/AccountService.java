@@ -1,12 +1,12 @@
-package hm.edu.praegla.demo.service;
+package hm.edu.praegla.account.service;
 
-import hm.edu.praegla.demo.entity.Account;
-import hm.edu.praegla.demo.entity.AccountStatus;
-import hm.edu.praegla.demo.entity.Address;
-import hm.edu.praegla.demo.entity.Customer;
-import hm.edu.praegla.demo.error.BalanceInsufficientException;
-import hm.edu.praegla.demo.error.EntityNotFoundException;
-import hm.edu.praegla.demo.repository.AccountRepository;
+import hm.edu.praegla.account.entity.Account;
+import hm.edu.praegla.account.error.EntityNotFoundException;
+import hm.edu.praegla.account.entity.AccountStatus;
+import hm.edu.praegla.account.entity.Address;
+import hm.edu.praegla.account.entity.Customer;
+import hm.edu.praegla.account.error.BalanceInsufficientException;
+import hm.edu.praegla.account.repository.AccountRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

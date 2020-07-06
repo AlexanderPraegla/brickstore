@@ -1,6 +1,6 @@
-package hm.edu.praegla.demo.repository;
+package hm.edu.praegla.account.repository;
 
-import hm.edu.praegla.demo.entity.Account;
+import hm.edu.praegla.account.entity.Account;
 import org.springframework.data.repository.CrudRepository;
 
 public interface AccountRepository extends CrudRepository<Account, Long> {

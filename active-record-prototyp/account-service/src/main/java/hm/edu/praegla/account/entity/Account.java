@@ -1,4 +1,4 @@
-package hm.edu.praegla.demo.entity;
+package hm.edu.praegla.account.entity;
 
 import lombok.Data;
 

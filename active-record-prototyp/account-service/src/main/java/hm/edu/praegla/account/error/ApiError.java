@@ -1,4 +1,4 @@
-package hm.edu.praegla.demo.error;
+package hm.edu.praegla.account.error;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
