@@ -3,7 +3,7 @@ package edu.hm.praegla.account;
 import edu.hm.praegla.BrickstoreRestTest;
 import edu.hm.praegla.account.dto.AccountDTO;
 import edu.hm.praegla.account.dto.AddressDTO;
-import edu.hm.praegla.account.dto.ApiErrorDTO;
+import edu.hm.praegla.error.dto.ApiErrorDTO;
 import edu.hm.praegla.account.dto.CreateAccountDTO;
 import edu.hm.praegla.account.dto.CustomerDTO;
 import org.junit.jupiter.api.Test;

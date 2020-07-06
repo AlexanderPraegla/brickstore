@@ -10,3 +10,10 @@ spring:
           filters:
 #            - TokenRelay=
             - RemoveRequestHeader=Cookie
+        - id: inventory-service
+          uri: lb://inventory-service/
+          predicates:
+            - Path=/inventory/**
+          filters:
+#            - TokenRelay=
+            - RemoveRequestHeader=Cookie
