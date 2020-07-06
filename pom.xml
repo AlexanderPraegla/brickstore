@@ -4,16 +4,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
+    <groupId>edu.hm</groupId>
     <artifactId>brickstore</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
+
     <modules>
         <module>active-record-prototyp</module>
         <module>event-sourcing-prototyp</module>
         <module>discovery-service</module>
         <module>api-gateway</module>
         <module>demo-service</module>
+        <module>system-tests</module>
     </modules>
 
     <build>
