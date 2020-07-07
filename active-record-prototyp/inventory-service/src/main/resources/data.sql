@@ -20,4 +20,20 @@ VALUES (9, 6, 'Herr der Ringe - Beutelsend', 49.99, 'AVAILABLE', 2);
 INSERT INTO public.inventory_item (id, delivery_time, name, price, status, stock)
 VALUES (10, 6, 'Herr der Ringe - Elbenschiff', 89.99, 'AVAILABLE', 1);
 
+---shopping cart test data
+INSERT INTO public.inventory_item (id, delivery_time, name, price, status, stock)
+VALUES (11, 1, 'Star Wars - Millennium Falke', 699.99, 'AVAILABLE', 3);
+INSERT INTO public.inventory_item (id, delivery_time, name, price, status, stock)
+VALUES (12, 4, 'Star Wars - TIE Fighter', 99.99, 'AVAILABLE', 1);
+INSERT INTO public.inventory_item (id, delivery_time, name, price, status, stock)
+VALUES (13, 2, 'Star Wars - X-Wing', 199.99, 'AVAILABLE', 10);
+INSERT INTO public.inventory_item (id, delivery_time, name, price, status, stock)
+VALUES (13, 7, 'Star Wars - X-Wing', 199.99, 'AVAILABLE', 10);
+INSERT INTO public.inventory_item (id, delivery_time, name, price, status, stock)
+VALUES (14, 9, 'Star Wars - A-Wing', 29.99, 'AVAILABLE', 1);
+INSERT INTO public.inventory_item (id, delivery_time, name, price, status, stock)
+VALUES (15, 2, 'Star Wars - TIE Bomber', 19.99, 'OUT_OF_STOCK', 0);
+INSERT INTO public.inventory_item (id, delivery_time, name, price, status, stock)
+VALUES (16, 1, 'Star Wars - Sternenzerstörer', 799.99, 'AVAILABLE', 1);
+
 ALTER SEQUENCE inventory_item_id_seq RESTART WITH 11;

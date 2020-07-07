@@ -2,7 +2,6 @@ INSERT INTO public.address (id, city, postal_code, street)
 VALUES (1, 'Rocky Beach', '97468', 'Am Schrottplatz 1');
 INSERT INTO public.address (id, city, postal_code, street)
 VALUES (2, 'Rocky Beach', '97468', 'Am Schrottplatz 2');
-
 INSERT INTO public.address (id, city, postal_code, street)
 VALUES (3, 'Am Stand 3', '97468', 'Rocky Beach');
 INSERT INTO public.address (id, city, postal_code, street)
@@ -22,7 +21,6 @@ INSERT INTO public.customer (id, email, firstname, lastname)
 VALUES (1, 'justus.jonas@dreifragezeichen.com', 'Justus', 'Jonas');
 INSERT INTO public.customer (id, email, firstname, lastname)
 VALUES (2, 'peter.shaw@dreifragezeichen.com', 'Peter', 'Shaw');
-
 INSERT INTO public.customer (id, email, firstname, lastname)
 VALUES (3, 'Kelly.Madigan@dreifragezeichen.com', 'Kelly', 'Madigan');
 INSERT INTO public.customer (id, email, firstname, lastname)
@@ -42,7 +40,6 @@ INSERT INTO public.account (id, balance, status, customer_id, address_id)
 VALUES (1, 10.50, 'ACTIVE', 1, 1);
 INSERT INTO public.account (id, balance, status, customer_id, address_id)
 VALUES (2, 0, 'CREATED', 2, 2);
-
 INSERT INTO public.account (id, balance, status, customer_id, address_id)
 VALUES (3, 0, 'ACTIVE', 3, 3);
 INSERT INTO public.account (id, balance, status, customer_id, address_id)
@@ -57,6 +54,43 @@ INSERT INTO public.account (id, balance, status, customer_id, address_id)
 VALUES (8, 0, 'ACTIVE', 8, 8);
 INSERT INTO public.account (id, balance, status, customer_id, address_id)
 VALUES (9, 0, 'INACTIVE', 9, 9);
+
+---shopping cart test data
+
+INSERT INTO public.address (id, city, postal_code, street)
+VALUES (10, 'Freising', '85354', 'Bahnhofstraße 3a');
+INSERT INTO public.customer (id, email, firstname, lastname)
+VALUES (10, 'Martin.Maier@test.com', 'Martin', 'Maier');
+INSERT INTO public.account (id, balance, status, customer_id, address_id)
+VALUES (10, 85, 'ACTIVE', 10, 10);
+
+INSERT INTO public.address (id, city, postal_code, street)
+VALUES (11, 'Freising', '85354', 'Bahnhofstraße 7a');
+INSERT INTO public.customer (id, email, firstname, lastname)
+VALUES (11, 'Michael.Schmidt@test.com', 'Michael', 'Schmidt');
+INSERT INTO public.account (id, balance, status, customer_id, address_id)
+VALUES (11, 12.98, 'ACTIVE', 11, 11);
+
+INSERT INTO public.address (id, city, postal_code, street)
+VALUES (12, 'Freising', '85354', 'Bahnhofstraße 5a');
+INSERT INTO public.customer (id, email, firstname, lastname)
+VALUES (12, 'Peter.Müller@test.com', 'Peter', 'Müller');
+INSERT INTO public.account (id, balance, status, customer_id, address_id)
+VALUES (12, 100, 'ACTIVE', 12, 12);
+
+INSERT INTO public.address (id, city, postal_code, street)
+VALUES (13, 'Freising', '85354', 'Bahnhofstraße 12a');
+INSERT INTO public.customer (id, email, firstname, lastname)
+VALUES (13, 'Anja.Bauer@test.com', 'Anja', 'Bauer');
+INSERT INTO public.account (id, balance, status, customer_id, address_id)
+VALUES (13, 100, 'INACTIVE', 13, 13);
+
+INSERT INTO public.address (id, city, postal_code, street)
+VALUES (14, 'Freising', '85354', 'Bahnhofstraße 5a');
+INSERT INTO public.customer (id, email, firstname, lastname)
+VALUES (14, 'Claudia.Müller@test.com', 'Claudia', 'Müller');
+INSERT INTO public.account (id, balance, status, customer_id, address_id)
+VALUES (14, 100, 'ACTIVE', 14, 14);
 
 ALTER SEQUENCE account_id_seq RESTART WITH 10;
 ALTER SEQUENCE address_id_seq RESTART WITH 10;
