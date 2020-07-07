@@ -4,7 +4,6 @@ import edu.hm.praegla.client.account.AccountClient;
 import edu.hm.praegla.client.account.dto.AccountDTO;
 import edu.hm.praegla.client.account.dto.AccountStatus;
 import edu.hm.praegla.client.inventory.InventoryClient;
-import edu.hm.praegla.client.inventory.dto.ChangeInventoryItemStockDTO;
 import edu.hm.praegla.client.inventory.dto.InventoryItemDTO;
 import edu.hm.praegla.shoppingcart.dto.LineItemDTO;
 import edu.hm.praegla.shoppingcart.dto.ShoppingCartDTO;
@@ -62,8 +61,6 @@ public class ShoppingCartService {
             throw new AccountInactiveException();
         }
 
-        inventoryClient.gather(new ChangeInventoryItemStockDTO(inventoryItemId, quantity));
-
         ShoppingCart shoppingCart = shoppingCartRepository.findByAccountId(accountId).orElse(new ShoppingCart());
         shoppingCart.setAccountId(accountId);
         LineItem lineItem = new LineItem(inventoryItemId, quantity);
@@ -77,7 +74,6 @@ public class ShoppingCartService {
         if (lineItemOptional.isPresent()) {
             LineItem lineItem = lineItemOptional.get();
             lineItemRepository.delete(lineItem);
-            inventoryClient.stockUp(new ChangeInventoryItemStockDTO(lineItem.getInventoryItemId(), lineItem.getQuantity()));
         } else {
             throw new EntityNotFoundException(String.format("Line item with id=%d not found in shopping card of account id=%d", lineItemId, accountId));
         }

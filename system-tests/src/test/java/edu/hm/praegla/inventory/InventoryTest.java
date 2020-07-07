@@ -33,7 +33,7 @@ public class InventoryTest extends BrickstoreRestTest {
                 .body()
                 .jsonPath()
                 .getList(".", InventoryItemDTO.class);
-        assertThat(items).hasSize(13);
+        assertThat(items).hasSize(14);
     }
 
     @ParameterizedTest
