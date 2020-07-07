@@ -24,7 +24,7 @@ public class InventoryTest extends BrickstoreRestTest {
     @Test
     @Order(1)
     public void shouldGetAllAvailableInventoryItems() {
-        List<InventoryItemDTO> accounts = given(spec)
+        List<InventoryItemDTO> items = given(spec)
                 .when()
                 .get("inventory/available")
                 .then()
@@ -33,14 +33,14 @@ public class InventoryTest extends BrickstoreRestTest {
                 .body()
                 .jsonPath()
                 .getList(".", InventoryItemDTO.class);
-        assertThat(accounts).hasSize(7);
+        assertThat(items).hasSize(7);
     }
 
     @ParameterizedTest
     @CsvSource({"potter,5", "schiff,2", ",10"})
     @Order(2)
     public void shouldFindAllItemsMatchingSearchName(String searchTerm, int resultCount) {
-        List<InventoryItemDTO> accounts = given(spec)
+        List<InventoryItemDTO> items = given(spec)
                 .when()
                 .queryParam("name", searchTerm)
                 .get("inventory/search")
@@ -50,7 +50,7 @@ public class InventoryTest extends BrickstoreRestTest {
                 .body()
                 .jsonPath()
                 .getList(".", InventoryItemDTO.class);
-        assertThat(accounts).hasSize(resultCount);
+        assertThat(items).hasSize(resultCount);
     }
 
     @Test
@@ -188,8 +188,8 @@ public class InventoryTest extends BrickstoreRestTest {
     }
 
     private InventoryItemDTO createInventoryItem(InventoryItemDTO inventoryItemDTO) {
-        String accountLocation = createResource("inventory", inventoryItemDTO);
-        return getResourceByLocationHeader(accountLocation, InventoryItemDTO.class);
+        String inventoryItemLocation = createResource("inventory", inventoryItemDTO);
+        return getResourceByLocationHeader(inventoryItemLocation, InventoryItemDTO.class);
     }
 
     private Response orderInventoryItem(long inventoryItemId, int quantity) {
