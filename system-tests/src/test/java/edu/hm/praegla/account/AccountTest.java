@@ -47,7 +47,7 @@ public class AccountTest extends BrickstoreRestTest {
         given(spec)
                 .when()
                 .body(body)
-                .post("account/{accountId}/customer", account.getId())
+                .post("accounts/{accountId}/customer", account.getId())
                 .then()
                 .statusCode(200);
         account = getAccountById(account.getId());
@@ -74,7 +74,7 @@ public class AccountTest extends BrickstoreRestTest {
         given(spec)
                 .when()
                 .body(body)
-                .post("account/{accountId}/address", account.getId())
+                .post("accounts/{accountId}/address", account.getId())
                 .then()
                 .statusCode(200);
         account = getAccountById(account.getId());
@@ -95,7 +95,7 @@ public class AccountTest extends BrickstoreRestTest {
         given(spec)
                 .when()
                 .body(body)
-                .post("account/{accountId}/status", account.getId())
+                .post("accounts/{accountId}/status", account.getId())
                 .then()
                 .statusCode(200);
         account = getAccountById(account.getId());
@@ -129,7 +129,7 @@ public class AccountTest extends BrickstoreRestTest {
         given(spec)
                 .when()
                 .body(body)
-                .post("account/{accountId}/debit", account.getId())
+                .post("accounts/{accountId}/debit", account.getId())
                 .then()
                 .statusCode(200);
 
@@ -150,7 +150,7 @@ public class AccountTest extends BrickstoreRestTest {
         ApiErrorDTO apiErrorDTO = given(spec)
                 .when()
                 .body(body)
-                .post("account/{accountId}/debit", account.getId())
+                .post("accounts/{accountId}/debit", account.getId())
                 .then()
                 .statusCode(400)
                 .extract().as(ApiErrorDTO.class);
@@ -161,12 +161,12 @@ public class AccountTest extends BrickstoreRestTest {
     }
 
     private AccountDTO getAccountById(long accountId) {
-        return getResourceById("account/{accountId}", accountId, AccountDTO.class);
+        return getResourceById("accounts/{accountId}", accountId, AccountDTO.class);
     }
 
     private AccountDTO createAccount(CustomerDTO customerDTO, AddressDTO addressDTO) {
         CreateAccountDTO accountDTO = new CreateAccountDTO(customerDTO, addressDTO);
-        String accountLocation = createResource("account", accountDTO);
+        String accountLocation = createResource("accounts", accountDTO);
         return getResourceByLocationHeader(accountLocation, AccountDTO.class);
     }
 
@@ -176,7 +176,7 @@ public class AccountTest extends BrickstoreRestTest {
         given(spec)
                 .when()
                 .body(body)
-                .post("account/{accountId}/charge", accountId)
+                .post("accounts/{accountId}/charge", accountId)
                 .then()
                 .statusCode(200);
     }

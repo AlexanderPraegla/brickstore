@@ -25,7 +25,7 @@ import javax.validation.constraints.NotNull;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "account", produces = {"application/json"})
+@RequestMapping(value = "accounts", produces = {"application/json"})
 public class AccountController {
 
     private final AccountService accountService;
