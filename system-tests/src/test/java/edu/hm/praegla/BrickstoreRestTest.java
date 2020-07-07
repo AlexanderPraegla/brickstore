@@ -7,8 +7,6 @@ import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeAll;
 
-import static io.restassured.RestAssured.given;
-
 public abstract class BrickstoreRestTest {
     protected static RequestSpecification spec;
 
@@ -22,34 +20,5 @@ public abstract class BrickstoreRestTest {
                 .build();
     }
 
-    protected String createResource(String path, Object bodyPayload) {
-        return given()
-                .spec(spec)
-                .body(bodyPayload)
-                .when()
-                .put(path)
-                .then()
-                .statusCode(201)
-                .extract().header("location");
-    }
 
-    protected  <T> T getResourceByLocationHeader(String locationHeader, Class<T> responseClass) {
-        return given()
-                .spec(spec)
-                .when()
-                .get(locationHeader)
-                .then()
-                .statusCode(200)
-                .extract().as(responseClass);
-    }
-
-    protected  <T> T getResourceById(String path, long id, Class<T> responseClass) {
-        return given()
-                .spec(spec)
-                .when()
-                .get(path, id)
-                .then()
-                .statusCode(200)
-                .extract().as(responseClass);
-    }
 }
