@@ -8,12 +8,19 @@ spring:
           predicates:
             - Path=/accounts/**
           filters:
-#            - TokenRelay=
+            #            - TokenRelay=
             - RemoveRequestHeader=Cookie
         - id: inventory-service
           uri: lb://inventory-service/
           predicates:
             - Path=/inventory/**
           filters:
-#            - TokenRelay=
+            #            - TokenRelay=
+            - RemoveRequestHeader=Cookie
+        - id: shopping-cart-service
+          uri: lb://shopping-cart-service/
+          predicates:
+            - Path=/shopping-carts/**
+          filters:
+            #            - TokenRelay=
             - RemoveRequestHeader=Cookie

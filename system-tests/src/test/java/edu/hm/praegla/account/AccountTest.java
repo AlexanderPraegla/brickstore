@@ -3,15 +3,13 @@ package edu.hm.praegla.account;
 import edu.hm.praegla.BrickstoreRestTest;
 import edu.hm.praegla.account.dto.AccountDTO;
 import edu.hm.praegla.account.dto.AddressDTO;
-import edu.hm.praegla.error.dto.ApiErrorDTO;
 import edu.hm.praegla.account.dto.CreateAccountDTO;
 import edu.hm.praegla.account.dto.CustomerDTO;
+import edu.hm.praegla.error.dto.ApiErrorDTO;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,14 +26,14 @@ public class AccountTest extends BrickstoreRestTest {
     public void shouldHaveTwoAccountsByDefault() {
         List<AccountDTO> accounts = given(spec)
                 .when()
-                .get("account")
+                .get("accounts")
                 .then()
                 .statusCode(200)
                 .extract()
                 .body()
                 .jsonPath()
                 .getList(".", AccountDTO.class);
-        assertThat(accounts).hasSize(2);
+        assertThat(accounts).hasSize(15);
     }
 
     @Test
@@ -51,9 +49,9 @@ public class AccountTest extends BrickstoreRestTest {
         assertThat(createdAccount.getBalance()).isEqualTo(0);
     }
 
-    @ParameterizedTest
-    @ValueSource(longs = {8})
-    public void shouldModifyAccountCustomer(long accountId) {
+    @Test
+    public void shouldModifyAccountCustomer() {
+        long accountId = 8;
         String newFirstname = "Henry";
         String newLastname = "Shaw";
         String newEmail = "Henry.Shaw@dreifragezeichen.com";
@@ -76,9 +74,9 @@ public class AccountTest extends BrickstoreRestTest {
         assertThat(account.getCustomer().getEmail()).isEqualTo(newEmail);
     }
 
-    @ParameterizedTest
-    @ValueSource(longs = {3})
-    public void shouldModifyAccountAddress(long accountId) {
+    @Test
+    public void shouldModifyAccountAddress() {
+        long accountId = 3;
         String newStreet = "Am Pier 1";
         String newCity = "Santa Babara";
         String newPostalcode = "36784";
@@ -100,9 +98,9 @@ public class AccountTest extends BrickstoreRestTest {
         assertThat(account.getAddress().getPostalCode()).isEqualTo(newPostalcode);
     }
 
-    @ParameterizedTest
-    @ValueSource(longs = {4})
-    public void shouldSetAccountStatusInactive(long accountId) {
+    @Test
+    public void shouldSetAccountStatusInactive() {
+        long accountId = 4;
         Map<String, String> body = new HashMap<>();
         body.put("status", "INACTIVE");
         given(spec)
@@ -115,9 +113,9 @@ public class AccountTest extends BrickstoreRestTest {
         assertThat(account.getStatus()).isEqualTo("INACTIVE");
     }
 
-    @ParameterizedTest
-    @ValueSource(longs = {5})
-    public void shouldActivateNewAccountByChargingAccount(long accountId) {
+    @Test
+    public void shouldActivateNewAccountByChargingAccount() {
+        long accountId = 5;
 
         chargeAccount(accountId, 17.42);
         AccountDTO account = getAccountById(accountId);
@@ -126,9 +124,9 @@ public class AccountTest extends BrickstoreRestTest {
         assertThat(account.getStatus()).isEqualTo("ACTIVE");
     }
 
-    @ParameterizedTest
-    @ValueSource(longs = {6})
-    public void shouldDebitAccountWithEnoughBalance(long accountId) {
+    @Test
+    public void shouldDebitAccountWithEnoughBalance() {
+        long accountId = 6;
 
         Map<String, Double> body = new HashMap<>();
         body.put("amount", 5.5);
@@ -143,9 +141,9 @@ public class AccountTest extends BrickstoreRestTest {
         assertThat(account.getBalance()).isEqualTo(4.5);
     }
 
-    @ParameterizedTest
-    @ValueSource(longs = {7})
-    public void shouldDenyDebitAccountWithNotEnoughBalance(long accountId) {
+    @Test
+    public void shouldDenyDebitAccountWithNotEnoughBalance() {
+        long accountId = 7;
 
         Map<String, Double> body = new HashMap<>();
         body.put("amount", 11.0);
@@ -162,9 +160,9 @@ public class AccountTest extends BrickstoreRestTest {
         assertThat(account.getBalance()).isEqualTo(10);
     }
 
-    @ParameterizedTest
-    @ValueSource(longs = {9})
-    public void shouldDenyChargeToDeactivatedAccount(long accountId) {
+    @Test
+    public void shouldDenyChargeToDeactivatedAccount() {
+        long accountId = 9;
         Map<String, Double> body = new HashMap<>();
         body.put("amount", 10.0);
         ApiErrorDTO apiErrorDTO = given(spec)

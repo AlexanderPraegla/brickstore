@@ -53,7 +53,7 @@ public class AccountController {
     public ResponseEntity<?> createAccount(UriComponentsBuilder b, @Valid @RequestBody CreateAccountDTO createAccountDTO) {
         Account account = accountService.createAccount(createAccountDTO.customer, createAccountDTO.address);
 
-        UriComponents uriComponents = b.path("/account/{accountId}").buildAndExpand(account.getId());
+        UriComponents uriComponents = b.path("/accounts/{accountId}").buildAndExpand(account.getId());
         return ResponseEntity.created(uriComponents.toUri()).build();
     }
 

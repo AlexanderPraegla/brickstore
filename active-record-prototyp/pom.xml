@@ -15,6 +15,7 @@
     <modules>
         <module>account-service</module>
         <module>inventory-service</module>
+        <module>shopping-cart-service</module>
     </modules>
 
     <build>

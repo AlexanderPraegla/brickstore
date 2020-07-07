@@ -7,7 +7,7 @@ VALUES (3, 1, 'Harry Potter - Peitschende Weide', 59.99, 'OUT_OF_STOCK', 0);
 INSERT INTO public.inventory_item (id, delivery_time, name, price, status, stock)
 VALUES (4, 7, 'Harry Potter - Fuchsbau', 99.99, 'AVAILABLE', 3);
 INSERT INTO public.inventory_item (id, delivery_time, name, price, status, stock)
-VALUES (5, 7, 'Harry Potter - Durmstrangs Schiff' , 199.99, 'DEACTIVATED', 3);
+VALUES (5, 7, 'Harry Potter - Durmstrangs Schiff', 199.99, 'DEACTIVATED', 3);
 
 INSERT INTO public.inventory_item (id, delivery_time, name, price, status, stock)
 VALUES (6, 2, 'Herr der Ringe - Helms Klamm', 149.99, 'AVAILABLE', 10);
@@ -28,12 +28,17 @@ VALUES (12, 4, 'Star Wars - TIE Fighter', 99.99, 'AVAILABLE', 1);
 INSERT INTO public.inventory_item (id, delivery_time, name, price, status, stock)
 VALUES (13, 2, 'Star Wars - X-Wing', 199.99, 'AVAILABLE', 10);
 INSERT INTO public.inventory_item (id, delivery_time, name, price, status, stock)
-VALUES (13, 7, 'Star Wars - X-Wing', 199.99, 'AVAILABLE', 10);
-INSERT INTO public.inventory_item (id, delivery_time, name, price, status, stock)
 VALUES (14, 9, 'Star Wars - A-Wing', 29.99, 'AVAILABLE', 1);
 INSERT INTO public.inventory_item (id, delivery_time, name, price, status, stock)
 VALUES (15, 2, 'Star Wars - TIE Bomber', 19.99, 'OUT_OF_STOCK', 0);
 INSERT INTO public.inventory_item (id, delivery_time, name, price, status, stock)
 VALUES (16, 1, 'Star Wars - Sternenzerstörer', 799.99, 'AVAILABLE', 1);
 
-ALTER SEQUENCE inventory_item_id_seq RESTART WITH 11;
+
+---shopping cart data
+INSERT INTO public.inventory_item (id, delivery_time, name, price, status, stock)
+VALUES (17, 1, 'GoT - Die große Mauer', 799.99, 'AVAILABLE', 2);
+INSERT INTO public.inventory_item (id, delivery_time, name, price, status, stock)
+VALUES (18, 45, 'GoT - Königsmund', 1099.99, 'AVAILABLE', 1);
+
+ALTER SEQUENCE inventory_item_id_seq RESTART WITH 19;

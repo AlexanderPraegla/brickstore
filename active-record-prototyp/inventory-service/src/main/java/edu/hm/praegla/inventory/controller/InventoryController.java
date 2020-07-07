@@ -73,9 +73,15 @@ public class InventoryController {
     }
 
 
-    @PostMapping("/order")
-    public ResponseEntity<?> order(@Valid @RequestBody OrderInventoryItemDTO orderInventoryItemDTO) {
-        inventoryService.orderInventoryItem(orderInventoryItemDTO.inventoryItemId, orderInventoryItemDTO.quantity);
+    @PostMapping("/gather")
+    public ResponseEntity<?> gather(@Valid @RequestBody InventoryController.ChangeInventoryItemStockDTO changeInventoryItemStockDTO) {
+        inventoryService.gatherInventoryItem(changeInventoryItemStockDTO.inventoryItemId, changeInventoryItemStockDTO.quantity);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/stockup")
+    public ResponseEntity<?> stockup(@Valid @RequestBody InventoryController.ChangeInventoryItemStockDTO changeInventoryItemStockDTO) {
+        inventoryService.stockUpInventoryItem(changeInventoryItemStockDTO.inventoryItemId, changeInventoryItemStockDTO.quantity);
         return ResponseEntity.ok().build();
     }
 
@@ -84,7 +90,7 @@ public class InventoryController {
         public InventoryItemStatus status;
     }
 
-    private static class OrderInventoryItemDTO {
+    private static class ChangeInventoryItemStockDTO {
         public long inventoryItemId;
         @Min(1)
         public int quantity;

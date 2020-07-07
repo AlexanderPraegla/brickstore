@@ -33,11 +33,11 @@ public class InventoryTest extends BrickstoreRestTest {
                 .body()
                 .jsonPath()
                 .getList(".", InventoryItemDTO.class);
-        assertThat(items).hasSize(7);
+        assertThat(items).hasSize(13);
     }
 
     @ParameterizedTest
-    @CsvSource({"potter,5", "schiff,2", ",10"})
+    @CsvSource({"potter,5", "schiff,2", ",18"})
     @Order(2)
     public void shouldFindAllItemsMatchingSearchName(String searchTerm, int resultCount) {
         List<InventoryItemDTO> items = given(spec)
@@ -103,12 +103,12 @@ public class InventoryTest extends BrickstoreRestTest {
     }
 
     @Test
-    public void shouldOrderInventoryItemWithEnoughStock() {
+    public void shouldGatherInventoryItemWithEnoughStock() {
         int inventoryItemId = 4;
         InventoryItemDTO item = getInventoryItemById(inventoryItemId);
         assertThat(item.getStock()).isEqualTo(3);
 
-        Response response = orderInventoryItem(inventoryItemId, 2);
+        Response response = gatherInventoryItem(inventoryItemId, 2);
         response.then()
                 .statusCode(200);
 
@@ -117,19 +117,19 @@ public class InventoryTest extends BrickstoreRestTest {
     }
 
     @Test
-    public void shouldOrderNegativeQuantityInventoryItem() {
+    public void shouldGatherNegativeQuantityInventoryItem() {
         int inventoryItemId = 6;
 
-        Response response = orderInventoryItem(inventoryItemId, -1);
+        Response response = gatherInventoryItem(inventoryItemId, -1);
         response.then()
                 .statusCode(400);
     }
 
     @Test
-    public void shouldOrderInventoryItemWithNotEnoughStock() {
+    public void shouldGatherInventoryItemWithNotEnoughStock() {
         int inventoryItemId = 7;
 
-        Response response = orderInventoryItem(inventoryItemId, 2);
+        Response response = gatherInventoryItem(inventoryItemId, 2);
         ApiErrorDTO apiErrorDTO = response.then()
                 .statusCode(400)
                 .extract()
@@ -140,12 +140,12 @@ public class InventoryTest extends BrickstoreRestTest {
     }
 
     @Test
-    public void shouldOrderCompleteStockOfInventoryItem() {
+    public void shouldGatherCompleteStockOfInventoryItem() {
         int inventoryItemId = 9;
         InventoryItemDTO item = getInventoryItemById(inventoryItemId);
         assertThat(item.getStock()).isEqualTo(2);
 
-        Response response = orderInventoryItem(inventoryItemId, 2);
+        Response response = gatherInventoryItem(inventoryItemId, 2);
         response.then()
                 .statusCode(200);
 
@@ -156,10 +156,10 @@ public class InventoryTest extends BrickstoreRestTest {
     }
 
     @Test
-    public void shouldOrderOutOfStockInventoryItem() {
+    public void shouldGatherOutOfStockInventoryItem() {
         int inventoryItemId = 3;
 
-        Response response = orderInventoryItem(inventoryItemId, 2);
+        Response response = gatherInventoryItem(inventoryItemId, 2);
         ApiErrorDTO apiErrorDTO = response.then()
                 .statusCode(400)
                 .extract()
@@ -170,10 +170,10 @@ public class InventoryTest extends BrickstoreRestTest {
     }
 
     @Test
-    public void shouldOrderDeactivatedInventoryItem() {
+    public void shouldGatherDeactivatedInventoryItem() {
         int inventoryItemId = 5;
 
-        Response response = orderInventoryItem(inventoryItemId, 2);
+        Response response = gatherInventoryItem(inventoryItemId, 2);
         ApiErrorDTO apiErrorDTO = response.then()
                 .statusCode(400)
                 .extract()
@@ -181,6 +181,32 @@ public class InventoryTest extends BrickstoreRestTest {
 
         assertThat(apiErrorDTO.getResponseCode()).isEqualTo("ITEM_NOT_ORDERABLE");
 
+    }
+
+    @Test
+    public void shouldStockUpInventoryItem() {
+        int inventoryItemId = 10;
+        InventoryItemDTO item = getInventoryItemById(inventoryItemId);
+        assertThat(item.getStock()).isEqualTo(1);
+        Response response = stockUpInventoryItem(inventoryItemId, 10);
+        response.then()
+                .statusCode(200);
+
+        item = getInventoryItemById(inventoryItemId);
+        assertThat(item.getStock()).isEqualTo(11);
+        assertThat(item.getStatus()).isEqualTo("AVAILABLE");
+    }
+
+    @Test
+    public void shouldStockUpInventoryItemOutOfStock() {
+        int inventoryItemId = 8;
+        Response response = stockUpInventoryItem(inventoryItemId, 2);
+        response.then()
+                .statusCode(200);
+
+        InventoryItemDTO item = getInventoryItemById(inventoryItemId);
+        assertThat(item.getStock()).isEqualTo(2);
+        assertThat(item.getStatus()).isEqualTo("AVAILABLE");
     }
 
     private InventoryItemDTO getInventoryItemById(long inventoryItemId) {
@@ -192,14 +218,24 @@ public class InventoryTest extends BrickstoreRestTest {
         return getResourceByLocationHeader(inventoryItemLocation, InventoryItemDTO.class);
     }
 
-    private Response orderInventoryItem(long inventoryItemId, int quantity) {
+    private Response gatherInventoryItem(long inventoryItemId, int quantity) {
         Map<String, Number> body = new HashMap<>();
-        body.put("quantity", quantity);
         body.put("inventoryItemId", inventoryItemId);
+        body.put("quantity", quantity);
         return given(spec)
                 .when()
                 .body(body)
-                .post("inventory/order");
+                .post("inventory/gather");
+    }
+
+    private Response stockUpInventoryItem(long inventoryItemId, int quantity) {
+        Map<String, Number> body = new HashMap<>();
+        body.put("inventoryItemId", inventoryItemId);
+        body.put("quantity", quantity);
+        return given(spec)
+                .when()
+                .body(body)
+                .post("inventory/stockup");
     }
 
 }

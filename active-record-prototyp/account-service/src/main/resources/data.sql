@@ -1,3 +1,4 @@
+--- account test data
 INSERT INTO public.address (id, city, postal_code, street)
 VALUES (1, 'Rocky Beach', '97468', 'Am Schrottplatz 1');
 INSERT INTO public.address (id, city, postal_code, street)
@@ -56,7 +57,6 @@ INSERT INTO public.account (id, balance, status, customer_id, address_id)
 VALUES (9, 0, 'INACTIVE', 9, 9);
 
 ---shopping cart test data
-
 INSERT INTO public.address (id, city, postal_code, street)
 VALUES (10, 'Freising', '85354', 'Bahnhofstraße 3a');
 INSERT INTO public.customer (id, email, firstname, lastname)
@@ -92,6 +92,14 @@ VALUES (14, 'Claudia.Müller@test.com', 'Claudia', 'Müller');
 INSERT INTO public.account (id, balance, status, customer_id, address_id)
 VALUES (14, 100, 'ACTIVE', 14, 14);
 
-ALTER SEQUENCE account_id_seq RESTART WITH 10;
-ALTER SEQUENCE address_id_seq RESTART WITH 10;
-ALTER SEQUENCE customer_id_seq RESTART WITH 10;
+--- shopping cart data
+INSERT INTO public.address (id, city, postal_code, street)
+VALUES (15, 'Freising', '85354', 'Bahnhofstraße 5a');
+INSERT INTO public.customer (id, email, firstname, lastname)
+VALUES (15, 'Osker.Müller@test.com', 'Osker', 'Müller');
+INSERT INTO public.account (id, balance, status, customer_id, address_id)
+VALUES (15, 100, 'ACTIVE', 15, 15);
+
+ALTER SEQUENCE account_id_seq RESTART WITH 16;
+ALTER SEQUENCE address_id_seq RESTART WITH 16;
+ALTER SEQUENCE customer_id_seq RESTART WITH 16;

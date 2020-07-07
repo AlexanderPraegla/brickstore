@@ -1,11 +1,12 @@
 package hm.edu.praegla.account.service;
 
 import hm.edu.praegla.account.entity.Account;
-import hm.edu.praegla.account.error.EntityNotFoundException;
 import hm.edu.praegla.account.entity.AccountStatus;
 import hm.edu.praegla.account.entity.Address;
 import hm.edu.praegla.account.entity.Customer;
+import hm.edu.praegla.account.error.AccountInactiveException;
 import hm.edu.praegla.account.error.BalanceInsufficientException;
+import hm.edu.praegla.account.error.EntityNotFoundException;
 import hm.edu.praegla.account.repository.AccountRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,6 +54,10 @@ public class AccountService {
 
     public void chargeBalance(long accountId, double amount) {
         Account account = getAccount(accountId);
+
+        if (account.getStatus() == AccountStatus.INACTIVE) {
+            throw new AccountInactiveException();
+        }
 
         if (account.getStatus() == AccountStatus.CREATED && amount > 0) {
             account.setStatus(AccountStatus.ACTIVE);

@@ -53,7 +53,7 @@ public class InventoryService {
         i.setStatus(inventoryItem.getStatus());
     }
 
-    public void orderInventoryItem(long inventoryItemId, int quantity) {
+    public void gatherInventoryItem(long inventoryItemId, int quantity) {
         InventoryItem inventoryItem = getInventoryItem(inventoryItemId);
         @Min(0) int currentStock = inventoryItem.getStock();
 
@@ -72,6 +72,18 @@ public class InventoryService {
         if (inventoryItem.getStock() == 0) {
             inventoryItem.setStatus(InventoryItemStatus.OUT_OF_STOCK);
         }
+    }
+
+    public void stockUpInventoryItem(long inventoryItemId, int quantity) {
+        InventoryItem inventoryItem = getInventoryItem(inventoryItemId);
+        @Min(0) int currentStock = inventoryItem.getStock();
+
+        if (inventoryItem.getStatus() == InventoryItemStatus.OUT_OF_STOCK) {
+            inventoryItem.setStatus(InventoryItemStatus.AVAILABLE);
+        }
+
+        inventoryItem.setStock(currentStock + quantity);
+
     }
 
     public void updateStatus(long inventoryItemId, InventoryItemStatus status) {
