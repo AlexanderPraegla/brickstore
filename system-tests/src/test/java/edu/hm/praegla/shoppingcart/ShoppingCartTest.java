@@ -89,6 +89,21 @@ public class ShoppingCartTest extends BrickstoreRestTest {
         assertThat(apiErrorDTO.getResponseCode()).isEqualTo("ACCOUNT_INACTIVE");
     }
 
+    @Test
+    public void shouldFailAddingDeactivatedItemToCart() {
+        int quantity = 1;
+        int inventoryItemId = 5;
+        long accountId = 10;
+
+        ApiErrorDTO apiErrorDTO = addShoppingCartItem(accountId, inventoryItemId, quantity)
+                .then()
+                .statusCode(400)
+                .extract()
+                .as(ApiErrorDTO.class);
+
+        assertThat(apiErrorDTO.getResponseCode()).isEqualTo("ITEM_NOT_ORDERABLE");
+    }
+
     private ShoppingCartDTO getShoppingCartByAccountId(long accountId) {
         return getResourceById("shopping-carts/{accountId}", accountId, ShoppingCartDTO.class);
     }

@@ -5,12 +5,14 @@ import edu.hm.praegla.client.account.dto.AccountDTO;
 import edu.hm.praegla.client.account.dto.AccountStatus;
 import edu.hm.praegla.client.inventory.InventoryClient;
 import edu.hm.praegla.client.inventory.dto.InventoryItemDTO;
+import edu.hm.praegla.client.inventory.dto.InventoryItemStatus;
 import edu.hm.praegla.shoppingcart.dto.LineItemDTO;
 import edu.hm.praegla.shoppingcart.dto.ShoppingCartDTO;
 import edu.hm.praegla.shoppingcart.entity.LineItem;
 import edu.hm.praegla.shoppingcart.entity.ShoppingCart;
 import edu.hm.praegla.shoppingcart.error.AccountInactiveException;
 import edu.hm.praegla.shoppingcart.error.EntityNotFoundException;
+import edu.hm.praegla.shoppingcart.error.ItemNotOrderableException;
 import edu.hm.praegla.shoppingcart.repository.LineItemRepository;
 import edu.hm.praegla.shoppingcart.repository.ShoppingCartRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +61,11 @@ public class ShoppingCartService {
         AccountDTO account = accountClient.getAccount(accountId);
         if (account.getStatus() == AccountStatus.INACTIVE) {
             throw new AccountInactiveException();
+        }
+
+        InventoryItemDTO inventoryItem = inventoryClient.getInventoryItem(inventoryItemId);
+        if (inventoryItem.getStatus() == InventoryItemStatus.DEACTIVATED) {
+            throw new ItemNotOrderableException();
         }
 
         ShoppingCart shoppingCart = shoppingCartRepository.findByAccountId(accountId).orElse(new ShoppingCart());
