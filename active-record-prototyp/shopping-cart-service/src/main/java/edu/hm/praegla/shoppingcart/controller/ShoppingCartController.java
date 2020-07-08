@@ -4,6 +4,7 @@ import edu.hm.praegla.shoppingcart.dto.ShoppingCartDTO;
 import edu.hm.praegla.shoppingcart.service.ShoppingCartService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import javax.validation.constraints.Min;
 import java.util.List;
 
 @Slf4j
+@Validated
 @RestController
 @RequestMapping(value = "shopping-carts", produces = {"application/json"})
 public class ShoppingCartController {

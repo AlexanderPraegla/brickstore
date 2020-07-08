@@ -2,14 +2,17 @@ package edu.hm.praegla.inventory.entity;
 
 import lombok.Data;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Data
 @Entity
@@ -21,8 +24,9 @@ public class InventoryItem {
 
     @NotNull
     private String name;
-    @Min(1)
-    private double price;
+    @DecimalMin(value = "1")
+    @Column(precision = 7, scale = 2)
+    private BigDecimal price;
     @Min(0)
     private int stock;
     @Min(1)

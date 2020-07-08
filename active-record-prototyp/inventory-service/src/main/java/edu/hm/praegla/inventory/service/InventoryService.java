@@ -1,5 +1,6 @@
 package edu.hm.praegla.inventory.service;
 
+import edu.hm.praegla.inventory.dto.ChangeInventoryItemStockDTO;
 import edu.hm.praegla.inventory.entity.InventoryItem;
 import edu.hm.praegla.inventory.entity.InventoryItemStatus;
 import edu.hm.praegla.inventory.error.EntityNotFoundException;
@@ -51,9 +52,16 @@ public class InventoryService {
         i.setStock(inventoryItem.getStock());
         i.setDeliveryTime(inventoryItem.getDeliveryTime());
         i.setStatus(inventoryItem.getStatus());
+        inventoryItemRepository.save(inventoryItem);
     }
 
-    public void gatherInventoryItem(long inventoryItemId, int quantity) {
+    public void gatherInventoryItem(List<ChangeInventoryItemStockDTO> changeInventoryItemStockDTOS) {
+        changeInventoryItemStockDTOS.forEach(item -> {
+            gatherInventoryItem(item.getInventoryItemId(), item.getQuantity());
+        });
+    }
+
+    private void gatherInventoryItem(long inventoryItemId, int quantity) {
         InventoryItem inventoryItem = getInventoryItem(inventoryItemId);
         @Min(0) int currentStock = inventoryItem.getStock();
 
@@ -72,9 +80,16 @@ public class InventoryService {
         if (inventoryItem.getStock() == 0) {
             inventoryItem.setStatus(InventoryItemStatus.OUT_OF_STOCK);
         }
+        inventoryItemRepository.save(inventoryItem);
     }
 
-    public void stockUpInventoryItem(long inventoryItemId, int quantity) {
+    public void stockUpInventoryItem(List<ChangeInventoryItemStockDTO> changeInventoryItemStockDTOS) {
+        changeInventoryItemStockDTOS.forEach(item -> {
+            stockUpInventoryItem(item.getInventoryItemId(), item.getQuantity());
+        });
+    }
+
+    private void stockUpInventoryItem(long inventoryItemId, int quantity) {
         InventoryItem inventoryItem = getInventoryItem(inventoryItemId);
         @Min(0) int currentStock = inventoryItem.getStock();
 
@@ -83,12 +98,13 @@ public class InventoryService {
         }
 
         inventoryItem.setStock(currentStock + quantity);
-
+        inventoryItemRepository.save(inventoryItem);
     }
 
     public void updateStatus(long inventoryItemId, InventoryItemStatus status) {
         Optional<InventoryItem> optionalInventory = inventoryItemRepository.findById(inventoryItemId);
-        InventoryItem account = optionalInventory.orElseThrow(() -> new EntityNotFoundException(InventoryItem.class, "id", inventoryItemId));
-        account.setStatus(status);
+        InventoryItem inventoryItem = optionalInventory.orElseThrow(() -> new EntityNotFoundException(InventoryItem.class, "id", inventoryItemId));
+        inventoryItem.setStatus(status);
+        inventoryItemRepository.save(inventoryItem);
     }
 }

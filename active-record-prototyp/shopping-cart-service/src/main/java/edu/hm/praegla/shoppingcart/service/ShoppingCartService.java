@@ -103,7 +103,7 @@ public class ShoppingCartService {
         return shoppingCart.getLineItems()
                 .stream()
                 .map(lineItem -> {
-                    InventoryItemDTO inventoryItem = inventoryClient.getInventoryItem(lineItem.getId());
+                    InventoryItemDTO inventoryItem = inventoryClient.getInventoryItem(lineItem.getInventoryItemId());
 
                     LineItemDTO lineItemDTO = new LineItemDTO();
                     lineItemDTO.setLineItemId(lineItem.getId());

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,16 +25,10 @@ public class InventoryTest extends BrickstoreRestTest {
         this.inventoryClient = new InventoryClient(spec);
     }
 
-    @Test
-    @Order(1)
-    public void shouldGetAllAvailableInventoryItems() {
-        List<InventoryItemDTO> items = inventoryClient.getInventoryItems();
-        assertThat(items).hasSize(14);
-    }
 
     @ParameterizedTest
-    @CsvSource({"potter,5", "schiff,2", ",18"})
-    @Order(2)
+    @CsvSource({"potter,5", "schiff,2", ",27"})
+    @Order(1)
     public void shouldFindAllItemsMatchingSearchName(String searchTerm, int resultCount) {
         List<InventoryItemDTO> items = inventoryClient.searchInventoryItem(searchTerm);
         assertThat(items).hasSize(resultCount);
@@ -43,7 +38,7 @@ public class InventoryTest extends BrickstoreRestTest {
     public void shouldCreateNewInventoryItem() {
         InventoryItemDTO inventoryItemDTO = new InventoryItemDTO();
         inventoryItemDTO.setName("Star Wars - Todesstern");
-        inventoryItemDTO.setPrice(999.99);
+        inventoryItemDTO.setPrice(new BigDecimal("999.99"));
         inventoryItemDTO.setStock(2);
         inventoryItemDTO.setDeliveryTime(8);
         inventoryItemDTO.setStatus("AVAILABLE");
@@ -57,7 +52,7 @@ public class InventoryTest extends BrickstoreRestTest {
         InventoryItemDTO inventoryItemDTO = new InventoryItemDTO();
         inventoryItemDTO.setId(1);
         inventoryItemDTO.setName("Harry Potter - Große Besenkammer");
-        inventoryItemDTO.setPrice(9.99);
+        inventoryItemDTO.setPrice(new BigDecimal("9.99"));
         inventoryItemDTO.setStock(200);
         inventoryItemDTO.setDeliveryTime(1);
         inventoryItemDTO.setStatus("AVAILABLE");

@@ -11,8 +11,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -24,13 +22,6 @@ public class ShoppingCartTest extends BrickstoreRestTest {
         shoppingCartClient = new ShoppingCartClient(spec);
     }
 
-    @Test
-    @Order(1)
-    public void shouldGetShoppingCarts() {
-        List<ShoppingCartDTO> accounts = shoppingCartClient.getShoppingCarts();
-        assertThat(accounts).hasSize(2);
-    }
-
     @Nested
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     class ShouldAddItemsToShoppingCartAndCheckSize {
@@ -39,7 +30,7 @@ public class ShoppingCartTest extends BrickstoreRestTest {
 
         @ParameterizedTest
         @CsvSource({"11,1", "12,1", "13,3"})
-        @Order(2)
+        @Order(1)
         public void shouldAddItemsToShoppingCart(long inventoryItemId, int quantity) {
             shoppingCartClient.addShoppingCartItem(ACCOUNT_ID, inventoryItemId, quantity)
                     .then()
@@ -47,7 +38,7 @@ public class ShoppingCartTest extends BrickstoreRestTest {
         }
 
         @Test
-        @Order(3)
+        @Order(2)
         public void shouldHaveThreeItemsInShoppingCart() {
             ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCartByAccountId(ACCOUNT_ID);
             assertThat(shoppingCart.getLineItems()).hasSize(3);
@@ -56,7 +47,7 @@ public class ShoppingCartTest extends BrickstoreRestTest {
     }
 
     @Test
-    @Order(4)
+    @Order(3)
     public void shouldRemoveItemFromShoppingCart() {
         long lineItemId = 2;
         long accountId = 14;

@@ -8,6 +8,7 @@ import edu.hm.praegla.account.dto.CustomerDTO;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +60,8 @@ public class AccountClient extends ApiClient {
                 .post("accounts/{accountId}/status", accountId);
     }
 
-    public Response chargeAccount(long accountId, double amount) {
-        Map<String, Double> body = new HashMap<>();
+    public Response chargeAccount(long accountId, BigDecimal amount) {
+        Map<String, BigDecimal> body = new HashMap<>();
         body.put("amount", amount);
         return given(spec)
                 .when()
@@ -68,8 +69,8 @@ public class AccountClient extends ApiClient {
                 .post("accounts/{accountId}/charge", accountId);
     }
 
-    public Response debitAccount(long accountId, double amount) {
-        Map<String, Double> body = new HashMap<>();
+    public Response debitAccount(long accountId, BigDecimal amount) {
+        Map<String, BigDecimal> body = new HashMap<>();
         body.put("amount", amount);
         return given(spec)
                 .when()

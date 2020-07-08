@@ -3,6 +3,8 @@ package edu.hm.praegla.order.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderItemDTO {
@@ -10,7 +12,7 @@ public class OrderItemDTO {
     private long id;
     private long inventoryItemId;
     private String name;
-    private double price;
+    private BigDecimal price;
     private int quantity;
     private int deliveryTime;
 }

@@ -51,4 +51,10 @@ public class OrderClient extends ApiClient {
                 .body(body)
                 .post("orders/{orderId}/status", orderId);
     }
+
+    public Response cancelOrder(long orderId) {
+        return given(spec)
+                .when()
+                .post("orders/{orderId}/cancellation", orderId);
+    }
 }

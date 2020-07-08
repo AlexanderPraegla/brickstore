@@ -1,10 +1,12 @@
 package edu.hm.praegla.inventory.controller;
 
+import edu.hm.praegla.inventory.dto.ChangeInventoryItemStockDTO;
 import edu.hm.praegla.inventory.entity.InventoryItem;
 import edu.hm.praegla.inventory.entity.InventoryItemStatus;
 import edu.hm.praegla.inventory.service.InventoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,9 +19,10 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
+import java.util.List;
 
 @Slf4j
+@Validated
 @RestController
 @RequestMapping(value = "inventory", produces = {"application/json"})
 public class InventoryController {
@@ -59,7 +62,6 @@ public class InventoryController {
         return ResponseEntity.created(uriComponents.toUri()).build();
     }
 
-
     @PostMapping("/{inventoryItemId}")
     public ResponseEntity<?> updateInventoryItem(@PathVariable long inventoryItemId, @Valid @RequestBody InventoryItem inventoryItem) {
         inventoryService.updateInventoryItem(inventoryItemId, inventoryItem);
@@ -74,14 +76,14 @@ public class InventoryController {
 
 
     @PostMapping("/gather")
-    public ResponseEntity<?> gather(@Valid @RequestBody InventoryController.ChangeInventoryItemStockDTO changeInventoryItemStockDTO) {
-        inventoryService.gatherInventoryItem(changeInventoryItemStockDTO.inventoryItemId, changeInventoryItemStockDTO.quantity);
+    public ResponseEntity<?> gather(@Valid @RequestBody List<@Valid ChangeInventoryItemStockDTO> changeInventoryItemStockDTO) {
+        inventoryService.gatherInventoryItem(changeInventoryItemStockDTO);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/stockup")
-    public ResponseEntity<?> stockup(@Valid @RequestBody InventoryController.ChangeInventoryItemStockDTO changeInventoryItemStockDTO) {
-        inventoryService.stockUpInventoryItem(changeInventoryItemStockDTO.inventoryItemId, changeInventoryItemStockDTO.quantity);
+    public ResponseEntity<?> stockup(@Valid @RequestBody List<@Valid ChangeInventoryItemStockDTO> changeInventoryItemStockDTO) {
+        inventoryService.stockUpInventoryItem(changeInventoryItemStockDTO);
         return ResponseEntity.ok().build();
     }
 
@@ -90,9 +92,4 @@ public class InventoryController {
         public InventoryItemStatus status;
     }
 
-    private static class ChangeInventoryItemStockDTO {
-        public long inventoryItemId;
-        @Min(1)
-        public int quantity;
-    }
 }

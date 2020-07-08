@@ -17,6 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,7 +41,7 @@ public class OrderTest extends BrickstoreRestTest {
     @Order(1)
     public void shouldGetAllOpen() {
         List<OrderDTO> accounts = orderClient.getOpenOrders();
-        assertThat(accounts).hasSize(2);
+        assertThat(accounts).hasSize(5);
     }
 
     @Test
@@ -55,16 +56,16 @@ public class OrderTest extends BrickstoreRestTest {
         assertThat(inventoryItemEiffelTower.getStock()).isEqualTo(4);
         assertThat(inventoryItemNotreDame.getStock()).isEqualTo(4);
 
-        OrderDTO order = orderClient.createOrder(accountId)
+        String createdOrderLocation = orderClient.createOrder(accountId)
                 .then()
-                .statusCode(200)
-                .extract()
-                .as(OrderDTO.class);
+                .statusCode(201)
+                .extract().header("location");
+        OrderDTO order = orderClient.getResourceByLocationHeader(createdOrderLocation, OrderDTO.class);
 
-        assertThat(order.getTotal()).isEqualTo(119.95);
+        assertThat(order.getTotal()).isEqualTo(new BigDecimal("119.95"));
 
         AccountDTO account = accountClient.getAccountById(accountId);
-        assertThat(account.getBalance()).isEqualTo(80.05);
+        assertThat(account.getBalance()).isEqualTo(new BigDecimal("80.05"));
 
         inventoryItemEiffelTower = inventoryClient.getInventoryItemById(inventoryItemIdEiffelTower);
         inventoryItemNotreDame = inventoryClient.getInventoryItemById(inventoryItemIdNotreDame);
@@ -74,21 +75,27 @@ public class OrderTest extends BrickstoreRestTest {
     }
 
     @Test
+    public void shouldFailCreateOrderWithAccountWithEmptyShoppingCart() {
+
+    }
+
+    @Test
     public void shouldNotChangeOrderTotalWhenInventoryItemPriceIsChanged() {
         int inventoryItemIdBrandenburgerGate = 21;
         long orderId = 1;
 
         InventoryItemDTO inventoryItem = inventoryClient.getInventoryItemById(inventoryItemIdBrandenburgerGate);
-        inventoryItem.setPrice(109.99);
+        inventoryItem.setPrice(new BigDecimal("109.99"));
         inventoryClient.updateInventoryItem(inventoryItem)
                 .then()
                 .statusCode(200);
 
         OrderDTO order = orderClient.getOrder(orderId);
-        assertThat(order.getTotal()).isEqualTo(49.99);
+        assertThat(order.getTotal()).isEqualTo(new BigDecimal("49.99"));
+
         OrderItemDTO orderItemDTO = order.getOrderItems().get(0);
         assertThat(orderItemDTO.getInventoryItemId()).isEqualTo(inventoryItemIdBrandenburgerGate);
-        assertThat(orderItemDTO.getPrice()).isEqualTo(49.99);
+        assertThat(orderItemDTO.getPrice()).isEqualTo(new BigDecimal("49.99"));
     }
 
     @ParameterizedTest(name = "[{index}] Creating order for accountId={0} should return ''{1}''")
@@ -107,8 +114,6 @@ public class OrderTest extends BrickstoreRestTest {
         assertThat(apiErrorDTO.getResponseCode()).isEqualTo(responseCode);
     }
 
-    //Orderstatus: CREATED, PAYED, PROCESSED, SHIPPED, DELIVERED, CANCELED
-    //Aufgegeben, Bezahlt, Bearbeitet, Verschickt, Zugestellt.
     @ParameterizedTest
     @ValueSource(strings = {"PROCESSED", "SHIPPED", "DELIVERED"})
     public void shouldChangeOrderStatus(String status) {
@@ -122,16 +127,16 @@ public class OrderTest extends BrickstoreRestTest {
 
     @ParameterizedTest(name = "[{index}] Cancel order with status {0}")
     @CsvSource({
-            "CREATED, 3, 117.65, 26, 5",
-            "PAYED, 4, 62.0, 26, 5",
-            "PROCESSED, 5, 73.98, 26, 8"
+            "CREATED, 3, 117.65, 27, 5",
+            "PAYED, 4, 62.00, 27, 5",
+            "PROCESSED, 5, 73.98, 27, 8"
     })
-    public void shouldCancelOrder(String status, long orderId, double resultingAccountBalance, long inventoryItemId, int resultingInventoryItemStock) {
-        orderClient.updateOrderStatus(orderId, "CANCELED")
+    public void shouldCancelOrder(String status, long orderId, BigDecimal resultingAccountBalance, long inventoryItemId, int resultingInventoryItemStock) {
+        orderClient.cancelOrder(orderId)
                 .then()
                 .statusCode(200);
         OrderDTO order = orderClient.getOrder(orderId);
-        assertThat(order.getStatus()).isEqualTo("CANCELED");
+        assertThat(order.getStatus()).isEqualTo("CANCELLATION_COMPLETED");
 
         AccountDTO account = accountClient.getAccountById(order.getAccountId());
         assertThat(account.getBalance()).isEqualTo(resultingAccountBalance);

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -41,29 +42,33 @@ public class AccountService {
         return accountRepository.save(account);
     }
 
-    public void debitBalance(long accountId, double amount) {
-        Account account = getAccount(accountId);
-
-        double balance = account.getBalance();
-        if (balance < amount) {
-            throw new BalanceInsufficientException();
-        }
-
-        account.setBalance(balance - amount);
-    }
-
-    public void chargeBalance(long accountId, double amount) {
+    public void debitBalance(long accountId, BigDecimal amount) {
         Account account = getAccount(accountId);
 
         if (account.getStatus() == AccountStatus.INACTIVE) {
             throw new AccountInactiveException();
         }
 
-        if (account.getStatus() == AccountStatus.CREATED && amount > 0) {
+        BigDecimal balance = account.getBalance();
+        if (balance.compareTo(amount) < 0) {
+            throw new BalanceInsufficientException();
+        }
+
+        account.setBalance(balance.subtract(amount));
+    }
+
+    public void chargeBalance(long accountId, BigDecimal amount) {
+        Account account = getAccount(accountId);
+
+        if (account.getStatus() == AccountStatus.INACTIVE) {
+            throw new AccountInactiveException();
+        }
+
+        if (account.getStatus() == AccountStatus.CREATED && amount.compareTo(BigDecimal.ZERO) > 0) {
             account.setStatus(AccountStatus.ACTIVE);
         }
-        double balance = account.getBalance();
-        account.setBalance(balance + amount);
+        BigDecimal balance = account.getBalance();
+        account.setBalance(balance.add(amount));
     }
 
     public void updateStatus(long accountId, AccountStatus status) {

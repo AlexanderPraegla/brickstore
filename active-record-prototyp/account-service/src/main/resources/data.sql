@@ -100,6 +100,86 @@ VALUES (15, 'Osker.Müller@test.com', 'Osker', 'Müller');
 INSERT INTO public.account (id, balance, status, customer_id, address_id)
 VALUES (15, 100, 'ACTIVE', 15, 15);
 
-ALTER SEQUENCE account_id_seq RESTART WITH 16;
-ALTER SEQUENCE address_id_seq RESTART WITH 16;
-ALTER SEQUENCE customer_id_seq RESTART WITH 16;
+--- order test data
+INSERT INTO public.address (id, city, postal_code, street)
+VALUES (16, 'Freising', '85354', 'Holzgartenstraße 5a');
+INSERT INTO public.customer (id, email, firstname, lastname)
+VALUES (16, 'Moritz.Bauer@test.com', 'Moritz', 'Bauer');
+INSERT INTO public.account (id, balance, status, customer_id, address_id)
+VALUES (16, 200, 'ACTIVE', 16, 16);
+
+INSERT INTO public.address (id, city, postal_code, street)
+VALUES (17, 'Freising', '85354', 'Holzgartenstraße 5a');
+INSERT INTO public.customer (id, email, firstname, lastname)
+VALUES (17, 'Felix.Bauer@test.com', 'Felix', 'Bauer');
+INSERT INTO public.account (id, balance, status, customer_id, address_id)
+VALUES (17, 50, 'ACTIVE', 17, 17);
+--failCreateOrders
+
+INSERT INTO public.address (id, city, postal_code, street)
+VALUES (18, 'Freising', '85354', 'Holzgartenstraße 5a');
+INSERT INTO public.customer (id, email, firstname, lastname)
+VALUES (18, 'Tobias.Bauer@test.com', 'Tobias', 'Bauer');
+INSERT INTO public.account (id, balance, status, customer_id, address_id)
+VALUES (18, 500.00, 'ACTIVE', 18, 18);
+
+INSERT INTO public.address (id, city, postal_code, street)
+VALUES (19, 'Freising', '85354', 'Holzgartenstraße 5a');
+INSERT INTO public.customer (id, email, firstname, lastname)
+VALUES (19, 'Peter.Bauer@test.com', 'Peter', 'Bauer');
+INSERT INTO public.account (id, balance, status, customer_id, address_id)
+VALUES (19, 296.65, 'ACTIVE', 19, 19);
+
+INSERT INTO public.address (id, city, postal_code, street)
+VALUES (20, 'Freising', '85354', 'Holzgartenstraße 5a');
+INSERT INTO public.customer (id, email, firstname, lastname)
+VALUES (20, 'Marion.Bauer@test.com', 'Marion', 'Bauer');
+INSERT INTO public.account (id, balance, status, customer_id, address_id)
+VALUES (20, 400, 'ACTIVE', 20, 20);
+
+INSERT INTO public.address (id, city, postal_code, street)
+VALUES (21, 'Freising', '85354', 'Holzgartenstraße 5a');
+INSERT INTO public.customer (id, email, firstname, lastname)
+VALUES (21, 'Erik.Bauer@test.com', 'Erik', 'Bauer');
+INSERT INTO public.account (id, balance, status, customer_id, address_id)
+VALUES (21, 5, 'ACTIVE', 21, 21);
+
+INSERT INTO public.address (id, city, postal_code, street)
+VALUES (22, 'Freising', '85354', 'Holzgartenstraße 5a');
+INSERT INTO public.customer (id, email, firstname, lastname)
+VALUES (22, 'Natalie.Bauer@test.com', 'Natalie', 'Bauer');
+INSERT INTO public.account (id, balance, status, customer_id, address_id)
+VALUES (22, 1, 'INACTIVE', 22, 22);
+
+INSERT INTO public.address (id, city, postal_code, street)
+VALUES (23, 'Freising', '85354', 'Bürgermeisterstraße 7');
+INSERT INTO public.customer (id, email, firstname, lastname)
+VALUES (23, 'Hans.Schmidt@test.com', 'Hans', 'Schmidt');
+INSERT INTO public.account (id, balance, status, customer_id, address_id)
+VALUES (23, 50, 'ACTIVE', 23, 23);
+
+--cancel orders
+INSERT INTO public.address (id, city, postal_code, street)
+VALUES (24, 'Freising', '85354', 'Bürgermeisterstraße 7');
+INSERT INTO public.customer (id, email, firstname, lastname)
+VALUES (24, 'Erik.Schmidt@test.com', 'Erik', 'Schmidt');
+INSERT INTO public.account (id, balance, status, customer_id, address_id)
+VALUES (24, 117.65, 'ACTIVE', 24, 24);
+
+INSERT INTO public.address (id, city, postal_code, street)
+VALUES (25, 'Freising', '85354', 'Bürgermeisterstraße 7');
+INSERT INTO public.customer (id, email, firstname, lastname)
+VALUES (25, 'Birgit.Bauer@test.com', 'Birgit', 'Schmidt');
+INSERT INTO public.account (id, balance, status, customer_id, address_id)
+VALUES (25, 26.02, 'ACTIVE', 25, 25);
+
+INSERT INTO public.address (id, city, postal_code, street)
+VALUES (26, 'Freising', '85354', 'Bürgermeisterstraße 7');
+INSERT INTO public.customer (id, email, firstname, lastname)
+VALUES (26, 'Martin.Schmidt@test.com', 'Martin', 'Schmidt');
+INSERT INTO public.account (id, balance, status, customer_id, address_id)
+VALUES (26, 20.01, 'ACTIVE', 26, 26);
+
+ALTER SEQUENCE account_id_seq RESTART WITH 27;
+ALTER SEQUENCE address_id_seq RESTART WITH 27;
+ALTER SEQUENCE customer_id_seq RESTART WITH 27;

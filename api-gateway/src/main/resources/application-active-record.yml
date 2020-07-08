@@ -8,6 +8,7 @@ spring:
           predicates:
             - Path=/accounts/**
           filters:
+            - RewritePath=/accounts/actuator/(?<segment>.*), /actuator/$\{segment}
             #            - TokenRelay=
             - RemoveRequestHeader=Cookie
         - id: inventory-service
@@ -15,6 +16,7 @@ spring:
           predicates:
             - Path=/inventory/**
           filters:
+            - RewritePath=/inventory/actuator/(?<segment>.*), /actuator/$\{segment}
             #            - TokenRelay=
             - RemoveRequestHeader=Cookie
         - id: shopping-cart-service
@@ -22,5 +24,14 @@ spring:
           predicates:
             - Path=/shopping-carts/**
           filters:
+            - RewritePath=/shopping-carts/actuator/(?<segment>.*), /actuator/$\{segment}
+            #            - TokenRelay=
+            - RemoveRequestHeader=Cookie
+        - id: order-service
+          uri: lb://order-service/
+          predicates:
+            - Path=/orders/**
+          filters:
+            - RewritePath=/orders/actuator/(?<segment>.*), /actuator/$\{segment}
             #            - TokenRelay=
             - RemoveRequestHeader=Cookie

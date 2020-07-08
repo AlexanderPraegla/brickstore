@@ -1,10 +1,12 @@
 package edu.hm.praegla.inventory;
 
 import edu.hm.praegla.ApiClient;
+import edu.hm.praegla.inventory.dto.ChangeInventoryItemStockDTO;
 import edu.hm.praegla.inventory.dto.InventoryItemDTO;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,22 +57,20 @@ public class InventoryClient extends ApiClient {
     }
 
     public Response gatherInventoryItem(long inventoryItemId, int quantity) {
-        Map<String, Number> body = new HashMap<>();
-        body.put("inventoryItemId", inventoryItemId);
-        body.put("quantity", quantity);
+        ChangeInventoryItemStockDTO item = new ChangeInventoryItemStockDTO(inventoryItemId, quantity);
+        List<ChangeInventoryItemStockDTO> items = Collections.singletonList(item);
         return given(spec)
                 .when()
-                .body(body)
+                .body(items)
                 .post("inventory/gather");
     }
 
     public Response stockUpInventoryItem(long inventoryItemId, int quantity) {
-        Map<String, Number> body = new HashMap<>();
-        body.put("inventoryItemId", inventoryItemId);
-        body.put("quantity", quantity);
+        ChangeInventoryItemStockDTO item = new ChangeInventoryItemStockDTO(inventoryItemId, quantity);
+        List<ChangeInventoryItemStockDTO> items = Collections.singletonList(item);
         return given(spec)
                 .when()
-                .body(body)
+                .body(items)
                 .post("inventory/stockup");
     }
 

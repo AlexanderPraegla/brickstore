@@ -11,7 +11,7 @@ public abstract class ApiClient {
         this.spec = spec;
     }
 
-    protected String createResource(String path, Object bodyPayload) {
+    public String createResource(String path, Object bodyPayload) {
         return given()
                 .spec(spec)
                 .body(bodyPayload)
@@ -22,7 +22,7 @@ public abstract class ApiClient {
                 .extract().header("location");
     }
 
-    protected <T> T getResourceByLocationHeader(String locationHeader, Class<T> responseClass) {
+    public <T> T getResourceByLocationHeader(String locationHeader, Class<T> responseClass) {
         return given()
                 .spec(spec)
                 .when()
@@ -32,7 +32,7 @@ public abstract class ApiClient {
                 .extract().as(responseClass);
     }
 
-    protected <T> T getResourceById(String path, long id, Class<T> responseClass) {
+    public <T> T getResourceById(String path, long id, Class<T> responseClass) {
         return given()
                 .spec(spec)
                 .when()

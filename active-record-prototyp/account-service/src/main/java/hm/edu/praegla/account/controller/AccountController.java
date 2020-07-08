@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,11 +20,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.persistence.Column;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Slf4j
+@Validated
 @RestController
 @RequestMapping(value = "accounts", produces = {"application/json"})
 public class AccountController {
@@ -100,8 +104,9 @@ public class AccountController {
     }
 
     private static class ModifyAccountBalanceDTO {
-        @Min(1)
-        public double amount;
+        @DecimalMin(value = "1")
+        @Column(precision = 7, scale = 2)
+        public BigDecimal amount;
     }
 
     private static class UpdateAccountStatusDTO {
