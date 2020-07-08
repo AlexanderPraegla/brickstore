@@ -52,12 +52,7 @@ public class AccountTest extends BrickstoreRestTest {
         String newLastname = "Shaw";
         String newEmail = "Henry.Shaw@dreifragezeichen.com";
 
-        Map<String, String> body = new HashMap<>();
-        body.put("firstname", newFirstname);
-        body.put("lastname", newLastname);
-        body.put("email", newEmail);
-
-        accountClient.modifyCustomer(accountId, body)
+        accountClient.modifyCustomer(accountId, newFirstname, newLastname, newEmail)
                 .then()
                 .statusCode(200);
         AccountDTO account = accountClient.getAccountById(accountId);
@@ -74,12 +69,8 @@ public class AccountTest extends BrickstoreRestTest {
         String newStreet = "Am Pier 1";
         String newCity = "Santa Babara";
         String newPostalcode = "36784";
-        Map<String, String> body = new HashMap<>();
-        body.put("street", newStreet);
-        body.put("city", newCity);
-        body.put("postalCode", newPostalcode);
 
-        accountClient.modifyAddress(accountId, body)
+        accountClient.modifyAddress(accountId, newStreet, newCity, newPostalcode)
                 .then()
                 .statusCode(200);
         AccountDTO account = accountClient.getAccountById(accountId);

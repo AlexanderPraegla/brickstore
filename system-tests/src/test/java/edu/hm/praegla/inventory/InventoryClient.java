@@ -45,11 +45,13 @@ public class InventoryClient extends ApiClient {
                 .post("inventory/{inventoryItemId}", inventoryItemDTO.getId());
     }
 
-    public Response updateInventoryItemStatus(Map<String, String> body) {
+    public Response updateInventoryItemStatus(long inventoryItemId, String status) {
+        Map<String, String> body = new HashMap<>();
+        body.put("status", status);
         return given(spec)
                 .when()
                 .body(body)
-                .post("inventory/{inventoryItemId}/status", 2);
+                .post("inventory/{inventoryItemId}/status", inventoryItemId);
     }
 
     public Response gatherInventoryItem(long inventoryItemId, int quantity) {

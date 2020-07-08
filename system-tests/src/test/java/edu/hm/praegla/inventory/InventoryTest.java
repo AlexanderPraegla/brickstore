@@ -11,9 +11,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -75,9 +73,7 @@ public class InventoryTest extends BrickstoreRestTest {
 
     @Test
     public void shouldDeactivateInventoryItem() {
-        Map<String, String> body = new HashMap<>();
-        body.put("status", "DEACTIVATED");
-        inventoryClient.updateInventoryItemStatus(body)
+        inventoryClient.updateInventoryItemStatus(2, "DEACTIVATED")
                 .then()
                 .statusCode(200);
 
@@ -191,6 +187,18 @@ public class InventoryTest extends BrickstoreRestTest {
         InventoryItemDTO item = inventoryClient.getInventoryItemById(inventoryItemId);
         assertThat(item.getStock()).isEqualTo(2);
         assertThat(item.getStatus()).isEqualTo("AVAILABLE");
+    }
+
+    @Test
+    public void shouldStockUpDeactivatedInventoryItem() {
+        int inventoryItemId = 5;
+        Response response = inventoryClient.stockUpInventoryItem(inventoryItemId, 3);
+        response.then()
+                .statusCode(200);
+
+        InventoryItemDTO item = inventoryClient.getInventoryItemById(inventoryItemId);
+        assertThat(item.getStock()).isEqualTo(6);
+        assertThat(item.getStatus()).isEqualTo("DEACTIVATED");
     }
 
 }

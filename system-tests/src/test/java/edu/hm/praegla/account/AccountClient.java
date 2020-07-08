@@ -30,14 +30,22 @@ public class AccountClient extends ApiClient {
         return getResourceByLocationHeader(accountLocation, AccountDTO.class);
     }
 
-    public Response modifyCustomer(long accountId, Map<String, String> body) {
+    public Response modifyCustomer(long accountId, String newFirstname, String newLastname, String newEmail) {
+        Map<String, String> body = new HashMap<>();
+        body.put("firstname", newFirstname);
+        body.put("lastname", newLastname);
+        body.put("email", newEmail);
         return given(spec)
                 .when()
                 .body(body)
                 .post("accounts/{accountId}/customer", accountId);
     }
 
-    public Response modifyAddress(long accountId, Map<String, String> body) {
+    public Response modifyAddress(long accountId, String newStreet, String newCity, String newPostalcode) {
+        Map<String, String> body = new HashMap<>();
+        body.put("street", newStreet);
+        body.put("city", newCity);
+        body.put("postalCode", newPostalcode);
         return given(spec)
                 .when()
                 .body(body)
