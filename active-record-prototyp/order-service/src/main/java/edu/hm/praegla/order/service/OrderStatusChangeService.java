@@ -11,7 +11,6 @@ import edu.hm.praegla.order.entity.OrderItem;
 import edu.hm.praegla.order.entity.OrderStatus;
 import edu.hm.praegla.order.entity.ShippingAddress;
 import edu.hm.praegla.order.error.InvalidOrderStatusChangeException;
-import edu.hm.praegla.order.error.OrderNotCancelabelException;
 import edu.hm.praegla.order.repository.OrderItemRepository;
 import edu.hm.praegla.order.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -94,10 +93,6 @@ public class OrderStatusChangeService {
     }
 
     protected void createCancellation(Order order) {
-        if (order.getStatus() == OrderStatus.SHIPPED || order.getStatus() == OrderStatus.DELIVERED) {
-            throw new OrderNotCancelabelException();
-        }
-
         order.setStatus(OrderStatus.CANCELED);
         orderRepository.save(order);
     }
@@ -105,7 +100,7 @@ public class OrderStatusChangeService {
     protected void refundCancellation(Order order) {
         accountClient.chargeAccount(order.getAccountId(), new ModifyAccountBalanceDTO(order.getTotal()));
 
-        order.setStatus(OrderStatus.CANCELED_REFUNDED);
+        order.setStatus(OrderStatus.CANCELED_AMOUNT_REFUNDED);
         orderRepository.save(order);
     }
 
@@ -115,7 +110,7 @@ public class OrderStatusChangeService {
                 .collect(Collectors.toList());
         inventoryClient.stockUp(items);
 
-        order.setStatus(OrderStatus.CANCELED_RESTOCKED);
+        order.setStatus(OrderStatus.CANCELED_STOCK_RESTORED);
         orderRepository.save(order);
     }
 

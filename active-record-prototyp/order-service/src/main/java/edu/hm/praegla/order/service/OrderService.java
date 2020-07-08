@@ -9,6 +9,7 @@ import edu.hm.praegla.order.entity.OrderStatus;
 import edu.hm.praegla.order.error.EntityNotFoundException;
 import edu.hm.praegla.order.error.InvalidOrderStatusChangeException;
 import edu.hm.praegla.order.error.NoItemsInShoppingCartException;
+import edu.hm.praegla.order.error.OrderNotCancelabelException;
 import edu.hm.praegla.order.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -88,19 +89,28 @@ public class OrderService {
         Order order = getOrder(orderId);
         OrderStatus status = order.getStatus();
 
+        if (status == OrderStatus.SHIPPED || status == OrderStatus.DELIVERED) {
+            throw new OrderNotCancelabelException();
+        }
+
         orderStatusChangeService.createCancellation(order);
         switch (status) {
             case CREATED:
+            case CANCELED_STOCK_RESTORED:
                 break;
             case PAYED:
-            case CANCELED:
                 orderStatusChangeService.refundCancellation(order);
                 break;
             case PROCESSED:
-            case CANCELED_REFUNDED:
+            case CANCELED:
                 orderStatusChangeService.refundCancellation(order);
                 orderStatusChangeService.restockCancellation(order);
                 break;
+            case CANCELED_AMOUNT_REFUNDED:
+                orderStatusChangeService.restockCancellation(order);
+                break;
+            case CANCELLATION_COMPLETED:
+                return;
         }
         orderStatusChangeService.completeCancellation(order);
     }
