@@ -6,7 +6,7 @@ spring:
         - id: account-service
           uri: lb://account-service/
           predicates:
-            - Path=/accounts/**
+            - Path=/accounts/**,/events/**
           filters:
             - RewritePath=/accounts/actuator/(?<segment>.*), /actuator/$\{segment}
             #            - TokenRelay=

@@ -21,7 +21,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 @ExtendWith({AddressParameterResolver.class, CustomerParameterResolver.class, InventoryItemParameterResolver.class})
 public class CancelOrderTest extends BrickstoreRestTest {
 

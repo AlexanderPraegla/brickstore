@@ -7,9 +7,17 @@
         <groupId>edu.hm</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
+    <packaging>pom</packaging>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>event-sourcing-prototyp</artifactId>
 
+    <modules>
+        <module>event-account-service</module>
+    </modules>
+
+    <build>
+        <defaultGoal>clean install</defaultGoal>
+    </build>
 
 </project>

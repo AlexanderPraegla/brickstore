@@ -10,7 +10,7 @@ import edu.hm.praegla.shoppingcart.dto.LineItemDTO;
 import edu.hm.praegla.shoppingcart.dto.ShoppingCartDTO;
 import edu.hm.praegla.shoppingcart.entity.LineItem;
 import edu.hm.praegla.shoppingcart.entity.ShoppingCart;
-import edu.hm.praegla.shoppingcart.error.AccountInactiveException;
+import edu.hm.praegla.shoppingcart.error.AccountDeactivatedException;
 import edu.hm.praegla.shoppingcart.error.EntityNotFoundException;
 import edu.hm.praegla.shoppingcart.error.ItemNotOrderableException;
 import edu.hm.praegla.shoppingcart.repository.LineItemRepository;
@@ -59,8 +59,8 @@ public class ShoppingCartService {
 
     public void addShoppingCartItem(long accountId, long inventoryItemId, int quantity) {
         AccountDTO account = accountClient.getAccount(accountId);
-        if (account.getStatus() == AccountStatus.INACTIVE) {
-            throw new AccountInactiveException();
+        if (account.getStatus() == AccountStatus.DEACTIVATED) {
+            throw new AccountDeactivatedException();
         }
 
         InventoryItemDTO inventoryItem = inventoryClient.getInventoryItem(inventoryItemId);

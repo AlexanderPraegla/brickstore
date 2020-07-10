@@ -111,8 +111,8 @@ public class CreateOrderTests extends BrickstoreRestTest {
     }
 
     @ParameterizedTest(name = "[{index}] Should fail with response code ''{0}'' for account balance={1} and status ''{2}''")
-    @CsvSource({"'BALANCE_INSUFFICIENT', 10.00, 'ACTIVE', 5",
-            "'ACCOUNT_INACTIVE', 200.00, 'INACTIVE', 5"})
+    @CsvSource({"'BALANCE_INSUFFICIENT', 10.00, 'ACTIVATED', 5",
+            "'ACCOUNT_DEACTIVATED', 200.00, 'DEACTIVATED', 5"})
     public void shouldFailCreateOrderCausedByAccount(String responseCode, BigDecimal newBalance, String accountStatus, int orderQuantity, InventoryItemDTO inventoryItemDTO) {
         accountClient.chargeAccount(testAccount.getId(), newBalance);
 

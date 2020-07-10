@@ -64,16 +64,16 @@ public class AccountClient extends ApiClient {
 
     public Response chargeAccount(long accountId, BigDecimal amount) {
         Map<String, BigDecimal> body = new HashMap<>();
-        body.put("amount", amount);
+        body.put("creditAmount", amount);
         return given(spec)
                 .when()
                 .body(body)
-                .post("accounts/{accountId}/charge", accountId);
+                .post("accounts/{accountId}/credit", accountId);
     }
 
     public Response debitAccount(long accountId, BigDecimal amount) {
         Map<String, BigDecimal> body = new HashMap<>();
-        body.put("amount", amount);
+        body.put("debitAmount", amount);
         return given(spec)
                 .when()
                 .body(body)

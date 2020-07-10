@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: account-service
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: brickstore_event_query_model
+  #      password: admin
+  #      username: adminpwd
+  #      authentication-database: auth_db
+  #  datasource:
+  #    url: jdbc:postgresql://localhost:5432/brickstore_dev_event
+  #    username: alex
+  #    password: test123
+  #    initialization-mode: always
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    registry-fetch-interval-seconds: 10
+
+server:
+  port: 8100
+
+#logging:
+#  level:
+#    root: INFO
+#    org.springframework.web: INFO
+#    org.springframework.web.HttpLogging: DEBUG
+#    org.springframework.security: DEBUG
+#    org.springframework.security.oauth2: DEBUG
+
+
+

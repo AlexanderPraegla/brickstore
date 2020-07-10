@@ -100,10 +100,10 @@ public class ShoppingCartTestV2 extends BrickstoreRestTest {
         }
 
         @Test
-        public void shouldFailAddingItemToCartWithInactiveAccount() {
+        public void shouldFailAddingItemToCartWithDeactivatedAccount() {
             int quantity = 2;
 
-            accountClient.updateAccountStatus(testAccount.getId(), "INACTIVE")
+            accountClient.updateAccountStatus(testAccount.getId(), "DEACTIVATED")
                     .then()
                     .statusCode(200);
             ApiErrorDTO apiErrorDTO = shoppingCartClient.addShoppingCartItem(testAccount.getId(), testInventoryItem.getId(), quantity)
@@ -112,7 +112,7 @@ public class ShoppingCartTestV2 extends BrickstoreRestTest {
                     .extract()
                     .as(ApiErrorDTO.class);
 
-            assertThat(apiErrorDTO.getResponseCode()).isEqualTo("ACCOUNT_INACTIVE");
+            assertThat(apiErrorDTO.getResponseCode()).isEqualTo("ACCOUNT_DEACTIVATED");
         }
 
         @Test
