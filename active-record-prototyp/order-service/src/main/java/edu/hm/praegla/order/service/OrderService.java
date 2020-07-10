@@ -12,6 +12,7 @@ import edu.hm.praegla.order.error.NoItemsInShoppingCartException;
 import edu.hm.praegla.order.error.OrderNotCancelabelException;
 import edu.hm.praegla.order.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +46,11 @@ public class OrderService {
     @Transactional
     public Order getOrder(long orderId) {
         return orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException(Order.class, "id", orderId));
+    }
+
+    @Transactional
+    public Iterable<Order> getOrdersForAccount(long accountId) {
+        return orderRepository.findAllByAccountId(accountId, Sort.by(Sort.Direction.DESC, "createdOn"));
     }
 
     public Order createOrder(long accountId) {

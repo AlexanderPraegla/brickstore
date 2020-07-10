@@ -43,6 +43,11 @@ public class OrderController {
         return orderService.getOrder(orderId);
     }
 
+    @GetMapping("account/{accountId}")
+    public Iterable<Order> getOrdersForAccount(@PathVariable long accountId) {
+        return orderService.getOrdersForAccount(accountId);
+    }
+
     @PutMapping
     public ResponseEntity<?> createOrder(UriComponentsBuilder b, @Valid @RequestBody CreateOrderDTO createOrderDTO) {
         Order order = orderService.createOrder(createOrderDTO.accountId);

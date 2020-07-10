@@ -1,4 +1,4 @@
-package edu.hm.praegla.order;
+package edu.hm.praegla.client;
 
 import edu.hm.praegla.ApiClient;
 import edu.hm.praegla.order.dto.OrderDTO;
@@ -13,7 +13,7 @@ import static io.restassured.RestAssured.given;
 
 public class OrderClient extends ApiClient {
 
-    protected OrderClient(RequestSpecification spec) {
+    public OrderClient(RequestSpecification spec) {
         super(spec);
     }
 
@@ -33,7 +33,20 @@ public class OrderClient extends ApiClient {
                 .getList(".", OrderDTO.class);
     }
 
-    public Response createOrder(long accountId) {
+    public OrderDTO getLatestOrderForAccount(long accountId) {
+        return given(spec)
+                .when()
+                .get("orders/account/{accountId}", accountId)
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .jsonPath()
+                .getList(".", OrderDTO.class)
+                .get(0);
+    }
+
+    public Response createOrderRequest(long accountId) {
         Map<String, Number> body = new HashMap<>();
         body.put("accountId", accountId);
         return given(spec)
@@ -41,6 +54,14 @@ public class OrderClient extends ApiClient {
                 .body(body)
                 .put("orders/");
 
+    }
+
+    public OrderDTO createOrder(long accountId) {
+        String createdOrderLocation = createOrderRequest(accountId)
+                .then()
+                .statusCode(201)
+                .extract().header("location");
+        return getResourceByLocationHeader(createdOrderLocation, OrderDTO.class);
     }
 
     public Response updateOrderStatus(long orderId, String status) {

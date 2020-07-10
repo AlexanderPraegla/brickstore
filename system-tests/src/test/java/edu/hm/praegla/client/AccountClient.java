@@ -1,4 +1,4 @@
-package edu.hm.praegla.account;
+package edu.hm.praegla.client;
 
 import edu.hm.praegla.ApiClient;
 import edu.hm.praegla.account.dto.AccountDTO;
@@ -53,7 +53,9 @@ public class AccountClient extends ApiClient {
                 .post("accounts/{accountId}/address", accountId);
     }
 
-    public Response updateAccountStatus(long accountId, Map<String, String> body) {
+    public Response updateAccountStatus(long accountId, String status) {
+        Map<String, String> body = new HashMap<>();
+        body.put("status", status);
         return given(spec)
                 .when()
                 .body(body)

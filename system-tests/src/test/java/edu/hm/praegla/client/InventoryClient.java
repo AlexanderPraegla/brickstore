@@ -1,4 +1,4 @@
-package edu.hm.praegla.inventory;
+package edu.hm.praegla.client;
 
 import edu.hm.praegla.ApiClient;
 import edu.hm.praegla.inventory.dto.ChangeInventoryItemStockDTO;
@@ -40,11 +40,13 @@ public class InventoryClient extends ApiClient {
         return getResourceByLocationHeader(inventoryItemLocation, InventoryItemDTO.class);
     }
 
-    public Response updateInventoryItem(InventoryItemDTO inventoryItemDTO) {
-        return given(spec)
+    public void updateInventoryItem(InventoryItemDTO inventoryItemDTO) {
+        given(spec)
                 .when()
                 .body(inventoryItemDTO)
-                .post("inventory/{inventoryItemId}", inventoryItemDTO.getId());
+                .post("inventory/{inventoryItemId}", inventoryItemDTO.getId())
+                .then()
+                .statusCode(200);
     }
 
     public Response updateInventoryItemStatus(long inventoryItemId, String status) {

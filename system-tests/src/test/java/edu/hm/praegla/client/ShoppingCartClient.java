@@ -1,4 +1,4 @@
-package edu.hm.praegla.shoppingcart;
+package edu.hm.praegla.client;
 
 import edu.hm.praegla.ApiClient;
 import edu.hm.praegla.shoppingcart.dto.ShoppingCartDTO;

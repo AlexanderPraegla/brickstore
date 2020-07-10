@@ -2,11 +2,10 @@ package edu.hm.praegla.order.repository;
 
 
 import edu.hm.praegla.order.entity.Order;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-import java.util.Optional;
+public interface OrderRepository extends PagingAndSortingRepository<Order, Long> {
 
-public interface OrderRepository extends CrudRepository<Order, Long> {
-
-    Optional<Order> findByAccountId(long accountId);
+    Iterable<Order> findAllByAccountId(long accountId, Sort sort);
 }

@@ -12,4 +12,10 @@ public class AddressDTO {
     private String street;
     private String city;
     private String postalCode;
+
+    public AddressDTO(String city, String postalCode, String street) {
+        this.street = street;
+        this.city = city;
+        this.postalCode = postalCode;
+    }
 }

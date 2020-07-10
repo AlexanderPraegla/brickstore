@@ -13,4 +13,10 @@ public class CustomerDTO {
     private String firstname;
     private String lastname;
     private String email;
+
+    public CustomerDTO(String firstname, String lastname, String email) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+    }
 }
