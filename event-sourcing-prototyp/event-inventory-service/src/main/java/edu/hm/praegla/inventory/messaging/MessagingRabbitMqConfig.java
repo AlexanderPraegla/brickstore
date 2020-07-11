@@ -1,4 +1,4 @@
-package edu.hm.praegla.account.config;
+package edu.hm.praegla.inventory.messaging;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -13,18 +13,18 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class MessagingRabbitMqConfig {
-    public static final String EXCHANGE_NAME = "eventExchange";
-    public static final String ACCOUNT_SERVICE_QUEUE = "account-queue";
-    public static final String ROUTING_KEY = "account.*";
+    public static final String INVENTORY_EVENT_EXCHANGE = "inventory-event-exchange";
+    public static final String INVENTORY_SERVICE_QUEUE = "inventory-service";
+    public static final String ROUTING_KEY = "inventory.*";
 
     @Bean
     public Queue accountQueue() {
-        return new Queue(ACCOUNT_SERVICE_QUEUE, false);
+        return new Queue(INVENTORY_SERVICE_QUEUE, false);
     }
 
     @Bean
     public TopicExchange exchange() {
-        return new TopicExchange(EXCHANGE_NAME);
+        return new TopicExchange(INVENTORY_EVENT_EXCHANGE);
     }
 
     @Bean
@@ -43,7 +43,7 @@ public class MessagingRabbitMqConfig {
         rabbitTemplate.setMessageConverter(messageConverter);
         return rabbitTemplate;
     }
-//
+
 //    @Bean
 //    public FanoutExchange fanoutExchange() {
 //        return new FanoutExchange(FANOUT_EXCHANGE_NAME, false, false);

@@ -1,8 +1,8 @@
 package edu.hm.praegla.client;
 
 import edu.hm.praegla.ApiClient;
-import edu.hm.praegla.inventory.dto.ChangeInventoryItemStockDTO;
 import edu.hm.praegla.inventory.dto.InventoryItemDTO;
+import edu.hm.praegla.inventory.dto.UpdateInventoryItemsStockDTO;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
@@ -59,8 +59,9 @@ public class InventoryClient extends ApiClient {
     }
 
     public Response gatherInventoryItem(long inventoryItemId, int quantity) {
-        ChangeInventoryItemStockDTO item = new ChangeInventoryItemStockDTO(inventoryItemId, quantity);
-        List<ChangeInventoryItemStockDTO> items = Collections.singletonList(item);
+        UpdateInventoryItemsStockDTO.Item item = new UpdateInventoryItemsStockDTO.Item(inventoryItemId, quantity);
+        UpdateInventoryItemsStockDTO items = new UpdateInventoryItemsStockDTO();
+        items.setItems(Collections.singletonList(item));
         return given(spec)
                 .when()
                 .body(items)
@@ -68,8 +69,9 @@ public class InventoryClient extends ApiClient {
     }
 
     public Response stockUpInventoryItem(long inventoryItemId, int quantity) {
-        ChangeInventoryItemStockDTO item = new ChangeInventoryItemStockDTO(inventoryItemId, quantity);
-        List<ChangeInventoryItemStockDTO> items = Collections.singletonList(item);
+        UpdateInventoryItemsStockDTO.Item item = new UpdateInventoryItemsStockDTO.Item(inventoryItemId, quantity);
+        UpdateInventoryItemsStockDTO items = new UpdateInventoryItemsStockDTO();
+        items.setItems(Collections.singletonList(item));
         return given(spec)
                 .when()
                 .body(items)

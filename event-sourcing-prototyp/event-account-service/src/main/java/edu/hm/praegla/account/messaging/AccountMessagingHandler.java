@@ -1,4 +1,4 @@
-package edu.hm.praegla.account.service;
+package edu.hm.praegla.account.messaging;
 
 import edu.hm.praegla.account.dto.UpdateAddressDTO;
 import edu.hm.praegla.account.dto.UpdateCustomerDTO;
@@ -10,8 +10,8 @@ import edu.hm.praegla.account.event.AccountCustomerUpdatedEvent;
 import edu.hm.praegla.account.event.AccountStatusUpdatedEvent;
 import edu.hm.praegla.account.event.MoneyCreditedEvent;
 import edu.hm.praegla.account.event.MoneyDebitedEvent;
-import edu.hm.praegla.account.messaging.MessagingRabbitMqConfig;
 import edu.hm.praegla.account.repository.AccountRepository;
+import edu.hm.praegla.account.service.AccountQueryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -23,23 +23,25 @@ import java.math.BigDecimal;
 @Slf4j
 @Component
 @RabbitListener(queues = MessagingRabbitMqConfig.ACCOUNT_SERVICE_QUEUE)
-public class MessagingListener {
+public class AccountMessagingHandler {
 
     private final AccountRepository accountRepository;
     private final AccountQueryService accountQueryService;
 
-    public MessagingListener(AccountRepository accountRepository, AccountQueryService accountQueryService) {
+    public AccountMessagingHandler(AccountRepository accountRepository, AccountQueryService accountQueryService) {
         this.accountRepository = accountRepository;
         this.accountQueryService = accountQueryService;
     }
 
     @RabbitHandler
     public void processAccountCreatedEvent(@Payload AccountCreatedEvent event) {
+        log.info("Received AccountCreatedEvent: {}", event);
         accountRepository.save(event.getPayload());
     }
 
     @RabbitHandler
     public void processAccountStatusUpdatedEvent(@Payload AccountStatusUpdatedEvent event) {
+        log.info("Received AccountStatusUpdatedEvent: {}", event);
         Account account = accountQueryService.getAccount(event.getAggregateId());
         account.setStatus(event.getPayload().getStatus());
         accountRepository.save(account);
@@ -47,6 +49,7 @@ public class MessagingListener {
 
     @RabbitHandler
     public void processAccountCustomerUpdatedEvent(@Payload AccountCustomerUpdatedEvent event) {
+        log.info("Received AccountCustomerUpdatedEvent: {}", event);
         Account account = accountQueryService.getAccount(event.getAggregateId());
         Account.Customer customer = account.getCustomer();
         UpdateCustomerDTO payload = event.getPayload();
@@ -59,6 +62,7 @@ public class MessagingListener {
 
     @RabbitHandler
     public void processAccountAddressUpdatedEvent(@Payload AccountAddressUpdatedEvent event) {
+        log.info("Received AccountAddressUpdatedEvent: {}", event);
         Account account = accountQueryService.getAccount(event.getAggregateId());
         Account.Address address = account.getAddress();
         UpdateAddressDTO payload = event.getPayload();
@@ -71,6 +75,7 @@ public class MessagingListener {
 
     @RabbitHandler
     public void processMoneyCreditedEvent(@Payload MoneyCreditedEvent event) {
+        log.info("Received MoneyCreditedEvent: {}", event);
         Account account = accountQueryService.getAccount(event.getAggregateId());
         BigDecimal balance = account.getBalance();
         account.setBalance(balance.add(event.getPayload().getCreditAmount()));
@@ -83,6 +88,7 @@ public class MessagingListener {
 
     @RabbitHandler
     public void processMoneyDebitedEvent(@Payload MoneyDebitedEvent event) {
+        log.info("Received MoneyDebitedEvent: {}", event);
         Account account = accountQueryService.getAccount(event.getAggregateId());
         BigDecimal balance = account.getBalance();
         account.setBalance(balance.subtract(event.getPayload().getDebitAmount()));

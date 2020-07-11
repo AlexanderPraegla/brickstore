@@ -1,8 +1,10 @@
 package edu.hm.praegla.account.event;
 
 import edu.hm.praegla.account.dto.UpdateAddressDTO;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @NoArgsConstructor
 public class AccountAddressUpdatedEvent extends Event<UpdateAddressDTO> {
 

@@ -1,6 +1,6 @@
 package edu.hm.praegla.inventory.service;
 
-import edu.hm.praegla.inventory.dto.ChangeInventoryItemStockDTO;
+import edu.hm.praegla.inventory.dto.UpdateInventoryItemsStockDTO;
 import edu.hm.praegla.inventory.entity.InventoryItem;
 import edu.hm.praegla.inventory.entity.InventoryItemStatus;
 import edu.hm.praegla.inventory.error.EntityNotFoundException;
@@ -55,8 +55,8 @@ public class InventoryService {
         inventoryItemRepository.save(inventoryItem);
     }
 
-    public void gatherInventoryItem(List<ChangeInventoryItemStockDTO> changeInventoryItemStockDTOS) {
-        changeInventoryItemStockDTOS.forEach(item -> {
+    public void gatherInventoryItem(UpdateInventoryItemsStockDTO changeInventoryItemStockDTOS) {
+        changeInventoryItemStockDTOS.getItems().forEach(item -> {
             gatherInventoryItem(item.getInventoryItemId(), item.getQuantity());
         });
     }
@@ -83,8 +83,8 @@ public class InventoryService {
         inventoryItemRepository.save(inventoryItem);
     }
 
-    public void stockUpInventoryItem(List<ChangeInventoryItemStockDTO> changeInventoryItemStockDTOS) {
-        changeInventoryItemStockDTOS.forEach(item -> {
+    public void stockUpInventoryItem(UpdateInventoryItemsStockDTO changeInventoryItemStockDTOS) {
+        changeInventoryItemStockDTOS.getItems().forEach(item -> {
             stockUpInventoryItem(item.getInventoryItemId(), item.getQuantity());
         });
     }

@@ -19,12 +19,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith(InventoryItemParameterResolver.class)
-public class InventoryTestV2 extends BrickstoreRestTest {
+public class InventoryTest extends BrickstoreRestTest {
 
     private final InventoryClient inventoryClient;
     private InventoryItemDTO testInventoryItem;
 
-    public InventoryTestV2() {
+    public InventoryTest() {
         this.inventoryClient = new InventoryClient(spec);
     }
 

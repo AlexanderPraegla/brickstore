@@ -1,4 +1,4 @@
-package edu.hm.praegla.account.event;
+package edu.hm.praegla.inventory.event;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

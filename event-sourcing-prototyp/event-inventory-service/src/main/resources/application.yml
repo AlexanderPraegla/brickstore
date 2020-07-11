@@ -1,11 +1,11 @@
 spring:
   application:
-    name: account-service
+    name: inventory-service
   data:
     mongodb:
       host: localhost
       port: 27017
-      database: account-serivce-db
+      database: inventory-service-db
   #      password: admin
   #      username: adminpwd
   #      authentication-database: auth_db
@@ -22,7 +22,7 @@ eureka:
     registry-fetch-interval-seconds: 10
 
 server:
-  port: 8100
+  port: 8101
 
 #logging:
 #  level:

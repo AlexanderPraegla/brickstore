@@ -1,19 +1,17 @@
 package edu.hm.praegla.inventory.controller;
 
+import edu.hm.praegla.inventory.dto.UpdateInventoryItemStatusDTO;
 import edu.hm.praegla.inventory.dto.UpdateInventoryItemsStockDTO;
 import edu.hm.praegla.inventory.entity.InventoryItem;
-import edu.hm.praegla.inventory.entity.InventoryItemStatus;
-import edu.hm.praegla.inventory.service.InventoryService;
+import edu.hm.praegla.inventory.service.InventoryCommandService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -24,38 +22,17 @@ import javax.validation.Valid;
 @Validated
 @RestController
 @RequestMapping(value = "inventory", produces = {"application/json"})
-public class InventoryController {
+public class InventoryCommandController {
 
-    private final InventoryService inventoryService;
+    private final InventoryCommandService inventoryCommandService;
 
-    public InventoryController(InventoryService inventoryService) {
-        this.inventoryService = inventoryService;
-    }
-
-
-    @GetMapping
-    public Iterable<InventoryItem> getInventoryItems() {
-        return inventoryService.getInventoryItems();
-    }
-
-    @GetMapping("available")
-    public Iterable<InventoryItem> getAvailableInventoryItems() {
-        return inventoryService.getAvailableInventoryItems();
-    }
-
-    @GetMapping("search")
-    public Iterable<InventoryItem> searchInventoryItems(@RequestParam("name") String name) {
-        return inventoryService.searchInventoryItems(name);
-    }
-
-    @GetMapping("/{inventoryItemId}")
-    public InventoryItem getInventoryItem(@PathVariable long inventoryItemId) {
-        return inventoryService.getInventoryItem(inventoryItemId);
+    public InventoryCommandController(InventoryCommandService inventoryCommandService) {
+        this.inventoryCommandService = inventoryCommandService;
     }
 
     @PutMapping
     public ResponseEntity<?> createInventoryItem(UriComponentsBuilder b, @Valid @RequestBody InventoryItem inventoryItem) {
-        InventoryItem account = inventoryService.createInventoryItem(inventoryItem);
+        InventoryItem account = inventoryCommandService.createInventoryItem(inventoryItem);
 
         UriComponents uriComponents = b.path("/inventory/{inventoryItemId}").buildAndExpand(account.getId());
         return ResponseEntity.created(uriComponents.toUri()).build();
@@ -63,32 +40,27 @@ public class InventoryController {
 
     @PostMapping("/{inventoryItemId}")
     public ResponseEntity<?> updateInventoryItem(@PathVariable long inventoryItemId, @Valid @RequestBody InventoryItem inventoryItem) {
-        inventoryService.updateInventoryItem(inventoryItemId, inventoryItem);
+        inventoryCommandService.updateInventoryItem(inventoryItemId, inventoryItem);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{inventoryItemId}/status")
     public ResponseEntity<?> updateStatus(@PathVariable long inventoryItemId, @Valid @RequestBody UpdateInventoryItemStatusDTO updateInventoryItemStatusDTO) {
-        inventoryService.updateStatus(inventoryItemId, updateInventoryItemStatusDTO.status);
+        inventoryCommandService.updateStatus(inventoryItemId, updateInventoryItemStatusDTO);
         return ResponseEntity.ok().build();
     }
 
-
     @PostMapping("/gather")
-    public ResponseEntity<?> gather(@Valid @RequestBody UpdateInventoryItemsStockDTO changeInventoryItemStockDTO) {
-        inventoryService.gatherInventoryItem(changeInventoryItemStockDTO);
+    public ResponseEntity<?> gather(@Valid @RequestBody UpdateInventoryItemsStockDTO gatherInventoryItemsDTO) {
+        inventoryCommandService.gatherInventoryItem(gatherInventoryItemsDTO);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/stockup")
-    public ResponseEntity<?> stockup(@Valid @RequestBody UpdateInventoryItemsStockDTO changeInventoryItemStockDTO) {
-        inventoryService.stockUpInventoryItem(changeInventoryItemStockDTO);
+    public ResponseEntity<?> stockup(@Valid @RequestBody UpdateInventoryItemsStockDTO stockInventoryItemsDTO) {
+        inventoryCommandService.stockUpInventoryItem(stockInventoryItemsDTO);
         return ResponseEntity.ok().build();
     }
 
-
-    private static class UpdateInventoryItemStatusDTO {
-        public InventoryItemStatus status;
-    }
 
 }
