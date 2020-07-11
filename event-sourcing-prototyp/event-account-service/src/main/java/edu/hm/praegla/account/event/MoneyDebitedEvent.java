@@ -1,13 +1,20 @@
 package edu.hm.praegla.account.event;
 
 import edu.hm.praegla.account.dto.DebitAccountDTO;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 public class MoneyDebitedEvent extends Event<DebitAccountDTO> {
 
-    public MoneyDebitedEvent() {
-    }
+    private DebitAccountDTO payload;
 
     public MoneyDebitedEvent(long aggregateId, DebitAccountDTO payload) {
-        super(aggregateId, payload);
+        super(aggregateId);
+        this.payload = payload;
+    }
+
+    @Override
+    public DebitAccountDTO getPayload() {
+        return payload;
     }
 }

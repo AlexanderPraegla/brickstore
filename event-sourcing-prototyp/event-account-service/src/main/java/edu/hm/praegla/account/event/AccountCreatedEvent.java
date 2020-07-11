@@ -1,14 +1,20 @@
 package edu.hm.praegla.account.event;
 
 import edu.hm.praegla.account.entity.Account;
+import lombok.NoArgsConstructor;
 
-
+@NoArgsConstructor
 public class AccountCreatedEvent extends Event<Account> {
 
-    public AccountCreatedEvent() {
-    }
+    private Account payload;
 
     public AccountCreatedEvent(long aggregateId, Account payload) {
-        super(aggregateId, payload);
+        super(aggregateId);
+        this.payload = payload;
+    }
+
+    @Override
+    public Account getPayload() {
+        return payload;
     }
 }

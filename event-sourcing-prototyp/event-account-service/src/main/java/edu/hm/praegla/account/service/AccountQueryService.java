@@ -37,6 +37,10 @@ public class AccountQueryService {
         return eventRepository.findAllByAggregateId(accountId, Sort.by(Sort.Direction.ASC, "timestamp"));
     }
 
+    public List<Event> getAllEvents() {
+        return eventRepository.findAll();
+    }
+
     public Event getEventById(String eventId) {
         Optional<Event> byId = eventRepository.findById(eventId);
         return byId.orElseThrow(() -> new EntityNotFoundException(Event.class, "eventId", eventId));

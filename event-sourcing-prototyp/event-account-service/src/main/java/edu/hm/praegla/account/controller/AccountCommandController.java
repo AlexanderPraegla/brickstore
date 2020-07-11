@@ -2,10 +2,10 @@ package edu.hm.praegla.account.controller;
 
 import edu.hm.praegla.account.dto.CreditAccountDTO;
 import edu.hm.praegla.account.dto.DebitAccountDTO;
+import edu.hm.praegla.account.dto.UpdateAccountStatusDTO;
 import edu.hm.praegla.account.dto.UpdateAddressDTO;
 import edu.hm.praegla.account.dto.UpdateCustomerDTO;
 import edu.hm.praegla.account.entity.Account;
-import edu.hm.praegla.account.entity.AccountStatus;
 import edu.hm.praegla.account.service.AccountCommandService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,6 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 @Slf4j
 @Validated
@@ -67,13 +66,8 @@ public class AccountCommandController {
 
     @PostMapping("/{accountId}/status")
     public ResponseEntity<?> updateStatus(@PathVariable long accountId, @Valid @RequestBody UpdateAccountStatusDTO updateAccountStatusDTO) {
-        accountCommandService.updateStatus(accountId, updateAccountStatusDTO.status);
+        accountCommandService.updateStatus(accountId, updateAccountStatusDTO);
         return ResponseEntity.ok().build();
-    }
-
-    private static class UpdateAccountStatusDTO {
-        @NotNull
-        public AccountStatus status;
     }
 
 }

@@ -23,9 +23,14 @@ public class EventController {
         this.accountQueryService = accountQueryService;
     }
 
-    @GetMapping("/account/{accountId}/")
+    @GetMapping("/account/{accountId}")
     public List<Event> getAccountEvents(@PathVariable long accountId) {
         return accountQueryService.getEventsForAccountId(accountId);
+    }
+
+    @GetMapping
+    public List<Event> getEvent() {
+        return accountQueryService.getAllEvents();
     }
 
     @GetMapping("/{eventId}")

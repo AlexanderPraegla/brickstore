@@ -1,13 +1,15 @@
 package edu.hm.praegla.account.event;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.UUID;
 
 @Data
-@Document(collection = "event_store")
+@Document(collection = "account_event_store")
+@NoArgsConstructor
 public abstract class Event<T> {
 
     @Id
@@ -15,17 +17,14 @@ public abstract class Event<T> {
 
     protected long aggregateId;
     private String eventType;
-    private T payload;
     private long timestamp;
 
-    public Event() {
-    }
-
-    protected Event(long aggregateId, T payload) {
+    protected Event(long aggregateId) {
         this.eventId = UUID.randomUUID().toString();
-        this.payload = payload;
         this.eventType = getClass().getSimpleName();
         this.aggregateId = aggregateId;
         this.timestamp = System.currentTimeMillis();
     }
+
+    public abstract T getPayload();
 }
