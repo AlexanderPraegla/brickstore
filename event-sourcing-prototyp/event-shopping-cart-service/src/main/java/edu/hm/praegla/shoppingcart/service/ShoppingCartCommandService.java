@@ -46,6 +46,7 @@ public class ShoppingCartCommandService {
         long accountId = addShoppingCartItemDTO.getAccountId();
         Account account = accountQueryService.getAccount(accountId);
         ShoppingCart shoppingCart = shoppingCartQueryService.getShoppingCart(accountId);
+
         if (account.getStatus() == AccountStatus.DEACTIVATED) {
             throw new AccountDeactivatedException();
         }

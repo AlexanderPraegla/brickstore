@@ -1,13 +1,12 @@
 package edu.hm.praegla.client;
 
 import edu.hm.praegla.ApiClient;
+import edu.hm.praegla.shoppingcart.dto.AddShoppingCartItemDTO;
 import edu.hm.praegla.shoppingcart.dto.ShoppingCartDTO;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
@@ -34,13 +33,14 @@ public class ShoppingCartClient extends ApiClient {
     }
 
     public Response addShoppingCartItem(long accountId, long inventoryItemId, int quantity) {
-        Map<String, Number> body = new HashMap<>();
-        body.put("accountId", accountId);
-        body.put("quantity", quantity);
-        body.put("inventoryItemId", inventoryItemId);
+        AddShoppingCartItemDTO addShoppingCartItemDTO = new AddShoppingCartItemDTO();
+        addShoppingCartItemDTO.setAccountId(accountId);
+        addShoppingCartItemDTO.setInventoryItemId(inventoryItemId);
+        addShoppingCartItemDTO.setQuantity(quantity);
+
         return given(spec)
                 .when()
-                .body(body)
+                .body(addShoppingCartItemDTO)
                 .put("shopping-carts/");
 
     }

@@ -1,5 +1,6 @@
 package edu.hm.praegla.shoppingcart.controller;
 
+import edu.hm.praegla.shoppingcart.dto.AddShoppingCartItemDTO;
 import edu.hm.praegla.shoppingcart.dto.ShoppingCartDTO;
 import edu.hm.praegla.shoppingcart.service.ShoppingCartService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 @Slf4j
@@ -41,7 +41,7 @@ public class ShoppingCartController {
 
     @PutMapping
     public ResponseEntity<?> addShoppingCartItem(@Valid @RequestBody AddShoppingCartItemDTO addShoppingCartItemDTO) {
-        shoppingCartService.addShoppingCartItem(addShoppingCartItemDTO.accountId, addShoppingCartItemDTO.inventoryItemId, addShoppingCartItemDTO.quantity);
+        shoppingCartService.addShoppingCartItem(addShoppingCartItemDTO.getAccountId(), addShoppingCartItemDTO.getInventoryItemId(), addShoppingCartItemDTO.getQuantity());
         return ResponseEntity.ok().build();
     }
 
@@ -51,12 +51,4 @@ public class ShoppingCartController {
         return ResponseEntity.ok().build();
     }
 
-    private static class AddShoppingCartItemDTO {
-        @Min(1)
-        public long accountId;
-        @Min(1)
-        public long inventoryItemId;
-        @Min(1)
-        public int quantity;
-    }
 }
