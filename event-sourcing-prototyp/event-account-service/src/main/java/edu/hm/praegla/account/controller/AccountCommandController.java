@@ -1,11 +1,11 @@
 package edu.hm.praegla.account.controller;
 
+import edu.hm.praegla.account.dto.CreateAccountDTO;
 import edu.hm.praegla.account.dto.CreditAccountDTO;
 import edu.hm.praegla.account.dto.DebitAccountDTO;
 import edu.hm.praegla.account.dto.UpdateAccountStatusDTO;
 import edu.hm.praegla.account.dto.UpdateAddressDTO;
 import edu.hm.praegla.account.dto.UpdateCustomerDTO;
-import edu.hm.praegla.account.entity.Account;
 import edu.hm.praegla.account.service.AccountCommandService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +34,8 @@ public class AccountCommandController {
     }
 
     @PutMapping
-    public ResponseEntity<?> createAccount(UriComponentsBuilder b, @Valid @RequestBody Account account) {
-        Account createdAccount = accountCommandService.createAccountCommand(account);
+    public ResponseEntity<?> createAccount(UriComponentsBuilder b, @Valid @RequestBody CreateAccountDTO account) {
+        CreateAccountDTO createdAccount = accountCommandService.createAccountCommand(account);
         UriComponents uriComponents = b.path("/accounts/{accountId}").buildAndExpand(createdAccount.getId());
         return ResponseEntity.created(uriComponents.toUri()).build();
     }

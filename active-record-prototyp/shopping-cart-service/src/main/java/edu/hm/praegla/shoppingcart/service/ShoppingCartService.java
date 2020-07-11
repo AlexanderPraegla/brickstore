@@ -13,6 +13,7 @@ import edu.hm.praegla.shoppingcart.entity.ShoppingCart;
 import edu.hm.praegla.shoppingcart.error.AccountDeactivatedException;
 import edu.hm.praegla.shoppingcart.error.EntityNotFoundException;
 import edu.hm.praegla.shoppingcart.error.ItemNotOrderableException;
+import edu.hm.praegla.shoppingcart.error.OutOfStockException;
 import edu.hm.praegla.shoppingcart.repository.LineItemRepository;
 import edu.hm.praegla.shoppingcart.repository.ShoppingCartRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -66,6 +67,10 @@ public class ShoppingCartService {
         InventoryItemDTO inventoryItem = inventoryClient.getInventoryItem(inventoryItemId);
         if (inventoryItem.getStatus() == InventoryItemStatus.DEACTIVATED) {
             throw new ItemNotOrderableException();
+        }
+
+        if (inventoryItem.getStatus() == InventoryItemStatus.OUT_OF_STOCK) {
+            throw new OutOfStockException();
         }
 
         ShoppingCart shoppingCart = shoppingCartRepository.findByAccountId(accountId).orElse(new ShoppingCart());

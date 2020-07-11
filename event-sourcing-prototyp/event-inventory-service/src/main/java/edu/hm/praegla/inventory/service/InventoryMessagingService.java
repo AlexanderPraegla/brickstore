@@ -10,12 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @Transactional
-public class MessagingService {
+public class InventoryMessagingService {
 
     private final RabbitTemplate rabbitTemplate;
     private final Exchange exchange;
 
-    public MessagingService(RabbitTemplate rabbitTemplate, Exchange exchange) {
+    public InventoryMessagingService(RabbitTemplate rabbitTemplate, Exchange exchange) {
         this.rabbitTemplate = rabbitTemplate;
         this.exchange = exchange;
     }

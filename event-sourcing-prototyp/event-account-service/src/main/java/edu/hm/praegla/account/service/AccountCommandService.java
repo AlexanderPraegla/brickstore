@@ -1,5 +1,6 @@
 package edu.hm.praegla.account.service;
 
+import edu.hm.praegla.account.dto.CreateAccountDTO;
 import edu.hm.praegla.account.dto.CreditAccountDTO;
 import edu.hm.praegla.account.dto.DebitAccountDTO;
 import edu.hm.praegla.account.dto.UpdateAccountStatusDTO;
@@ -30,25 +31,23 @@ public class AccountCommandService {
     private final SequenceGeneratorService sequenceGenerator;
     private final AccountQueryService accountQueryService;
     private final EventRepository eventRepository;
-    private final MessagingService messagingService;
+    private final AccountMessagingService accountMessagingService;
 
-    public AccountCommandService(SequenceGeneratorService sequenceGenerator, AccountQueryService accountQueryService, EventRepository eventRepository, MessagingService messagingService) {
+    public AccountCommandService(SequenceGeneratorService sequenceGenerator, AccountQueryService accountQueryService, EventRepository eventRepository, AccountMessagingService accountMessagingService) {
         this.sequenceGenerator = sequenceGenerator;
         this.accountQueryService = accountQueryService;
         this.eventRepository = eventRepository;
-        this.messagingService = messagingService;
+        this.accountMessagingService = accountMessagingService;
     }
 
-    public Account createAccountCommand(Account createAccountDTO) {
+    public CreateAccountDTO createAccountCommand(CreateAccountDTO createAccountDTO) {
         long accountId = sequenceGenerator.generateSequence(Account.SEQUENCE_NAME);
         createAccountDTO.setId(accountId);
-        createAccountDTO.setBalance(new BigDecimal("0.00"));
-        createAccountDTO.setStatus(AccountStatus.CREATED);
 
         AccountCreatedEvent event = new AccountCreatedEvent(createAccountDTO.getId(), createAccountDTO);
         eventRepository.save(event);
 
-        messagingService.sendMessage(event);
+        accountMessagingService.sendMessage(event);
 
         return createAccountDTO;
     }
@@ -67,7 +66,7 @@ public class AccountCommandService {
 
         MoneyDebitedEvent event = new MoneyDebitedEvent(accountId, debitAccountDTO);
         eventRepository.save(event);
-        messagingService.sendMessage(event);
+        accountMessagingService.sendMessage(event);
         ;
     }
 
@@ -78,7 +77,7 @@ public class AccountCommandService {
         }
         MoneyCreditedEvent event = new MoneyCreditedEvent(accountId, creditAccountDTO);
         eventRepository.save(event);
-        messagingService.sendMessage(event);
+        accountMessagingService.sendMessage(event);
         ;
     }
 
@@ -86,14 +85,14 @@ public class AccountCommandService {
         Account account = accountQueryService.getAccount(accountId);
         Event<UpdateAccountStatusDTO> event = new AccountStatusUpdatedEvent(accountId, updateAccountStatusDTO);
         eventRepository.save(event);
-        messagingService.sendMessage(event);
+        accountMessagingService.sendMessage(event);
     }
 
     public void updateCustomer(long accountId, UpdateCustomerDTO updateCustomerDTO) {
         Account account = accountQueryService.getAccount(accountId);
         AccountCustomerUpdatedEvent event = new AccountCustomerUpdatedEvent(accountId, updateCustomerDTO);
         eventRepository.save(event);
-        messagingService.sendMessage(event);
+        accountMessagingService.sendMessage(event);
         ;
     }
 
@@ -101,7 +100,7 @@ public class AccountCommandService {
         Account account = accountQueryService.getAccount(accountId);
         AccountAddressUpdatedEvent event = new AccountAddressUpdatedEvent(accountId, updateAddressDTO);
         eventRepository.save(event);
-        messagingService.sendMessage(event);
+        accountMessagingService.sendMessage(event);
         ;
     }
 }

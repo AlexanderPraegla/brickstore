@@ -1,5 +1,6 @@
 package edu.hm.praegla.account.messaging;
 
+import edu.hm.praegla.account.dto.CreateAccountDTO;
 import edu.hm.praegla.account.dto.UpdateAddressDTO;
 import edu.hm.praegla.account.dto.UpdateCustomerDTO;
 import edu.hm.praegla.account.entity.Account;
@@ -18,6 +19,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Slf4j
@@ -36,7 +38,20 @@ public class AccountMessagingHandler {
     @RabbitHandler
     public void processAccountCreatedEvent(@Payload AccountCreatedEvent event) {
         log.info("Received AccountCreatedEvent: {}", event);
-        accountRepository.save(event.getPayload());
+        CreateAccountDTO payload = event.getPayload();
+        Account account = new Account();
+        account.setId(payload.getId());
+        account.setBalance(new BigDecimal("0.00"));
+        account.setStatus(AccountStatus.CREATED);
+
+        CreateAccountDTO.@NotNull AddressDTO addressDTO = payload.getAddress();
+        Account.Address address = new Account.Address();
+        address.setCity(addressDTO.getCity());
+        address.setStreet(addressDTO.getStreet());
+        address.setPostalCode(addressDTO.getPostalCode());
+        account.setAddress(address);
+
+        accountRepository.save(account);
     }
 
     @RabbitHandler

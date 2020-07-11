@@ -28,13 +28,13 @@ public class InventoryCommandService {
     private final EventRepository eventRepository;
     private final InventoryQueryService inventoryQueryService;
     private final SequenceGeneratorService sequenceGenerator;
-    private final MessagingService messagingService;
+    private final InventoryMessagingService inventoryMessagingService;
 
-    public InventoryCommandService(EventRepository eventRepository, InventoryQueryService inventoryQueryService, SequenceGeneratorService sequenceGenerator, MessagingService messagingService) {
+    public InventoryCommandService(EventRepository eventRepository, InventoryQueryService inventoryQueryService, SequenceGeneratorService sequenceGenerator, InventoryMessagingService inventoryMessagingService) {
         this.eventRepository = eventRepository;
         this.inventoryQueryService = inventoryQueryService;
         this.sequenceGenerator = sequenceGenerator;
-        this.messagingService = messagingService;
+        this.inventoryMessagingService = inventoryMessagingService;
     }
 
     public InventoryItem createInventoryItem(InventoryItem inventoryItem) {
@@ -44,7 +44,7 @@ public class InventoryCommandService {
         InventoryItemCreatedEvent event = new InventoryItemCreatedEvent(inventoryItemId, inventoryItem);
         eventRepository.save(event);
 
-        messagingService.sendMessage(event);
+        inventoryMessagingService.sendMessage(event);
 
         return inventoryItem;
     }
@@ -53,7 +53,7 @@ public class InventoryCommandService {
         InventoryItemUpdatedEvent event = new InventoryItemUpdatedEvent(inventoryItemId, inventoryItem);
         eventRepository.save(event);
 
-        messagingService.sendMessage(event);
+        inventoryMessagingService.sendMessage(event);
     }
 
     public void gatherInventoryItem(UpdateInventoryItemsStockDTO stockInventoryItemsDTOS) {
@@ -77,7 +77,7 @@ public class InventoryCommandService {
         InventoryItemGatheredEvent event = new InventoryItemGatheredEvent(item.getInventoryItemId(), item);
         eventRepository.save(event);
 
-        messagingService.sendMessage(event);
+        inventoryMessagingService.sendMessage(event);
     }
 
     public void stockUpInventoryItem(UpdateInventoryItemsStockDTO stockInventoryItemsDTOS) {
@@ -91,7 +91,7 @@ public class InventoryCommandService {
         InventoryItemStockedUpEvent event = new InventoryItemStockedUpEvent(inventoryItemId, item);
         eventRepository.save(event);
 
-        messagingService.sendMessage(event);
+        inventoryMessagingService.sendMessage(event);
     }
 
     public void updateStatus(long inventoryItemId, @Valid UpdateInventoryItemStatusDTO updateInventoryItemStatusDTO) {
@@ -99,6 +99,6 @@ public class InventoryCommandService {
 
         InventoryItemStatusUpdatedEvent event = new InventoryItemStatusUpdatedEvent(inventoryItemId, updateInventoryItemStatusDTO);
         eventRepository.save(event);
-        messagingService.sendMessage(event);
+        inventoryMessagingService.sendMessage(event);
     }
 }

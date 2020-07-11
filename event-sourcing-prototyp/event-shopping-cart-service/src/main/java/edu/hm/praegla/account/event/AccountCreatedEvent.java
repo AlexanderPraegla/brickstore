@@ -1,6 +1,7 @@
 package edu.hm.praegla.account.event;
 
 import edu.hm.praegla.account.dto.CreateAccountDTO;
+import edu.hm.praegla.shoppingcart.event.Event;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

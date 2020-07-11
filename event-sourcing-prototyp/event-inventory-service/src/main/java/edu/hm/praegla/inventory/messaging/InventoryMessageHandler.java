@@ -1,4 +1,4 @@
-package edu.hm.praegla.inventory.service;
+package edu.hm.praegla.inventory.messaging;
 
 import edu.hm.praegla.inventory.entity.InventoryItem;
 import edu.hm.praegla.inventory.entity.InventoryItemStatus;
@@ -7,8 +7,8 @@ import edu.hm.praegla.inventory.event.InventoryItemGatheredEvent;
 import edu.hm.praegla.inventory.event.InventoryItemStatusUpdatedEvent;
 import edu.hm.praegla.inventory.event.InventoryItemStockedUpEvent;
 import edu.hm.praegla.inventory.event.InventoryItemUpdatedEvent;
-import edu.hm.praegla.inventory.messaging.MessagingRabbitMqConfig;
 import edu.hm.praegla.inventory.repository.InventoryItemRepository;
+import edu.hm.praegla.inventory.service.InventoryQueryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
