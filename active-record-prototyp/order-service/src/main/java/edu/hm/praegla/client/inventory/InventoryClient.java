@@ -1,7 +1,7 @@
 package edu.hm.praegla.client.inventory;
 
-import edu.hm.praegla.client.inventory.dto.ChangeInventoryItemStockDTO;
 import edu.hm.praegla.client.inventory.dto.InventoryItemDTO;
+import edu.hm.praegla.client.inventory.dto.UpdateInventoryItemsStockDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @FeignClient(value = "inventory-service")
 public interface InventoryClient {
@@ -21,10 +20,10 @@ public interface InventoryClient {
     void health();
 
     @RequestMapping(method = RequestMethod.POST, value = "/inventory/gather")
-    void gather(@Valid @RequestBody List<ChangeInventoryItemStockDTO> changeInventoryItemStockDTO);
+    void gather(@Valid @RequestBody UpdateInventoryItemsStockDTO changeInventoryItemStockDTO);
 
     @RequestMapping(method = RequestMethod.POST, value = "/inventory/stockup")
-    void stockUp(@Valid @RequestBody List<ChangeInventoryItemStockDTO> changeInventoryItemStockDTO);
+    void stockUp(@Valid @RequestBody UpdateInventoryItemsStockDTO changeInventoryItemStockDTO);
 
 
 }

@@ -2,9 +2,10 @@ package edu.hm.praegla.order.service;
 
 import edu.hm.praegla.client.account.AccountClient;
 import edu.hm.praegla.client.account.dto.AccountDTO;
-import edu.hm.praegla.client.account.dto.ModifyAccountBalanceDTO;
+import edu.hm.praegla.client.account.dto.CreditAccountDTO;
+import edu.hm.praegla.client.account.dto.DebitAccountDTO;
 import edu.hm.praegla.client.inventory.InventoryClient;
-import edu.hm.praegla.client.inventory.dto.ChangeInventoryItemStockDTO;
+import edu.hm.praegla.client.inventory.dto.UpdateInventoryItemsStockDTO;
 import edu.hm.praegla.client.shoppingcart.dto.ShoppingCartDTO;
 import edu.hm.praegla.order.entity.Order;
 import edu.hm.praegla.order.entity.OrderItem;
@@ -60,16 +61,18 @@ public class OrderStatusChangeService {
     }
 
     protected void payOrder(Order order) {
-        accountClient.debitAccount(order.getAccountId(), new ModifyAccountBalanceDTO(order.getTotal()));
+        accountClient.debitAccount(order.getAccountId(), new DebitAccountDTO(order.getTotal()));
         order.setStatus(OrderStatus.PAYED);
         orderRepository.save(order);
     }
 
     protected void gatherOrderInventoryItems(Order order) {
-        List<ChangeInventoryItemStockDTO> items = order.getOrderItems().stream()
-                .map(orderItem -> new ChangeInventoryItemStockDTO(orderItem.getInventoryItemId(), orderItem.getQuantity()))
+        List<UpdateInventoryItemsStockDTO.Item> items = order.getOrderItems().stream()
+                .map(orderItem -> new UpdateInventoryItemsStockDTO.Item(orderItem.getInventoryItemId(), orderItem.getQuantity()))
                 .collect(Collectors.toList());
-        inventoryClient.gather(items);
+        UpdateInventoryItemsStockDTO updateInventoryItemsStockDTO = new UpdateInventoryItemsStockDTO();
+        updateInventoryItemsStockDTO.setItems(items);
+        inventoryClient.gather(updateInventoryItemsStockDTO);
         order.setStatus(OrderStatus.PROCESSED);
         orderRepository.save(order);
     }
@@ -98,17 +101,19 @@ public class OrderStatusChangeService {
     }
 
     protected void refundCancellation(Order order) {
-        accountClient.chargeAccount(order.getAccountId(), new ModifyAccountBalanceDTO(order.getTotal()));
+        accountClient.chargeAccount(order.getAccountId(), new CreditAccountDTO(order.getTotal()));
 
         order.setStatus(OrderStatus.CANCELED_AMOUNT_REFUNDED);
         orderRepository.save(order);
     }
 
     protected void restockCancellation(Order order) {
-        List<ChangeInventoryItemStockDTO> items = order.getOrderItems().stream()
-                .map(orderItem -> new ChangeInventoryItemStockDTO(orderItem.getInventoryItemId(), orderItem.getQuantity()))
+        List<UpdateInventoryItemsStockDTO.Item> items = order.getOrderItems().stream()
+                .map(orderItem -> new UpdateInventoryItemsStockDTO.Item(orderItem.getInventoryItemId(), orderItem.getQuantity()))
                 .collect(Collectors.toList());
-        inventoryClient.stockUp(items);
+        UpdateInventoryItemsStockDTO updateInventoryItemsStockDTO = new UpdateInventoryItemsStockDTO();
+        updateInventoryItemsStockDTO.setItems(items);
+        inventoryClient.stockUp(updateInventoryItemsStockDTO);
 
         order.setStatus(OrderStatus.CANCELED_STOCK_RESTORED);
         orderRepository.save(order);

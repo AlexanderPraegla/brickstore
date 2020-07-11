@@ -1,7 +1,8 @@
 package edu.hm.praegla.client.account;
 
 import edu.hm.praegla.client.account.dto.AccountDTO;
-import edu.hm.praegla.client.account.dto.ModifyAccountBalanceDTO;
+import edu.hm.praegla.client.account.dto.CreditAccountDTO;
+import edu.hm.praegla.client.account.dto.DebitAccountDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,9 +15,9 @@ public interface AccountClient {
     @RequestMapping(method = RequestMethod.GET, value = "accounts/{accountId}")
     AccountDTO getAccount(@PathVariable long accountId);
 
-    @RequestMapping(method = RequestMethod.POST, value = "accounts/{accountId}/charge")
-    void chargeAccount(@PathVariable long accountId, @RequestBody ModifyAccountBalanceDTO modifyAccountBalanceDTO);
+    @RequestMapping(method = RequestMethod.POST, value = "accounts/{accountId}/credit")
+    void chargeAccount(@PathVariable long accountId, @RequestBody CreditAccountDTO creditAccountDTO);
 
     @RequestMapping(method = RequestMethod.POST, value = "accounts/{accountId}/debit")
-    void debitAccount(@PathVariable long accountId, @RequestBody ModifyAccountBalanceDTO modifyAccountBalanceDTO);
+    void debitAccount(@PathVariable long accountId, @RequestBody DebitAccountDTO debitAccountDTO);
 }
