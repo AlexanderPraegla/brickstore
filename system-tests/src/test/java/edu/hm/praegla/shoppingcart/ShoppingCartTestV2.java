@@ -130,6 +130,23 @@ public class ShoppingCartTestV2 extends BrickstoreRestTest {
 
             assertThat(apiErrorDTO.getResponseCode()).isEqualTo("ITEM_NOT_ORDERABLE");
         }
+
+        @Test
+        public void shouldFailAddingOutOfStockItemToCart() {
+            testInventoryItem.setStock(0);
+            testInventoryItem.setStatus("OUT_OF_STOCK");
+            inventoryClient.updateInventoryItem(testInventoryItem);
+
+            int quantity = 1;
+
+            ApiErrorDTO apiErrorDTO = shoppingCartClient.addShoppingCartItem(testAccount.getId(), testInventoryItem.getId(), quantity)
+                    .then()
+                    .statusCode(400)
+                    .extract()
+                    .as(ApiErrorDTO.class);
+
+            assertThat(apiErrorDTO.getResponseCode()).isEqualTo("OUT_OF_STOCK");
+        }
     }
 
 
