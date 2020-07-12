@@ -57,14 +57,10 @@ public class CancelOrderTest extends BrickstoreRestTest {
     public void shouldCancelOrderWithStatusCreated() {
         accountClient.debitAccount(testAccount.getId(), new BigDecimal("150.00"));
 
-        ApiErrorDTO apiErrorDTO = orderClient.createOrderRequest(testAccount.getId())
-                .then()
-                .statusCode(400)
-                .extract()
-                .as(ApiErrorDTO.class);
-        OrderDTO testOrder = orderClient.getLatestOrderForAccount(testAccount.getId());
+
+        OrderDTO testOrder = orderClient.createOrder(testAccount.getId());
         assertThat(testOrder.getStatus()).isEqualTo("CREATED");
-        assertThat(apiErrorDTO.getResponseCode()).isEqualTo("BALANCE_INSUFFICIENT");
+        assertThat(testOrder.getErrorCode()).isEqualTo("BALANCE_INSUFFICIENT");
 
         InventoryItemDTO item = inventoryClient.getInventoryItemById(testInventoryItem.getId());
         assertThat(item.getStock()).isEqualTo(INITIAL_ITEM_STOCK);
@@ -81,18 +77,12 @@ public class CancelOrderTest extends BrickstoreRestTest {
     public void shouldCancelOrderWithStatusPayed() {
         inventoryClient.gatherInventoryItem(testInventoryItem.getId(), 2);
 
-        ApiErrorDTO apiErrorDTO = orderClient.createOrderRequest(testAccount.getId())
-                .then()
-                .statusCode(400)
-                .extract()
-                .as(ApiErrorDTO.class);
-
-        OrderDTO testOrder = orderClient.getLatestOrderForAccount(testAccount.getId());
+        OrderDTO testOrder = orderClient.createOrder(testAccount.getId());
         testAccount = accountClient.getAccountById(testAccount.getId());
         InventoryItemDTO item = inventoryClient.getInventoryItemById(testInventoryItem.getId());
 
         assertThat(testOrder.getStatus()).isEqualTo("PAYED");
-        assertThat(apiErrorDTO.getResponseCode()).isEqualTo("NOT_ENOUGH_STOCK");
+        assertThat(testOrder.getErrorCode()).isEqualTo("NOT_ENOUGH_STOCK");
         assertThat(testAccount.getBalance()).isEqualTo(new BigDecimal("100.05"));
         assertThat(item.getStock()).isEqualTo(3);
 

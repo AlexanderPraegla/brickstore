@@ -42,6 +42,7 @@ public class OrderController {
     public Order getOrder(@PathVariable long orderId) {
         return orderService.getOrder(orderId);
     }
+
     @GetMapping("account/{accountId}")
     public Iterable<Order> getOrdersForAccount(@PathVariable long accountId) {
         return orderService.getOrdersForAccount(accountId);

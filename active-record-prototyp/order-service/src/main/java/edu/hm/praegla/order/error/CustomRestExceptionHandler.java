@@ -41,8 +41,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
             errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
         }
 
-        edu.hm.praegla.order.error.ApiError apiError =
-                new edu.hm.praegla.order.error.ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
+        ApiError apiError =
+                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
         log.error(ex.getLocalizedMessage(), ex);
         return handleExceptionInternal(
                 ex, apiError, headers, apiError.getStatus(), request);
@@ -54,8 +54,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatus status, WebRequest request) {
         String error = ex.getParameterName() + " parameter is missing";
 
-        edu.hm.praegla.order.error.ApiError apiError =
-                new edu.hm.praegla.order.error.ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
+        ApiError apiError =
+                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
         log.error(ex.getLocalizedMessage(), ex);
         return new ResponseEntity<Object>(
                 apiError, new HttpHeaders(), apiError.getStatus());
@@ -70,8 +70,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
                     violation.getPropertyPath() + ": " + violation.getMessage());
         }
 
-        edu.hm.praegla.order.error.ApiError apiError =
-                new edu.hm.praegla.order.error.ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
+        ApiError apiError =
+                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
         log.error(ex.getLocalizedMessage(), ex);
         return new ResponseEntity<Object>(
                 apiError, new HttpHeaders(), apiError.getStatus());
@@ -83,8 +83,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         String error =
                 ex.getName() + " should be of type " + ex.getRequiredType().getName();
 
-        edu.hm.praegla.order.error.ApiError apiError =
-                new edu.hm.praegla.order.error.ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
+        ApiError apiError =
+                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
         log.error(ex.getLocalizedMessage(), ex);
         return new ResponseEntity<Object>(
                 apiError, new HttpHeaders(), apiError.getStatus());
@@ -102,7 +102,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
                 " method is not supported for this request. Supported methods are ");
         ex.getSupportedHttpMethods().forEach(t -> builder.append(t + " "));
 
-        edu.hm.praegla.order.error.ApiError apiError = new edu.hm.praegla.order.error.ApiError(HttpStatus.METHOD_NOT_ALLOWED,
+        ApiError apiError = new ApiError(HttpStatus.METHOD_NOT_ALLOWED,
                 ex.getLocalizedMessage(), builder.toString());
         log.error(ex.getLocalizedMessage(), ex);
         return new ResponseEntity<Object>(
@@ -120,16 +120,16 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
         builder.append(" media type is not supported. Supported media types are ");
         ex.getSupportedMediaTypes().forEach(t -> builder.append(t + ", "));
 
-        edu.hm.praegla.order.error.ApiError apiError = new edu.hm.praegla.order.error.ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE,
+        ApiError apiError = new ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE,
                 ex.getLocalizedMessage(), builder.substring(0, builder.length() - 2));
         log.error(ex.getLocalizedMessage(), ex);
         return new ResponseEntity<Object>(
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
 
-    @ExceptionHandler({edu.hm.praegla.order.error.BrickstoreException.class})
+    @ExceptionHandler({BrickstoreException.class})
     public ResponseEntity<Object> handleBrickstoreException(BrickstoreException ex, WebRequest request) {
-        edu.hm.praegla.order.error.ApiError apiError = new edu.hm.praegla.order.error.ApiError(
+        ApiError apiError = new ApiError(
                 ex.getHttpStatus(), ex.getLocalizedMessage(), "error occurred");
         apiError.setResponseCode(ex.getResponseCode());
         log.error(ex.getLocalizedMessage(), ex);
@@ -139,7 +139,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
-        edu.hm.praegla.order.error.ApiError apiError = new edu.hm.praegla.order.error.ApiError(
+        ApiError apiError = new ApiError(
                 HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error occurred");
         log.error(ex.getLocalizedMessage(), ex);
         return new ResponseEntity<Object>(
@@ -150,7 +150,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleHystrixRuntimeException(HystrixBadRequestException ex, WebRequest request) {
         if (ex instanceof FeignBadRequestException) {
             FeignBadRequestException feignBadRequestException = (FeignBadRequestException) ex;
-            edu.hm.praegla.order.error.ApiError apiError = new ApiError(
+            ApiError apiError = new ApiError(
                     feignBadRequestException.getHttpStatus(), ex.getLocalizedMessage(), "error occurred");
             apiError.setResponseCode(feignBadRequestException.getResponseCode());
             log.error(ex.getLocalizedMessage(), ex);

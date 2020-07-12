@@ -2,6 +2,7 @@ package edu.hm.praegla.order.service;
 
 import edu.hm.praegla.client.account.AccountClient;
 import edu.hm.praegla.client.account.dto.AccountDTO;
+import edu.hm.praegla.client.error.FeignBadRequestException;
 import edu.hm.praegla.client.shoppingcart.ShoppingCartClient;
 import edu.hm.praegla.client.shoppingcart.dto.ShoppingCartDTO;
 import edu.hm.praegla.order.entity.Order;
@@ -64,9 +65,22 @@ public class OrderService {
 
         Order order = orderStatusChangeService.saveOrder(account, shoppingCart);
 
-        orderStatusChangeService.payOrder(order);
+        try {
+            orderStatusChangeService.payOrder(order);
+        } catch (FeignBadRequestException e) {
+            log.error(e.getLocalizedMessage(), e);
+            order.setErrorCode(e.getResponseCode());
+            orderRepository.save(order);
+            return order;
+        }
 
-        orderStatusChangeService.gatherOrderInventoryItems(order);
+        try {
+            orderStatusChangeService.gatherOrderInventoryItems(order);
+        } catch (FeignBadRequestException e) {
+            order.setErrorCode(e.getResponseCode());
+            orderRepository.save(order);
+            return order;
+        }
 
         return order;
     }

@@ -16,4 +16,5 @@ public class OrderDTO {
     private String status;
     private long accountId;
     private ShippingAddressDTO shippingAddress;
+    private String errorCode;
 }

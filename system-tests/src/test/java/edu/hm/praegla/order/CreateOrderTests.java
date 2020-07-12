@@ -101,13 +101,9 @@ public class CreateOrderTests extends BrickstoreRestTest {
         inventoryItem.setStatus(inventoryStatus);
         inventoryClient.updateInventoryItem(inventoryItem);
 
-        ApiErrorDTO apiErrorDTO = orderClient.createOrderRequest(testAccount.getId())
-                .then()
-                .statusCode(400)
-                .extract()
-                .as(ApiErrorDTO.class);
-
-        assertThat(apiErrorDTO.getResponseCode()).isEqualTo(responseCode);
+        OrderDTO order = orderClient.createOrder(testAccount.getId());
+        assertThat(order.getStatus()).isEqualTo("PAYED");
+        assertThat(order.getErrorCode()).isEqualTo(responseCode);
     }
 
     @ParameterizedTest(name = "[{index}] Should fail with response code ''{0}'' for account balance={1} and status ''{2}''")
@@ -122,12 +118,8 @@ public class CreateOrderTests extends BrickstoreRestTest {
 
         accountClient.updateAccountStatus(testAccount.getId(), accountStatus);
 
-        ApiErrorDTO apiErrorDTO = orderClient.createOrderRequest(testAccount.getId())
-                .then()
-                .statusCode(400)
-                .extract()
-                .as(ApiErrorDTO.class);
-
-        assertThat(apiErrorDTO.getResponseCode()).isEqualTo(responseCode);
+        OrderDTO order = orderClient.createOrder(testAccount.getId());
+        assertThat(order.getStatus()).isEqualTo("CREATED");
+        assertThat(order.getErrorCode()).isEqualTo(responseCode);
     }
 }

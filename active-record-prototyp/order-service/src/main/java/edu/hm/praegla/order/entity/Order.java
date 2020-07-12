@@ -2,6 +2,7 @@ package edu.hm.praegla.order.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import edu.hm.praegla.order.error.ResponseCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -56,6 +57,9 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<OrderItem> orderItems;
+
+    @Enumerated(EnumType.STRING)
+    private ResponseCode errorCode;
 
     @PrePersist
     public void prePersist() {
