@@ -1,13 +1,20 @@
 package edu.hm.praegla.client;
 
 import edu.hm.praegla.ApiClient;
+import edu.hm.praegla.account.dto.AccountDTO;
 import edu.hm.praegla.order.dto.OrderDTO;
+import edu.hm.praegla.order.dto.OrderItemDTO;
+import edu.hm.praegla.order.dto.ShippingAddressDTO;
+import edu.hm.praegla.order.dto.UpdateOrderStatusDTO;
+import edu.hm.praegla.shoppingcart.dto.ShoppingCartDTO;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 
@@ -56,6 +63,28 @@ public class OrderClient extends ApiClient {
 
     }
 
+    public Response createOrderRequest(AccountDTO accountDTO, ShoppingCartDTO shoppingCart) {
+        OrderDTO orderDTO = createOrderDTO(accountDTO, shoppingCart);
+        return given(spec)
+                .when()
+                .body(orderDTO)
+                .put("orders/");
+
+    }
+
+    public OrderDTO createOrder(AccountDTO accountDTO, ShoppingCartDTO shoppingCart) {
+        OrderDTO orderDTO = createOrderDTO(accountDTO, shoppingCart);
+
+        String createdOrderLocation = given(spec)
+                .when()
+                .body(orderDTO)
+                .put("orders/")
+                .then()
+                .statusCode(201)
+                .extract().header("location");
+        return getResourceByLocationHeader(createdOrderLocation, OrderDTO.class);
+    }
+
     public OrderDTO createOrder(long accountId) {
         String createdOrderLocation = createOrderRequest(accountId)
                 .then()
@@ -65,17 +94,51 @@ public class OrderClient extends ApiClient {
     }
 
     public Response updateOrderStatus(long orderId, String status) {
-        Map<String, String> body = new HashMap<>();
-        body.put("status", status);
+        UpdateOrderStatusDTO updateOrderStatusDTO = new UpdateOrderStatusDTO(orderId, status);
         return given(spec)
                 .when()
-                .body(body)
-                .post("orders/{orderId}/status", orderId);
+                .body(updateOrderStatusDTO)
+                .post("orders/status", orderId);
     }
 
     public Response cancelOrder(long orderId) {
         return given(spec)
                 .when()
                 .post("orders/{orderId}/cancellation", orderId);
+    }
+
+    private OrderDTO createOrderDTO(AccountDTO accountDTO, ShoppingCartDTO shoppingCart) {
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setAccountId(accountDTO.getId());
+
+        ShippingAddressDTO shippingAddressDTO = new ShippingAddressDTO();
+        String firstname = accountDTO.getCustomer().getFirstname();
+        String lastname = accountDTO.getCustomer().getLastname();
+        shippingAddressDTO.setCustomerName(firstname + " " + lastname);
+        shippingAddressDTO.setCity(accountDTO.getAddress().getCity());
+        shippingAddressDTO.setStreet(accountDTO.getAddress().getStreet());
+        shippingAddressDTO.setPostalCode(accountDTO.getAddress().getPostalCode());
+        orderDTO.setShippingAddress(shippingAddressDTO);
+
+        List<OrderItemDTO> orderItems = shoppingCart.getLineItems()
+                .stream()
+                .map(lineItemDTO -> {
+                    OrderItemDTO orderItemDTO = new OrderItemDTO();
+                    orderItemDTO.setInventoryItemId(lineItemDTO.getInventoryItemId());
+                    orderItemDTO.setName(lineItemDTO.getName());
+                    orderItemDTO.setPrice(lineItemDTO.getPrice());
+                    orderItemDTO.setQuantity(lineItemDTO.getQuantity());
+                    orderItemDTO.setDeliveryTime(lineItemDTO.getDeliveryTime());
+                    return orderItemDTO;
+                })
+                .collect(Collectors.toList());
+        orderDTO.setOrderItems(orderItems);
+
+        BigDecimal total = orderItems.stream()
+                .map(item -> item.getPrice().multiply(new BigDecimal(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        orderDTO.setTotal(total);
+        return orderDTO;
     }
 }

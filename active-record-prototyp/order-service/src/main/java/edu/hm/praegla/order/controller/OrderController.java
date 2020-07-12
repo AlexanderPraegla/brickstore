@@ -1,8 +1,11 @@
 package edu.hm.praegla.order.controller;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import edu.hm.praegla.order.entity.Order;
 import edu.hm.praegla.order.entity.OrderStatus;
 import edu.hm.praegla.order.service.OrderService;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -56,25 +59,40 @@ public class OrderController {
         return ResponseEntity.created(uriComponents.toUri()).build();
     }
 
-    @PostMapping("/{orderId}/status")
-    public ResponseEntity<?> updateStatus(@PathVariable long orderId, @Valid @RequestBody UpdateOrderStatusDTO updateOrderStatusDTO) {
-        orderService.updateStatus(orderId, updateOrderStatusDTO.status);
+    @PostMapping("/status")
+    public ResponseEntity<?> updateStatus(@Valid @RequestBody UpdateOrderStatusDTO updateOrderStatusDTO) {
+        orderService.updateStatus(updateOrderStatusDTO.orderId, updateOrderStatusDTO.status);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{orderId}/cancellation")
-    public ResponseEntity<?> cancelOrder(@PathVariable long orderId) {
-        orderService.cancelOrder(orderId);
+    @PostMapping("/cancellation")
+    public ResponseEntity<?> cancelOrder(@Valid @RequestBody CancelOrderDTO cancelOrderDTO) {
+        orderService.cancelOrder(cancelOrderDTO.orderId);
         return ResponseEntity.ok().build();
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     private static class UpdateOrderStatusDTO {
+        @Min(1)
+        private long orderId;
         @NotNull
         public OrderStatus status;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     private static class CreateOrderDTO {
         @Min(1)
         public long accountId;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private static class CancelOrderDTO {
+
+        @Min(1)
+        private long accountId;
+        @Min(1)
+        private long orderId;
     }
 }

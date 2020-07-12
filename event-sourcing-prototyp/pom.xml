@@ -16,7 +16,7 @@
         <module>event-account-service</module>
         <module>event-inventory-service</module>
         <module>event-shopping-cart-service</module>
-        <!--        <module>event-order-service</module>-->
+                <module>event-order-service</module>
     </modules>
 
     <build>

@@ -1,12 +1,16 @@
 package edu.hm.praegla.inventory.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class UpdateInventoryItemsStockDTO {
 
     private List<@Valid Item> items;

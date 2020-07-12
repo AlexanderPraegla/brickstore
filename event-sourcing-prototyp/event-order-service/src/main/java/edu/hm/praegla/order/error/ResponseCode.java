@@ -1,0 +1,13 @@
+package edu.hm.praegla.order.error;
+
+public enum ResponseCode {
+    OUT_OF_STOCK,
+    NOT_ENOUGH_STOCK,
+    ITEM_NOT_ORDERABLE,
+    ENTITY_NOT_FOUND,
+    ORDER_NOT_CANCELABLE,
+    INVALID_ORDER_STATUS_CHANGE,
+    NO_ITEMS_IN_SHOPPING_CART,
+    ACCOUNT_DEACTIVATED,
+    BALANCE_INSUFFICIENT,
+}

@@ -6,6 +6,7 @@ import edu.hm.praegla.account.service.AccountQueryService;
 import edu.hm.praegla.inventory.entity.InventoryItem;
 import edu.hm.praegla.inventory.entity.InventoryItemStatus;
 import edu.hm.praegla.inventory.service.InventoryQueryService;
+import edu.hm.praegla.messaging.service.MessagingService;
 import edu.hm.praegla.shoppingcart.dto.AddShoppingCartItemDTO;
 import edu.hm.praegla.shoppingcart.dto.RemoveShoppingCartItemDTO;
 import edu.hm.praegla.shoppingcart.entity.ShoppingCart;
@@ -28,17 +29,17 @@ public class ShoppingCartCommandService {
     private final EventRepository eventRepository;
     private final InventoryQueryService inventoryQueryService;
     private final AccountQueryService accountQueryService;
-    private final ShoppingCartMessagingService shoppingCartMessagingService;
+    private final MessagingService messagingService;
     private final ShoppingCartQueryService shoppingCartQueryService;
 
     public ShoppingCartCommandService(EventRepository eventRepository,
                                       InventoryQueryService inventoryQueryService,
-                                      AccountQueryService accountQueryService, ShoppingCartMessagingService shoppingCartMessagingService,
+                                      AccountQueryService accountQueryService, MessagingService messagingService,
                                       ShoppingCartQueryService shoppingCartQueryService) {
         this.eventRepository = eventRepository;
         this.inventoryQueryService = inventoryQueryService;
         this.accountQueryService = accountQueryService;
-        this.shoppingCartMessagingService = shoppingCartMessagingService;
+        this.messagingService = messagingService;
         this.shoppingCartQueryService = shoppingCartQueryService;
     }
 
@@ -62,7 +63,7 @@ public class ShoppingCartCommandService {
 
         ItemAddedToShoppingCartEvent event = new ItemAddedToShoppingCartEvent(shoppingCart.getId(), addShoppingCartItemDTO);
         eventRepository.save(event);
-        shoppingCartMessagingService.sendMessage(event);
+        messagingService.sendMessage(event, "shopping.cart.item.added");
 
 
     }
@@ -72,6 +73,6 @@ public class ShoppingCartCommandService {
         RemoveShoppingCartItemDTO removeShoppingCartItemDTO = new RemoveShoppingCartItemDTO(accountId, lineItemId);
         ItemRemovedFromShoppingCartEvent event = new ItemRemovedFromShoppingCartEvent(shoppingCart.getId(), removeShoppingCartItemDTO);
         eventRepository.save(event);
-        shoppingCartMessagingService.sendMessage(event);
+        messagingService.sendMessage(event, "shopping.cart.item.removed");
     }
 }

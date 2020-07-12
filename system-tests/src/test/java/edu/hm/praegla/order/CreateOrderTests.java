@@ -14,6 +14,8 @@ import edu.hm.praegla.order.dto.OrderDTO;
 import edu.hm.praegla.parameterResolver.AddressParameterResolver;
 import edu.hm.praegla.parameterResolver.CustomerParameterResolver;
 import edu.hm.praegla.parameterResolver.InventoryItemParameterResolver;
+import edu.hm.praegla.shoppingcart.dto.ShoppingCartDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -23,8 +25,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -61,10 +65,24 @@ public class CreateOrderTests extends BrickstoreRestTest {
 
         shoppingCartClient.addShoppingCartItem(testAccount.getId(), inventoryItemOne.getId(), 2);
         shoppingCartClient.addShoppingCartItem(testAccount.getId(), inventoryItemTwo.getId(), 3);
+        ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCartByAccountId(testAccount.getId());
+        OrderDTO order = orderClient.createOrder(testAccount, shoppingCart);
 
-        OrderDTO order = orderClient.createOrder(testAccount.getId());
+        long orderId = order.getId();
+        await()
+                .atMost(Duration.ofSeconds(5))
+                .with()
+                .pollInterval(Duration.ofMillis(500))
+                .until(() -> {
+
+                    OrderDTO o = orderClient.getOrder(orderId);
+                    return StringUtils.equals(o.getStatus(), "PROCESSED");
+                });
+        order = orderClient.getOrder(order.getId());
 
         assertThat(order.getTotal()).isEqualTo(new BigDecimal("119.95"));
+        assertThat(order.getStatus()).isEqualTo("PROCESSED");
+        assertThat(order.getErrorCode()).isNullOrEmpty();
 
         AccountDTO account = accountClient.getAccountById(testAccount.getId());
         assertThat(account.getBalance()).isEqualTo(new BigDecimal("80.05"));
@@ -78,7 +96,8 @@ public class CreateOrderTests extends BrickstoreRestTest {
 
     @Test
     public void shouldFailCreateOrderWithAccountWithEmptyShoppingCart() {
-        ApiErrorDTO apiErrorDTO = orderClient.createOrderRequest(testAccount.getId())
+        ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCartByAccountId(testAccount.getId());
+        ApiErrorDTO apiErrorDTO = orderClient.createOrderRequest(testAccount, shoppingCart)
                 .then()
                 .statusCode(400)
                 .extract()
@@ -101,7 +120,22 @@ public class CreateOrderTests extends BrickstoreRestTest {
         inventoryItem.setStatus(inventoryStatus);
         inventoryClient.updateInventoryItem(inventoryItem);
 
-        OrderDTO order = orderClient.createOrder(testAccount.getId());
+
+        ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCartByAccountId(testAccount.getId());
+        OrderDTO order = orderClient.createOrder(testAccount, shoppingCart);
+
+        long orderId = order.getId();
+        await()
+                .atMost(Duration.ofSeconds(5))
+                .with()
+                .pollInterval(Duration.ofMillis(500))
+                .until(() -> {
+
+                    OrderDTO o = orderClient.getOrder(orderId);
+                    return StringUtils.isNotEmpty(o.getErrorCode());
+                });
+
+        order = orderClient.getOrder(order.getId());
         assertThat(order.getStatus()).isEqualTo("PAYED");
         assertThat(order.getErrorCode()).isEqualTo(responseCode);
     }
@@ -118,7 +152,21 @@ public class CreateOrderTests extends BrickstoreRestTest {
 
         accountClient.updateAccountStatus(testAccount.getId(), accountStatus);
 
-        OrderDTO order = orderClient.createOrder(testAccount.getId());
+        ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCartByAccountId(testAccount.getId());
+        OrderDTO order = orderClient.createOrder(testAccount, shoppingCart);
+        long orderId = order.getId();
+        await()
+                .atMost(Duration.ofSeconds(5))
+                .with()
+                .pollInterval(Duration.ofMillis(500))
+                .until(() -> {
+
+                    OrderDTO o = orderClient.getOrder(orderId);
+                    return StringUtils.isNotEmpty(o.getErrorCode());
+                });
+
+
+        order = orderClient.getOrder(order.getId());
         assertThat(order.getStatus()).isEqualTo("CREATED");
         assertThat(order.getErrorCode()).isEqualTo(responseCode);
     }

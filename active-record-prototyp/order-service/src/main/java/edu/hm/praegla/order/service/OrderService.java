@@ -65,6 +65,8 @@ public class OrderService {
 
         Order order = orderStatusChangeService.saveOrder(account, shoppingCart);
 
+        //TODO check total from shopping cart vs total from order
+
         try {
             orderStatusChangeService.payOrder(order);
         } catch (FeignBadRequestException e) {
