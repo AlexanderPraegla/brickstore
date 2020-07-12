@@ -10,7 +10,6 @@ import edu.hm.praegla.account.event.AccountStatusUpdatedEvent;
 import edu.hm.praegla.account.repository.AccountRepository;
 import edu.hm.praegla.account.service.AccountQueryService;
 import edu.hm.praegla.shoppingcart.entity.ShoppingCart;
-import edu.hm.praegla.shoppingcart.repository.EventRepository;
 import edu.hm.praegla.shoppingcart.repository.ShoppingCartRepository;
 import edu.hm.praegla.shoppingcart.service.SequenceGeneratorService;
 import lombok.extern.slf4j.Slf4j;
@@ -27,14 +26,12 @@ import javax.validation.constraints.NotNull;
 public class AccountMessageHandler {
 
     private final AccountRepository accountRepository;
-    private final EventRepository eventRepository;
     private final AccountQueryService accountQueryService;
     private final ShoppingCartRepository shoppingCartRepository;
     private final SequenceGeneratorService sequenceGeneratorService;
 
-    public AccountMessageHandler(AccountRepository accountRepository, EventRepository eventRepository, AccountQueryService accountQueryService, ShoppingCartRepository shoppingCartRepository, SequenceGeneratorService sequenceGeneratorService) {
+    public AccountMessageHandler(AccountRepository accountRepository, AccountQueryService accountQueryService, ShoppingCartRepository shoppingCartRepository, SequenceGeneratorService sequenceGeneratorService) {
         this.accountRepository = accountRepository;
-        this.eventRepository = eventRepository;
         this.accountQueryService = accountQueryService;
         this.shoppingCartRepository = shoppingCartRepository;
         this.sequenceGeneratorService = sequenceGeneratorService;
@@ -43,7 +40,6 @@ public class AccountMessageHandler {
     @RabbitHandler
     public void process(@Payload AccountCreatedEvent event) {
         log.info("Received AccountCreatedEvent: {}", event);
-        eventRepository.save(event);
 
         CreateAccountDTO payload = event.getPayload();
         @NotNull String customerName = createCustomerName(payload);
@@ -65,7 +61,6 @@ public class AccountMessageHandler {
     @RabbitHandler
     public void process(@Payload AccountCustomerUpdatedEvent event) {
         log.info("Received AccountCustomerUpdatedEvent: {}", event);
-        eventRepository.save(event);
 
         Account account = accountQueryService.getAccount(event.getAggregateId());
         UpdateCustomerDTO payload = event.getPayload();
@@ -77,7 +72,6 @@ public class AccountMessageHandler {
     @RabbitHandler
     public void process(@Payload AccountStatusUpdatedEvent event) {
         log.info("Received AccountStatusUpdatedEvent: {}", event);
-        eventRepository.save(event);
 
         Account account = accountQueryService.getAccount(event.getAggregateId());
         account.setStatus(event.getPayload().getStatus());

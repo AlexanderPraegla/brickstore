@@ -51,6 +51,13 @@ public class AccountMessagingHandler {
         address.setPostalCode(addressDTO.getPostalCode());
         account.setAddress(address);
 
+        CreateAccountDTO.@NotNull CustomerDTO customerDTO = payload.getCustomer();
+        Account.Customer customer = new Account.Customer();
+        customer.setFirstname(customerDTO.getFirstname());
+        customer.setLastname(customerDTO.getLastname());
+        customer.setEmail(customerDTO.getEmail());
+        account.setCustomer(customer);
+
         accountRepository.save(account);
     }
 

@@ -9,7 +9,6 @@ import edu.hm.praegla.inventory.event.InventoryItemStockedUpEvent;
 import edu.hm.praegla.inventory.event.InventoryItemUpdatedEvent;
 import edu.hm.praegla.inventory.repository.InventoryItemRepository;
 import edu.hm.praegla.shoppingcart.error.EntityNotFoundException;
-import edu.hm.praegla.shoppingcart.repository.EventRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -24,17 +23,14 @@ import javax.validation.constraints.Min;
 public class InventoryMessageHandler {
 
     private final InventoryItemRepository inventoryItemRepository;
-    private final EventRepository eventRepository;
 
-    public InventoryMessageHandler(InventoryItemRepository inventoryItemRepository, EventRepository eventRepository) {
+    public InventoryMessageHandler(InventoryItemRepository inventoryItemRepository) {
         this.inventoryItemRepository = inventoryItemRepository;
-        this.eventRepository = eventRepository;
     }
 
     @RabbitHandler
     public void processInventoryItemCreatedEvent(@Payload InventoryItemCreatedEvent event) {
         log.info("Received InventoryItemCreatedEvent: {}", event);
-        eventRepository.save(event);
 
         edu.hm.praegla.inventory.entity.InventoryItem payload = event.getPayload();
         inventoryItemRepository.save(payload);
@@ -43,7 +39,6 @@ public class InventoryMessageHandler {
     @RabbitHandler
     public void processInventoryItemStatusUpdatedEvent(@Payload InventoryItemStatusUpdatedEvent event) {
         log.info("Received InventoryItemStatusUpdatedEvent: {}", event);
-        eventRepository.save(event);
 
         InventoryItem inventoryItem = getInventoryItem(event.getAggregateId());
         inventoryItem.setStatus(event.getPayload().getStatus());
@@ -53,7 +48,6 @@ public class InventoryMessageHandler {
     @RabbitHandler
     public void processInventoryItemUpdatedEvent(@Payload InventoryItemUpdatedEvent event) {
         log.info("Received InventoryItemUpdatedEvent: {}", event);
-        eventRepository.save(event);
 
         InventoryItem inventoryItem = event.getPayload();
         inventoryItemRepository.save(inventoryItem);
@@ -62,7 +56,6 @@ public class InventoryMessageHandler {
     @RabbitHandler
     public void processInventoryItemStockedUpEvent(@Payload InventoryItemStockedUpEvent event) {
         log.info("Received InventoryItemStockedUpEvent: {}", event);
-        eventRepository.save(event);
 
         InventoryItem inventoryItem = getInventoryItem(event.getAggregateId());
         @Min(0) int currentStock = inventoryItem.getStock();
@@ -79,7 +72,6 @@ public class InventoryMessageHandler {
     @RabbitHandler
     public void processInventoryItemStockGatheredEvent(@Payload InventoryItemGatheredEvent event) {
         log.info("Received InventoryItemGatheredEvent: {}", event);
-        eventRepository.save(event);
 
         InventoryItem inventoryItem = getInventoryItem(event.getAggregateId());
         @Min(0) int currentStock = inventoryItem.getStock();
