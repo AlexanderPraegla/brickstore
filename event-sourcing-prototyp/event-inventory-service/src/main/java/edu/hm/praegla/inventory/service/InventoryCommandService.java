@@ -42,6 +42,7 @@ public class InventoryCommandService {
     }
 
     public InventoryItem createInventoryItem(InventoryItem inventoryItem) {
+        log.info("Create new inventory item: {}", inventoryItem);
         long inventoryItemId = sequenceGenerator.generateSequence(InventoryItem.SEQUENCE_NAME);
         inventoryItem.setId(inventoryItemId);
 
@@ -61,25 +62,23 @@ public class InventoryCommandService {
     }
 
     public void gatherInventoryItem(UpdateInventoryItemsStockDTO stockInventoryItemsDTOS) {
-        log.info("Start gathering inventory items");
         List<Event<?>> events = stockInventoryItemsDTOS.getItems()
                 .stream()
                 .map(this::gatherInventoryItem)
                 .collect(Collectors.toList());
         messagingService.sendMessages(events, "inventory.item.gathered");
-        log.info("Gathering inventory items finished");
     }
 
     private InventoryItemGatheredEvent gatherInventoryItem(UpdateInventoryItemsStockDTO.Item item) {
-        log.info("Gather inventory item with id={} and quantity={}", item.getInventoryItemId(), item.getQuantity());
+        log.info("Gather {} from inventory item with inventoryItemId={}", item.getQuantity(), item.getInventoryItemId());
         InventoryItem inventoryItem = inventoryQueryService.getInventoryItem(item.getInventoryItemId());
         @Min(0) int currentStock = inventoryItem.getStock();
 
         if (inventoryItem.getStatus() == InventoryItemStatus.OUT_OF_STOCK) {
-            log.info("Inventory item with id={} is out of stock", item.getInventoryItemId());
+            log.error("Inventory item with id={} is out of stock", item.getInventoryItemId());
             throw new OutOfStockException();
         } else if (inventoryItem.getStatus() == InventoryItemStatus.DEACTIVATED) {
-            log.info("Inventory item with id={} is deactivated", item.getInventoryItemId());
+            log.error("Inventory item with id={} is deactivated", item.getInventoryItemId());
             throw new ItemNotOrderableException();
         }
 
@@ -102,6 +101,7 @@ public class InventoryCommandService {
     }
 
     private InventoryItemStockedUpEvent stockUpInventoryItem(UpdateInventoryItemsStockDTO.Item item) {
+        log.info("Add {} to inventory item with inventoryItemId={}", item.getQuantity(), item.getInventoryItemId());
         long inventoryItemId = item.getInventoryItemId();
         //Necessary for API error response if entity does not exist
         InventoryItem inventoryItem = inventoryQueryService.getInventoryItem(inventoryItemId);
@@ -113,6 +113,7 @@ public class InventoryCommandService {
     }
 
     public void updateStatus(long inventoryItemId, @Valid UpdateInventoryItemStatusDTO updateInventoryItemStatusDTO) {
+        log.info("Update status of inventory item with inventoryItemId={} to {}", inventoryItemId, updateInventoryItemStatusDTO.getStatus());
         InventoryItem inventoryItem = inventoryQueryService.getInventoryItem(inventoryItemId);
 
         InventoryItemStatusUpdatedEvent event = new InventoryItemStatusUpdatedEvent(inventoryItemId, updateInventoryItemStatusDTO);

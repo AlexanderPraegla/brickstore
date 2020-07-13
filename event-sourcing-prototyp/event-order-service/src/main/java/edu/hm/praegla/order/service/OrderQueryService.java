@@ -23,6 +23,7 @@ public class OrderQueryService {
 
     @Transactional
     public List<Order> getOpenOrders() {
+        log.info("Get all open order");
         return orderRepository.findAll().stream()
                 .filter(order -> order.getStatus() != OrderStatus.SHIPPED || order.getStatus() != OrderStatus.DELIVERED)
                 .collect(Collectors.toList());
@@ -30,11 +31,13 @@ public class OrderQueryService {
 
     @Transactional
     public Order getOrder(long orderId) {
+        log.info("Get order with orderId={}", orderId);
         return orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException(Order.class, "id", orderId));
     }
 
     @Transactional
     public Iterable<Order> getOrdersForAccount(long accountId) {
+        log.info("Get all orders for accountId={}", accountId);
         return orderRepository.findAllByAccountId(accountId);
     }
 }

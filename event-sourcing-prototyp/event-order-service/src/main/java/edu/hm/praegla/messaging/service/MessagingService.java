@@ -21,6 +21,7 @@ public class MessagingService {
     }
 
     public void sendMessage(Event<?> event, String routingKey) {
+        log.info("Send {} to routingKey={}", event, routingKey);
         rabbitTemplate.convertAndSend(exchange.getName(), routingKey, event);
     }
 

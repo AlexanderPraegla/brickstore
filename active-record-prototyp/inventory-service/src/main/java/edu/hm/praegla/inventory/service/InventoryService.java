@@ -48,7 +48,7 @@ public class InventoryService {
     }
 
     public InventoryItem createInventoryItem(InventoryItem inventoryItem) {
-        log.info("Create new inventory item");
+        log.info("Create new inventory item: {}", inventoryItem);
         return inventoryItemRepository.save(inventoryItem);
     }
 
@@ -64,9 +64,7 @@ public class InventoryService {
     }
 
     public void gatherInventoryItem(UpdateInventoryItemsStockDTO changeInventoryItemStockDTOS) {
-        changeInventoryItemStockDTOS.getItems().forEach(item -> {
-            gatherInventoryItem(item.getInventoryItemId(), item.getQuantity());
-        });
+        changeInventoryItemStockDTOS.getItems().forEach(item -> gatherInventoryItem(item.getInventoryItemId(), item.getQuantity()));
     }
 
     private void gatherInventoryItem(long inventoryItemId, int quantity) {
@@ -75,12 +73,15 @@ public class InventoryService {
         @Min(0) int currentStock = inventoryItem.getStock();
 
         if (inventoryItem.getStatus() == InventoryItemStatus.OUT_OF_STOCK) {
+            log.error("Inventory item with id={} is out of stock", inventoryItemId);
             throw new OutOfStockException();
         } else if (inventoryItem.getStatus() == InventoryItemStatus.DEACTIVATED) {
+            log.error("Inventory item with id={} is deactivated", inventoryItemId);
             throw new ItemNotOrderableException();
         }
 
         if (currentStock < quantity) {
+            log.info("Quantity for inventory item with id={} is to low. Requested quantity: '{}'. Stocked quantity: '{}'", inventoryItemId, currentStock, quantity);
             throw new NotEnoughStockException();
         }
 
@@ -93,9 +94,7 @@ public class InventoryService {
     }
 
     public void stockUpInventoryItem(UpdateInventoryItemsStockDTO changeInventoryItemStockDTOS) {
-        changeInventoryItemStockDTOS.getItems().forEach(item -> {
-            stockUpInventoryItem(item.getInventoryItemId(), item.getQuantity());
-        });
+        changeInventoryItemStockDTOS.getItems().forEach(item -> stockUpInventoryItem(item.getInventoryItemId(), item.getQuantity()));
     }
 
     private void stockUpInventoryItem(long inventoryItemId, int quantity) {

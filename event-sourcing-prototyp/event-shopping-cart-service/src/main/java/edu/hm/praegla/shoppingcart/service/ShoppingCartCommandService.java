@@ -44,7 +44,13 @@ public class ShoppingCartCommandService {
     }
 
     public void addShoppingCartItem(AddShoppingCartItemDTO addShoppingCartItemDTO) {
+        long inventoryItemId = addShoppingCartItemDTO.getInventoryItemId();
         long accountId = addShoppingCartItemDTO.getAccountId();
+        int quantity = addShoppingCartItemDTO.getQuantity();
+
+        log.info("Add {} of inventoryItemId={} to shopping cart of account={}",
+                quantity, inventoryItemId, accountId);
+
         Account account = accountQueryService.getAccount(accountId);
         ShoppingCart shoppingCart = shoppingCartQueryService.getShoppingCart(accountId);
 
@@ -52,7 +58,7 @@ public class ShoppingCartCommandService {
             throw new AccountDeactivatedException();
         }
 
-        InventoryItem inventoryItem = inventoryQueryService.getInventoryItem(addShoppingCartItemDTO.getInventoryItemId());
+        InventoryItem inventoryItem = inventoryQueryService.getInventoryItem(inventoryItemId);
         if (inventoryItem.getStatus() == InventoryItemStatus.DEACTIVATED) {
             throw new ItemNotOrderableException();
         }
@@ -64,11 +70,10 @@ public class ShoppingCartCommandService {
         ItemAddedToShoppingCartEvent event = new ItemAddedToShoppingCartEvent(shoppingCart.getId(), addShoppingCartItemDTO);
         eventRepository.save(event);
         messagingService.sendMessage(event, "shopping.cart.item.added");
-
-
     }
 
     public void removeShoppingCartItem(long accountId, long lineItemId) {
+        log.info("Remove lineItemId={} from shopping cart of accountId={}", lineItemId, accountId);
         ShoppingCart shoppingCart = shoppingCartQueryService.getShoppingCart(accountId);
         RemoveShoppingCartItemDTO removeShoppingCartItemDTO = new RemoveShoppingCartItemDTO(accountId, lineItemId);
         ItemRemovedFromShoppingCartEvent event = new ItemRemovedFromShoppingCartEvent(shoppingCart.getId(), removeShoppingCartItemDTO);

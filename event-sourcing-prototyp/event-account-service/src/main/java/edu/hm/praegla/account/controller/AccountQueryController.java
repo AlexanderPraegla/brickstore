@@ -3,6 +3,7 @@ package edu.hm.praegla.account.controller;
 import edu.hm.praegla.account.entity.Account;
 import edu.hm.praegla.account.service.AccountQueryService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
@@ -28,11 +29,13 @@ public class AccountQueryController {
         return jwt.getTokenValue();
     }
 
+    @PreAuthorize("hasAuthority('admins')")
     @GetMapping
     public Iterable<Account> getAccounts() {
         return accountQueryService.getAccounts();
     }
 
+    @PreAuthorize("hasAuthority('customers')")
     @GetMapping("/{accountId}")
     public Account getAccount(@PathVariable long accountId) {
         return accountQueryService.getAccount(accountId);

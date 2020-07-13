@@ -50,6 +50,7 @@ public class OrderEventHandler {
             result = new OrderDebitAccountSucceededEvent(order.getId(), orderStatusUpdateDTO);
             messagingService.sendMessage(result, "order.account.debit.succeeded");
         } catch (BrickstoreException e) {
+            log.error("Debit {} for orderId={} and accountId={} failed", order.getTotal(), order.getId(), order.getAccountId(), e);
             OrderErrorDTO orderErrorDTO = new OrderErrorDTO(order.getId(), e.getResponseCode());
             result = new OrderDebitAccountFailedEvent(order.getId(), orderErrorDTO);
             messagingService.sendMessage(result, "order.account.debit.failed");
@@ -68,6 +69,7 @@ public class OrderEventHandler {
             result = new OrderRefundMoneySucceededEvent(order.getId(), orderStatusUpdateDTO);
             messagingService.sendMessage(result, "order.refund.money.succeeded");
         } catch (BrickstoreException e) {
+            log.error("Refund {} for orderId={} and accountId={} failed", order.getTotal(), order.getId(), order.getAccountId(), e);
             OrderErrorDTO orderErrorDTO = new OrderErrorDTO(order.getId(), e.getResponseCode());
             result = new OrderRefundMoneyFailedEvent(order.getId(), orderErrorDTO);
             messagingService.sendMessage(result, "order.refund.money.failed");

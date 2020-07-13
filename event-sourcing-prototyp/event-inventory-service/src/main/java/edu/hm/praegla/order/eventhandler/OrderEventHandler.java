@@ -52,7 +52,7 @@ public class OrderEventHandler {
             result = new OrderGatherInventoryItemSucceededEvent(order.getId(), orderStatusUpdateDTO);
             messagingService.sendMessage(result, "order.item.gather.succeeded");
         } catch (BrickstoreException e) {
-            log.error("Exception while gathering inventory items", e);
+            log.error("Gather inventory items for orderId={} failed", order.getId(), e);
             OrderErrorDTO orderErrorDTO = new OrderErrorDTO(order.getId(), e.getResponseCode());
             result = new OrderGatherInventoryItemFailedEvent(order.getId(), orderErrorDTO);
             messagingService.sendMessage(result, "order.item.gather.failed");
@@ -73,7 +73,7 @@ public class OrderEventHandler {
             result = new OrderReturnInventoryItemSucceededEvent(order.getId(), orderStatusUpdateDTO);
             messagingService.sendMessage(result, "order.item.return.succeeded");
         } catch (BrickstoreException e) {
-            log.error("Exception while gathering inventory items", e);
+            log.error("Return inventory items for orderId={} failed", order.getId(), e);
             OrderErrorDTO orderErrorDTO = new OrderErrorDTO(order.getId(), e.getResponseCode());
             result = new OrderReturnInventoryItemFailedEvent(order.getId(), orderErrorDTO);
             messagingService.sendMessage(result, "order.item.return.failed");

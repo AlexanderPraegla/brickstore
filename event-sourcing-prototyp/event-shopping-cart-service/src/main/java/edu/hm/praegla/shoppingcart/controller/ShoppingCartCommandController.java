@@ -4,6 +4,7 @@ import edu.hm.praegla.shoppingcart.dto.AddShoppingCartItemDTO;
 import edu.hm.praegla.shoppingcart.service.ShoppingCartCommandService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,12 +27,14 @@ public class ShoppingCartCommandController {
         this.shoppingCartCommandService = shoppingCartCommandService;
     }
 
+    @PreAuthorize("hasAuthority('customers')")
     @PutMapping
     public ResponseEntity<?> addShoppingCartItem(@Valid @RequestBody AddShoppingCartItemDTO addShoppingCartItemDTO) {
         shoppingCartCommandService.addShoppingCartItem(addShoppingCartItemDTO);
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasAuthority('customers')")
     @DeleteMapping("/{accountId}/items/{lineItemId}")
     public ResponseEntity<?> removeShoppingCartItem(@PathVariable long accountId, @PathVariable long lineItemId) {
         shoppingCartCommandService.removeShoppingCartItem(accountId, lineItemId);

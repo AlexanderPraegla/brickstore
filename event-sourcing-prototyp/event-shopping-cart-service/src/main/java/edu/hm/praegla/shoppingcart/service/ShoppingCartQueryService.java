@@ -37,6 +37,7 @@ public class ShoppingCartQueryService {
     }
 
     public List<ShoppingCartDTO> getShoppingCarts() {
+        log.info("Get all shopping carts");
         Iterable<ShoppingCart> all = shoppingCartRepository.findAll();
         return StreamSupport.stream(all.spliterator(), false)
                 .map(this::getShoppingCartDTO)
@@ -49,6 +50,7 @@ public class ShoppingCartQueryService {
     }
 
     public ShoppingCart getShoppingCart(long accountId) {
+        log.info("Get shopping cart for accountId={}", accountId);
         return shoppingCartRepository.findByAccountId(accountId).orElseThrow(() -> new EntityNotFoundException(ShoppingCart.class, "accountId", accountId));
     }
 

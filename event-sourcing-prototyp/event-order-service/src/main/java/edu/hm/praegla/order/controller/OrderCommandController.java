@@ -5,6 +5,7 @@ import edu.hm.praegla.order.entity.Order;
 import edu.hm.praegla.order.service.OrderCommandService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +30,7 @@ public class OrderCommandController {
         this.orderCommandService = orderCommandService;
     }
 
-
+    @PreAuthorize("hasAuthority('customers')")
     @PutMapping
     public ResponseEntity<?> createOrder(UriComponentsBuilder b, @Valid @RequestBody Order createOrder) {
         Order order = orderCommandService.createOrder(createOrder);
@@ -38,6 +39,7 @@ public class OrderCommandController {
         return ResponseEntity.created(uriComponents.toUri()).build();
     }
 
+    @PreAuthorize("hasAuthority('admins')")
     @PostMapping("/status")
     public ResponseEntity<?> updateStatus(@Valid @RequestBody OrderStatusUpdateDTO statusUpdateDTO) {
         orderCommandService.updateStatus(statusUpdateDTO);

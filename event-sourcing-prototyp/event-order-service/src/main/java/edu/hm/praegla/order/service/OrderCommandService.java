@@ -39,6 +39,7 @@ public class OrderCommandService {
 
 
     public Order createOrder(Order order) {
+        log.info("Create new order for accountId={}", order.getAccountId());
         long orderId = sequenceGeneratorService.generateSequence(Order.SEQUENCE_NAME);
         order.setId(orderId);
 
@@ -59,6 +60,7 @@ public class OrderCommandService {
     }
 
     public void updateStatus(OrderStatusUpdateDTO statusUpdateDTO) {
+        log.info("Update status for orderId={} to {}", statusUpdateDTO.getOrderId(), statusUpdateDTO.getStatus());
         OrderStatus newStatus = statusUpdateDTO.getStatus();
         Order order = orderQueryService.getOrder(statusUpdateDTO.getOrderId());
         order.setErrorCode(null);
@@ -86,6 +88,7 @@ public class OrderCommandService {
     }
 
     public void cancelOrder(long orderId) {
+        log.info("Cancel order with orderId={}", orderId);
         Order order = orderQueryService.getOrder(orderId);
 
         OrderStatus status = order.getStatus();

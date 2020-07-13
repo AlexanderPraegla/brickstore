@@ -23,11 +23,12 @@ public class MessagingService {
     }
 
     public void sendMessage(Event<?> event, String routingKey) {
+        log.info("Send {} to routingKey={}", event, routingKey);
         rabbitTemplate.convertAndSend(exchange.getName(), routingKey, event);
     }
 
     public void sendMessages(List<Event<?>> events, String routingKey) {
-        events.forEach(event -> rabbitTemplate.convertAndSend(exchange.getName(), routingKey, event));
+        events.forEach(event -> sendMessage(event, routingKey));
     }
 
 }
