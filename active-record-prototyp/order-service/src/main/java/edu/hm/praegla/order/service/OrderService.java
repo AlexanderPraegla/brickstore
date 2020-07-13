@@ -23,6 +23,7 @@ import java.util.stream.StreamSupport;
 
 @Slf4j
 @Service
+@Transactional
 public class OrderService {
 
     private final OrderRepository orderRepository;
@@ -37,24 +38,25 @@ public class OrderService {
         this.accountClient = accountClient;
     }
 
-    @Transactional
     public List<Order> getOpenOrders() {
+        log.info("Get all open order");
         return StreamSupport.stream(orderRepository.findAll().spliterator(), false)
                 .filter(order -> order.getStatus() != OrderStatus.SHIPPED || order.getStatus() != OrderStatus.DELIVERED)
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public Order getOrder(long orderId) {
+        log.info("Get order with orderId={}", orderId);
         return orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException(Order.class, "id", orderId));
     }
 
-    @Transactional
     public Iterable<Order> getOrdersForAccount(long accountId) {
+        log.info("Get all orders for accountId={}", accountId);
         return orderRepository.findAllByAccountId(accountId, Sort.by(Sort.Direction.DESC, "createdOn"));
     }
 
     public Order createOrder(long accountId) {
+        log.info("Create new order for accountId={}", accountId);
         ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCart(accountId);
 
         if (shoppingCart.getLineItems().size() == 0) {
@@ -88,6 +90,7 @@ public class OrderService {
     }
 
     public void updateStatus(long orderId, OrderStatus status) {
+        log.info("Update status for orderId={} to {}", orderId, status);
         Order order = getOrder(orderId);
         switch (status) {
             case PAYED:
@@ -108,6 +111,7 @@ public class OrderService {
     }
 
     public void cancelOrder(long orderId) {
+        log.info("Cancel order with orderId={}", orderId);
         Order order = getOrder(orderId);
         OrderStatus status = order.getStatus();
 

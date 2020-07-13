@@ -43,22 +43,25 @@ public class ShoppingCartService {
     }
 
     public List<ShoppingCartDTO> getShoppingCarts() {
+        log.info("Get all shopping carts");
         Iterable<ShoppingCart> all = shoppingCartRepository.findAll();
         return StreamSupport.stream(all.spliterator(), false)
                 .map(this::getShoppingCartDTO)
                 .collect(Collectors.toList());
     }
 
-    public ShoppingCartDTO getShoppingCart(long inventoryItemId) {
-        Optional<ShoppingCart> shoppingCartOptional = shoppingCartRepository.findByAccountId(inventoryItemId);
+    public ShoppingCartDTO getShoppingCart(long accountId) {
+        log.info("Get shopping cart for accountId={}", accountId);
+        Optional<ShoppingCart> shoppingCartOptional = shoppingCartRepository.findByAccountId(accountId);
         if (shoppingCartOptional.isPresent()) {
             return getShoppingCartDTO(shoppingCartOptional.get());
         } else {
-            throw new EntityNotFoundException(ShoppingCart.class, "account", inventoryItemId);
+            throw new EntityNotFoundException(ShoppingCart.class, "account", accountId);
         }
     }
 
     public void addShoppingCartItem(long accountId, long inventoryItemId, int quantity) {
+        log.info("Add {} of inventoryItemId={} to shopping cart of account={}", quantity, inventoryItemId, accountId);
         AccountDTO account = accountClient.getAccount(accountId);
         if (account.getStatus() == AccountStatus.DEACTIVATED) {
             throw new AccountDeactivatedException();
@@ -82,6 +85,7 @@ public class ShoppingCartService {
     }
 
     public void removeShoppingCartItem(long accountId, long lineItemId) {
+        log.info("Remove lineItemId={} from shopping cart of accountId={}", lineItemId, accountId);
         Optional<LineItem> lineItemOptional = lineItemRepository.findByIdAndAccountId(lineItemId, accountId);
         if (lineItemOptional.isPresent()) {
             LineItem lineItem = lineItemOptional.get();

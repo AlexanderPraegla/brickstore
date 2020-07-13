@@ -5,6 +5,7 @@ import edu.hm.praegla.shoppingcart.dto.ShoppingCartDTO;
 import edu.hm.praegla.shoppingcart.service.ShoppingCartService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,22 +30,26 @@ public class ShoppingCartController {
         this.shoppingCartService = shoppingCartService;
     }
 
+    @PreAuthorize("hasAuthority('admins')")
     @GetMapping
     public List<ShoppingCartDTO> getShoppingCarts() {
         return shoppingCartService.getShoppingCarts();
     }
 
+    @PreAuthorize("hasAuthority('customers')")
     @GetMapping("/{accountId}")
     public ShoppingCartDTO getShoppingCart(@PathVariable long accountId) {
         return shoppingCartService.getShoppingCart(accountId);
     }
 
+    @PreAuthorize("hasAuthority('customers')")
     @PutMapping
     public ResponseEntity<?> addShoppingCartItem(@Valid @RequestBody AddShoppingCartItemDTO addShoppingCartItemDTO) {
         shoppingCartService.addShoppingCartItem(addShoppingCartItemDTO.getAccountId(), addShoppingCartItemDTO.getInventoryItemId(), addShoppingCartItemDTO.getQuantity());
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasAuthority('customers')")
     @DeleteMapping("/{accountId}/items/{lineItemId}")
     public ResponseEntity<?> removeShoppingCartItem(@PathVariable long accountId, @PathVariable long lineItemId) {
         shoppingCartService.removeShoppingCartItem(accountId, lineItemId);

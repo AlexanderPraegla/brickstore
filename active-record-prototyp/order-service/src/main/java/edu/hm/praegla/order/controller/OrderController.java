@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,21 +37,25 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    @PreAuthorize("hasAuthority('admins')")
     @GetMapping("open")
     public List<Order> getOpenOrders() {
         return orderService.getOpenOrders();
     }
 
+    @PreAuthorize("hasAuthority('customers')")
     @GetMapping("/{orderId}")
     public Order getOrder(@PathVariable long orderId) {
         return orderService.getOrder(orderId);
     }
 
+    @PreAuthorize("hasAuthority('customers')")
     @GetMapping("account/{accountId}")
     public Iterable<Order> getOrdersForAccount(@PathVariable long accountId) {
         return orderService.getOrdersForAccount(accountId);
     }
 
+    @PreAuthorize("hasAuthority('customers')")
     @PutMapping
     public ResponseEntity<?> createOrder(UriComponentsBuilder b, @Valid @RequestBody CreateOrderDTO createOrderDTO) {
         Order order = orderService.createOrder(createOrderDTO.accountId);
@@ -59,12 +64,14 @@ public class OrderController {
         return ResponseEntity.created(uriComponents.toUri()).build();
     }
 
+    @PreAuthorize("hasAuthority('admins')")
     @PostMapping("/status")
     public ResponseEntity<?> updateStatus(@Valid @RequestBody OrderController.OrderStatusUpdateDTO orderStatusUpdateDTO) {
         orderService.updateStatus(orderStatusUpdateDTO.getOrderId(), orderStatusUpdateDTO.getStatus());
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasAuthority('customers')")
     @PostMapping("/{orderId}/cancellation")
     public ResponseEntity<?> cancelOrder(@PathVariable long orderId) {
         orderService.cancelOrder(orderId);

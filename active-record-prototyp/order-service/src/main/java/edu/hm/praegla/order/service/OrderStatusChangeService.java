@@ -41,6 +41,7 @@ public class OrderStatusChangeService {
     }
 
     protected Order saveOrder(AccountDTO account, ShoppingCartDTO shoppingCartDTO) {
+        log.info("Save new order for accountId={}", account.getId());
         Order order = new Order();
         order.setAccountId(account.getId());
         order.setStatus(OrderStatus.CREATED);
@@ -61,12 +62,14 @@ public class OrderStatusChangeService {
     }
 
     protected void payOrder(Order order) {
+        log.info("Pay order with orderId={} for accountId={}", order.getId(), order.getAccountId());
         accountClient.debitAccount(order.getAccountId(), new DebitAccountDTO(order.getTotal()));
         order.setStatus(OrderStatus.PAYED);
         orderRepository.save(order);
     }
 
     protected void gatherOrderInventoryItems(Order order) {
+        log.info("Gather inventory items for order with orderId={} for accountId={}", order.getId(), order.getAccountId());
         List<UpdateInventoryItemsStockDTO.Item> items = order.getOrderItems().stream()
                 .map(orderItem -> new UpdateInventoryItemsStockDTO.Item(orderItem.getInventoryItemId(), orderItem.getQuantity()))
                 .collect(Collectors.toList());
@@ -78,6 +81,7 @@ public class OrderStatusChangeService {
     }
 
     protected void shipOrder(Order order) {
+        log.info("Ship order with orderId={} for accountId={}", order.getId(), order.getAccountId());
         if (order.getStatus() != OrderStatus.PROCESSED) {
             throw new InvalidOrderStatusChangeException(order.getStatus(), OrderStatus.SHIPPED);
         }
@@ -87,6 +91,7 @@ public class OrderStatusChangeService {
     }
 
     protected void deliverOrder(Order order) {
+        log.info("Deliver order with orderId={} for accountId={}", order.getId(), order.getAccountId());
         if (order.getStatus() != OrderStatus.SHIPPED) {
             throw new InvalidOrderStatusChangeException(order.getStatus(), OrderStatus.DELIVERED);
         }
@@ -96,11 +101,13 @@ public class OrderStatusChangeService {
     }
 
     protected void createCancellation(Order order) {
+        log.info("Cancel order with orderId={} for accountId={}", order.getId(), order.getAccountId());
         order.setStatus(OrderStatus.CANCELED);
         orderRepository.save(order);
     }
 
     protected void refundCancellation(Order order) {
+        log.info("Refund total for order with orderId={} for accountId={}", order.getId(), order.getAccountId());
         accountClient.chargeAccount(order.getAccountId(), new CreditAccountDTO(order.getTotal()));
 
         order.setStatus(OrderStatus.CANCELED_AMOUNT_REFUNDED);
@@ -108,6 +115,7 @@ public class OrderStatusChangeService {
     }
 
     protected void restockCancellation(Order order) {
+        log.info("Return inventory items for order with orderId={} for accountId={}", order.getId(), order.getAccountId());
         List<UpdateInventoryItemsStockDTO.Item> items = order.getOrderItems().stream()
                 .map(orderItem -> new UpdateInventoryItemsStockDTO.Item(orderItem.getInventoryItemId(), orderItem.getQuantity()))
                 .collect(Collectors.toList());
@@ -120,6 +128,7 @@ public class OrderStatusChangeService {
     }
 
     protected void completeCancellation(Order order) {
+        log.info("Complete order cancellation for orderId={} and accountId={}", order.getId(), order.getAccountId());
         order.setStatus(OrderStatus.CANCELLATION_COMPLETED);
         orderRepository.save(order);
     }
