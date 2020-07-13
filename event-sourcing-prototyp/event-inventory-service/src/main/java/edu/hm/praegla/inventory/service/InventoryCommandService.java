@@ -4,7 +4,6 @@ import edu.hm.praegla.inventory.dto.UpdateInventoryItemStatusDTO;
 import edu.hm.praegla.inventory.dto.UpdateInventoryItemsStockDTO;
 import edu.hm.praegla.inventory.entity.InventoryItem;
 import edu.hm.praegla.inventory.entity.InventoryItemStatus;
-import edu.hm.praegla.inventory.error.BrickstoreException;
 import edu.hm.praegla.inventory.error.ItemNotOrderableException;
 import edu.hm.praegla.inventory.error.NotEnoughStockException;
 import edu.hm.praegla.inventory.error.OutOfStockException;
@@ -16,9 +15,6 @@ import edu.hm.praegla.inventory.event.InventoryItemStockedUpEvent;
 import edu.hm.praegla.inventory.event.InventoryItemUpdatedEvent;
 import edu.hm.praegla.inventory.repository.EventRepository;
 import edu.hm.praegla.messaging.service.MessagingService;
-import edu.hm.praegla.order.entity.Order;
-import edu.hm.praegla.order.event.OrderGatherInventoryItemFailedEvent;
-import edu.hm.praegla.order.event.OrderGatherInventoryItemSucceededEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,41 +61,55 @@ public class InventoryCommandService {
     }
 
     public void gatherInventoryItem(UpdateInventoryItemsStockDTO stockInventoryItemsDTOS) {
-        stockInventoryItemsDTOS.getItems().forEach(this::gatherInventoryItem);
+        log.info("Start gathering inventory items");
+        List<Event<?>> events = stockInventoryItemsDTOS.getItems()
+                .stream()
+                .map(this::gatherInventoryItem)
+                .collect(Collectors.toList());
+        messagingService.sendMessages(events, "inventory.item.gathered");
+        log.info("Gathering inventory items finished");
     }
 
-    private void gatherInventoryItem(UpdateInventoryItemsStockDTO.Item item) {
+    private InventoryItemGatheredEvent gatherInventoryItem(UpdateInventoryItemsStockDTO.Item item) {
+        log.info("Gather inventory item with id={} and quantity={}", item.getInventoryItemId(), item.getQuantity());
         InventoryItem inventoryItem = inventoryQueryService.getInventoryItem(item.getInventoryItemId());
         @Min(0) int currentStock = inventoryItem.getStock();
 
         if (inventoryItem.getStatus() == InventoryItemStatus.OUT_OF_STOCK) {
+            log.info("Inventory item with id={} is out of stock", item.getInventoryItemId());
             throw new OutOfStockException();
         } else if (inventoryItem.getStatus() == InventoryItemStatus.DEACTIVATED) {
+            log.info("Inventory item with id={} is deactivated", item.getInventoryItemId());
             throw new ItemNotOrderableException();
         }
 
         if (currentStock < item.getQuantity()) {
+            log.info("Quantity for inventory item with id={} is to low. Requested quantity: '{}'. Stocked quantity: '{}'", item.getInventoryItemId(), currentStock, item.getQuantity());
             throw new NotEnoughStockException();
         }
 
         InventoryItemGatheredEvent event = new InventoryItemGatheredEvent(item.getInventoryItemId(), item);
         eventRepository.save(event);
-
-        messagingService.sendMessage(event, "inventory.item.gathered");
+        return event;
     }
 
     public void stockUpInventoryItem(UpdateInventoryItemsStockDTO stockInventoryItemsDTOS) {
-        stockInventoryItemsDTOS.getItems().forEach(this::stockUpInventoryItem);
+        List<Event<?>> events = stockInventoryItemsDTOS.getItems()
+                .stream()
+                .map(this::stockUpInventoryItem)
+                .collect(Collectors.toList());
+        messagingService.sendMessages(events, "inventory.item.stockedUp");
     }
 
-    private void stockUpInventoryItem(UpdateInventoryItemsStockDTO.Item item) {
+    private InventoryItemStockedUpEvent stockUpInventoryItem(UpdateInventoryItemsStockDTO.Item item) {
         long inventoryItemId = item.getInventoryItemId();
+        //Necessary for API error response if entity does not exist
         InventoryItem inventoryItem = inventoryQueryService.getInventoryItem(inventoryItemId);
 
         InventoryItemStockedUpEvent event = new InventoryItemStockedUpEvent(inventoryItemId, item);
         eventRepository.save(event);
 
-        messagingService.sendMessage(event, "inventory.item.stockedUp");
+        return event;
     }
 
     public void updateStatus(long inventoryItemId, @Valid UpdateInventoryItemStatusDTO updateInventoryItemStatusDTO) {
@@ -110,26 +120,4 @@ public class InventoryCommandService {
         messagingService.sendMessage(event, "inventory.status.updated");
     }
 
-    public void gatherInventoryItemsForOrder(Order order) {
-        Event<?> event;
-        try {
-            List<UpdateInventoryItemsStockDTO.Item> items = order.getOrderItems()
-                    .stream()
-                    .map(orderItem -> {
-                        UpdateInventoryItemsStockDTO.Item item = new UpdateInventoryItemsStockDTO.Item();
-                        item.setInventoryItemId(orderItem.getInventoryItemId());
-                        item.setQuantity(orderItem.getQuantity());
-                        return item;
-                    })
-                    .collect(Collectors.toList());
-
-            gatherInventoryItem(new UpdateInventoryItemsStockDTO(items));
-            event = new OrderGatherInventoryItemSucceededEvent(order.getId(), order);
-            messagingService.sendMessage(event, "order.item.gather.succeeded");
-        } catch (BrickstoreException e) {
-            order.setErrorCode(e.getResponseCode());
-            event = new OrderGatherInventoryItemFailedEvent(order.getId(), order);
-            messagingService.sendMessage(event, "order.item.gather.failed");
-        }
-    }
 }

@@ -5,6 +5,7 @@ import edu.hm.praegla.account.dto.AccountDTO;
 import edu.hm.praegla.account.dto.AddressDTO;
 import edu.hm.praegla.account.dto.CustomerDTO;
 import edu.hm.praegla.client.AccountClient;
+import edu.hm.praegla.client.AwaitilityHelper;
 import edu.hm.praegla.client.InventoryClient;
 import edu.hm.praegla.client.OrderClient;
 import edu.hm.praegla.client.ShoppingCartClient;
@@ -14,6 +15,8 @@ import edu.hm.praegla.order.dto.OrderDTO;
 import edu.hm.praegla.parameterResolver.AddressParameterResolver;
 import edu.hm.praegla.parameterResolver.CustomerParameterResolver;
 import edu.hm.praegla.parameterResolver.InventoryItemParameterResolver;
+import edu.hm.praegla.shoppingcart.dto.ShoppingCartDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,8 +60,9 @@ public class CancelOrderTest extends BrickstoreRestTest {
     public void shouldCancelOrderWithStatusCreated() {
         accountClient.debitAccount(testAccount.getId(), new BigDecimal("150.00"));
 
+        ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCartByAccountId(testAccount.getId());
+        OrderDTO testOrder = orderClient.createOrderWithStatus(testAccount, shoppingCart, "CREATED");
 
-        OrderDTO testOrder = orderClient.createOrder(testAccount.getId());
         assertThat(testOrder.getStatus()).isEqualTo("CREATED");
         assertThat(testOrder.getErrorCode()).isEqualTo("BALANCE_INSUFFICIENT");
 
@@ -68,6 +72,13 @@ public class CancelOrderTest extends BrickstoreRestTest {
         orderClient.cancelOrder(testOrder.getId())
                 .then()
                 .statusCode(200);
+
+        long orderId = testOrder.getId();
+        AwaitilityHelper.wait(() -> {
+            OrderDTO o = orderClient.getOrder(orderId);
+            return StringUtils.equals(o.getStatus(), "CANCELLATION_COMPLETED");
+        });
+
         OrderDTO order = orderClient.getOrder(testOrder.getId());
         assertThat(order.getStatus()).isEqualTo("CANCELLATION_COMPLETED");
 
@@ -77,9 +88,11 @@ public class CancelOrderTest extends BrickstoreRestTest {
     public void shouldCancelOrderWithStatusPayed() {
         inventoryClient.gatherInventoryItem(testInventoryItem.getId(), 2);
 
-        OrderDTO testOrder = orderClient.createOrder(testAccount.getId());
-        testAccount = accountClient.getAccountById(testAccount.getId());
+        ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCartByAccountId(testAccount.getId());
+        OrderDTO testOrder = orderClient.createOrderWithStatus(testAccount, shoppingCart, "PAYED");
+
         InventoryItemDTO item = inventoryClient.getInventoryItemById(testInventoryItem.getId());
+        testAccount = accountClient.getAccountById(testAccount.getId());
 
         assertThat(testOrder.getStatus()).isEqualTo("PAYED");
         assertThat(testOrder.getErrorCode()).isEqualTo("NOT_ENOUGH_STOCK");
@@ -89,6 +102,13 @@ public class CancelOrderTest extends BrickstoreRestTest {
         orderClient.cancelOrder(testOrder.getId())
                 .then()
                 .statusCode(200);
+
+        long orderId = testOrder.getId();
+        AwaitilityHelper.wait(() -> {
+            OrderDTO o = orderClient.getOrder(orderId);
+            return StringUtils.equals(o.getStatus(), "CANCELLATION_COMPLETED");
+        });
+
         OrderDTO order = orderClient.getOrder(testOrder.getId());
         assertThat(order.getStatus()).isEqualTo("CANCELLATION_COMPLETED");
 
@@ -98,8 +118,8 @@ public class CancelOrderTest extends BrickstoreRestTest {
 
     @Test
     public void shouldCancelOrderWithStatusProcessed() {
-        OrderDTO testOrder = orderClient.createOrder(testAccount.getId());
-        assertThat(testOrder.getStatus()).isEqualTo("PROCESSED");
+        ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCartByAccountId(testAccount.getId());
+        OrderDTO testOrder = orderClient.createProcessedOrder(testAccount, shoppingCart);
 
         testAccount = accountClient.getAccountById(testAccount.getId());
         InventoryItemDTO item = inventoryClient.getInventoryItemById(testInventoryItem.getId());
@@ -109,6 +129,13 @@ public class CancelOrderTest extends BrickstoreRestTest {
         orderClient.cancelOrder(testOrder.getId())
                 .then()
                 .statusCode(200);
+
+        long orderId = testOrder.getId();
+        AwaitilityHelper.wait(() -> {
+            OrderDTO o = orderClient.getOrder(orderId);
+            return StringUtils.equals(o.getStatus(), "CANCELLATION_COMPLETED");
+        });
+
         OrderDTO order = orderClient.getOrder(testOrder.getId());
         assertThat(order.getStatus()).isEqualTo("CANCELLATION_COMPLETED");
 
@@ -120,7 +147,8 @@ public class CancelOrderTest extends BrickstoreRestTest {
 
     @Test
     public void shouldFailCancelOrderWithStatusShipped() {
-        OrderDTO testOrder = orderClient.createOrder(testAccount.getId());
+        ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCartByAccountId(testAccount.getId());
+        OrderDTO testOrder = orderClient.createProcessedOrder(testAccount, shoppingCart);
         orderClient.updateOrderStatus(testOrder.getId(), "SHIPPED");
 
         ApiErrorDTO apiErrorDTO = orderClient.cancelOrder(testOrder.getId())
@@ -134,7 +162,8 @@ public class CancelOrderTest extends BrickstoreRestTest {
 
     @Test
     public void shouldFailCancelOrderWithStatusDelivered() {
-        OrderDTO testOrder = orderClient.createOrder(testAccount.getId());
+        ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCartByAccountId(testAccount.getId());
+        OrderDTO testOrder = orderClient.createProcessedOrder(testAccount, shoppingCart);
         orderClient.updateOrderStatus(testOrder.getId(), "SHIPPED");
         orderClient.updateOrderStatus(testOrder.getId(), "DELIVERED");
 

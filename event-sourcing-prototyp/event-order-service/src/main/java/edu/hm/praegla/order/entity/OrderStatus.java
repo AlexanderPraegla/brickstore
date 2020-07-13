@@ -8,6 +8,14 @@ public enum OrderStatus {
     DELIVERED,
     CANCELED,
     CANCELED_AMOUNT_REFUNDED,
-    CANCELED_STOCK_RESTORED,
-    CANCELLATION_COMPLETED
+    CANCELLATION_COMPLETED;
+
+    public boolean isOneOf(OrderStatus... orderStatus) {
+        for (OrderStatus status : orderStatus) {
+            if (this == status) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

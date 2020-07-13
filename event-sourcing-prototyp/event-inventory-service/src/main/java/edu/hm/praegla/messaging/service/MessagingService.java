@@ -7,6 +7,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @Transactional
@@ -22,6 +24,10 @@ public class MessagingService {
 
     public void sendMessage(Event<?> event, String routingKey) {
         rabbitTemplate.convertAndSend(exchange.getName(), routingKey, event);
+    }
+
+    public void sendMessages(List<Event<?>> events, String routingKey) {
+        events.forEach(event -> rabbitTemplate.convertAndSend(exchange.getName(), routingKey, event));
     }
 
 }

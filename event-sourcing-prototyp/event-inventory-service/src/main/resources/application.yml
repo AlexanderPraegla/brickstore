@@ -6,6 +6,7 @@ spring:
       host: localhost
       port: 27017
       database: inventory-service-db
+      uri: mongodb://localhost:27017/inventory-service-db?replicaSet=rs0
   #      password: admin
   #      username: adminpwd
   #      authentication-database: auth_db
@@ -27,6 +28,7 @@ server:
 #logging:
 #  level:
 #    root: INFO
+#    org.springframework.data.mongodb: DEBUG
 #    org.springframework.web: INFO
 #    org.springframework.web.HttpLogging: DEBUG
 #    org.springframework.security: DEBUG

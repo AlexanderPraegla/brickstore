@@ -4,11 +4,12 @@ import edu.hm.praegla.ApiClient;
 import edu.hm.praegla.account.dto.AccountDTO;
 import edu.hm.praegla.order.dto.OrderDTO;
 import edu.hm.praegla.order.dto.OrderItemDTO;
+import edu.hm.praegla.order.dto.OrderStatusUpdateDTO;
 import edu.hm.praegla.order.dto.ShippingAddressDTO;
-import edu.hm.praegla.order.dto.UpdateOrderStatusDTO;
 import edu.hm.praegla.shoppingcart.dto.ShoppingCartDTO;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -94,11 +95,11 @@ public class OrderClient extends ApiClient {
     }
 
     public Response updateOrderStatus(long orderId, String status) {
-        UpdateOrderStatusDTO updateOrderStatusDTO = new UpdateOrderStatusDTO(orderId, status);
+        OrderStatusUpdateDTO updateOrderStatusDTO = new OrderStatusUpdateDTO(orderId, status);
         return given(spec)
                 .when()
                 .body(updateOrderStatusDTO)
-                .post("orders/status", orderId);
+                .post("orders/status");
     }
 
     public Response cancelOrder(long orderId) {
@@ -140,5 +141,31 @@ public class OrderClient extends ApiClient {
 
         orderDTO.setTotal(total);
         return orderDTO;
+    }
+
+    public OrderDTO createProcessedOrder(AccountDTO accountDTO, ShoppingCartDTO shoppingCart) {
+        OrderDTO testOrder = createOrder(accountDTO, shoppingCart);
+
+        long orderId = testOrder.getId();
+        AwaitilityHelper.wait(() -> {
+            OrderDTO o = getOrder(orderId);
+            return StringUtils.equals(o.getStatus(), "PROCESSED");
+        });
+
+        testOrder = getOrder(testOrder.getId());
+        return testOrder;
+    }
+
+    public OrderDTO createOrderWithStatus(AccountDTO accountDTO, ShoppingCartDTO shoppingCart, String status) {
+        OrderDTO testOrder = createOrder(accountDTO, shoppingCart);
+
+        long orderId = testOrder.getId();
+        AwaitilityHelper.wait(() -> {
+            OrderDTO o = getOrder(orderId);
+            return StringUtils.equals(o.getStatus(), status);
+        });
+
+        testOrder = getOrder(testOrder.getId());
+        return testOrder;
     }
 }

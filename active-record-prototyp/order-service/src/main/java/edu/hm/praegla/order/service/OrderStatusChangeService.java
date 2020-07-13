@@ -115,7 +115,7 @@ public class OrderStatusChangeService {
         updateInventoryItemsStockDTO.setItems(items);
         inventoryClient.stockUp(updateInventoryItemsStockDTO);
 
-        order.setStatus(OrderStatus.CANCELED_STOCK_RESTORED);
+        order.setStatus(OrderStatus.CANCELLATION_COMPLETED);
         orderRepository.save(order);
     }
 

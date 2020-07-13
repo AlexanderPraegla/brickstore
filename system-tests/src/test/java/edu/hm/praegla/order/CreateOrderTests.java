@@ -5,6 +5,7 @@ import edu.hm.praegla.account.dto.AccountDTO;
 import edu.hm.praegla.account.dto.AddressDTO;
 import edu.hm.praegla.account.dto.CustomerDTO;
 import edu.hm.praegla.client.AccountClient;
+import edu.hm.praegla.client.AwaitilityHelper;
 import edu.hm.praegla.client.InventoryClient;
 import edu.hm.praegla.client.OrderClient;
 import edu.hm.praegla.client.ShoppingCartClient;
@@ -25,10 +26,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigDecimal;
-import java.time.Duration;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.awaitility.Awaitility.await;
 
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -66,19 +66,7 @@ public class CreateOrderTests extends BrickstoreRestTest {
         shoppingCartClient.addShoppingCartItem(testAccount.getId(), inventoryItemOne.getId(), 2);
         shoppingCartClient.addShoppingCartItem(testAccount.getId(), inventoryItemTwo.getId(), 3);
         ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCartByAccountId(testAccount.getId());
-        OrderDTO order = orderClient.createOrder(testAccount, shoppingCart);
-
-        long orderId = order.getId();
-        await()
-                .atMost(Duration.ofSeconds(5))
-                .with()
-                .pollInterval(Duration.ofMillis(500))
-                .until(() -> {
-
-                    OrderDTO o = orderClient.getOrder(orderId);
-                    return StringUtils.equals(o.getStatus(), "PROCESSED");
-                });
-        order = orderClient.getOrder(order.getId());
+        OrderDTO order = orderClient.createProcessedOrder(testAccount, shoppingCart);
 
         assertThat(order.getTotal()).isEqualTo(new BigDecimal("119.95"));
         assertThat(order.getStatus()).isEqualTo("PROCESSED");
@@ -96,8 +84,11 @@ public class CreateOrderTests extends BrickstoreRestTest {
 
     @Test
     public void shouldFailCreateOrderWithAccountWithEmptyShoppingCart() {
-        ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCartByAccountId(testAccount.getId());
-        ApiErrorDTO apiErrorDTO = orderClient.createOrderRequest(testAccount, shoppingCart)
+        ShoppingCartDTO shoppingCartDTO = new ShoppingCartDTO();
+        shoppingCartDTO.setAccountId(testAccount.getId());
+        shoppingCartDTO.setCustomerName("Testing");
+        shoppingCartDTO.setLineItems(Collections.emptyList());
+        ApiErrorDTO apiErrorDTO = orderClient.createOrderRequest(testAccount, shoppingCartDTO)
                 .then()
                 .statusCode(400)
                 .extract()
@@ -125,15 +116,10 @@ public class CreateOrderTests extends BrickstoreRestTest {
         OrderDTO order = orderClient.createOrder(testAccount, shoppingCart);
 
         long orderId = order.getId();
-        await()
-                .atMost(Duration.ofSeconds(5))
-                .with()
-                .pollInterval(Duration.ofMillis(500))
-                .until(() -> {
-
-                    OrderDTO o = orderClient.getOrder(orderId);
-                    return StringUtils.isNotEmpty(o.getErrorCode());
-                });
+        AwaitilityHelper.wait(() -> {
+            OrderDTO o = orderClient.getOrder(orderId);
+            return StringUtils.isNotEmpty(o.getErrorCode());
+        });
 
         order = orderClient.getOrder(order.getId());
         assertThat(order.getStatus()).isEqualTo("PAYED");
@@ -154,20 +140,59 @@ public class CreateOrderTests extends BrickstoreRestTest {
 
         ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCartByAccountId(testAccount.getId());
         OrderDTO order = orderClient.createOrder(testAccount, shoppingCart);
+
         long orderId = order.getId();
-        await()
-                .atMost(Duration.ofSeconds(5))
-                .with()
-                .pollInterval(Duration.ofMillis(500))
-                .until(() -> {
-
-                    OrderDTO o = orderClient.getOrder(orderId);
-                    return StringUtils.isNotEmpty(o.getErrorCode());
-                });
-
+        AwaitilityHelper.wait(() -> {
+            OrderDTO o = orderClient.getOrder(orderId);
+            return StringUtils.isNotEmpty(o.getErrorCode());
+        });
 
         order = orderClient.getOrder(order.getId());
         assertThat(order.getStatus()).isEqualTo("CREATED");
         assertThat(order.getErrorCode()).isEqualTo(responseCode);
+    }
+
+    @ParameterizedTest(name = "[{index}] Should fail with response code ''{0}'' for inventory item status ''{2}''")
+    @CsvSource({"'NOT_ENOUGH_STOCK', 1, 'AVAILABLE', 5",
+            "'OUT_OF_STOCK', 0, 'OUT_OF_STOCK', 2",
+            "'ITEM_NOT_ORDERABLE', 10, 'DEACTIVATED', 3"})
+    public void shouldFailCreateOrderWithTwoItemCausedByInventoryItem(String responseCode, int stock, String inventoryStatus, int orderQuantity, InventoryItemDTO inventoryItemDTO, InventoryItemDTO inventoryItemFailingDTO) {
+        accountClient.chargeAccount(testAccount.getId(), new BigDecimal("2000.00"));
+
+        inventoryItemDTO.setPrice(new BigDecimal("20.99"));
+        InventoryItemDTO inventoryItem = inventoryClient.createInventoryItem(inventoryItemDTO);
+        inventoryItemFailingDTO.setPrice(new BigDecimal("45.99"));
+        InventoryItemDTO inventoryItemFailing = inventoryClient.createInventoryItem(inventoryItemFailingDTO);
+        shoppingCartClient.addShoppingCartItem(testAccount.getId(), inventoryItem.getId(), orderQuantity)
+                .then()
+                .statusCode(200);
+        shoppingCartClient.addShoppingCartItem(testAccount.getId(), inventoryItemFailing.getId(), orderQuantity)
+                .then()
+                .statusCode(200);
+
+        inventoryItemFailing.setStock(stock);
+        inventoryItemFailing.setPrice(new BigDecimal("19.99"));
+        inventoryItemFailing.setStatus(inventoryStatus);
+        inventoryClient.updateInventoryItem(inventoryItemFailing);
+
+
+        ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCartByAccountId(testAccount.getId());
+        OrderDTO order = orderClient.createOrder(testAccount, shoppingCart);
+
+        long orderId = order.getId();
+        AwaitilityHelper.wait(() -> {
+            OrderDTO o = orderClient.getOrder(orderId);
+            return StringUtils.isNotEmpty(o.getErrorCode());
+        });
+
+        order = orderClient.getOrder(order.getId());
+        assertThat(order.getStatus()).isEqualTo("PAYED");
+        assertThat(order.getErrorCode()).isEqualTo(responseCode);
+
+        inventoryItem = inventoryClient.getInventoryItemById(inventoryItem.getId());
+        inventoryItemFailing = inventoryClient.getInventoryItemById(inventoryItemFailing.getId());
+
+        assertThat(inventoryItem.getStock()).isEqualTo(5);
+        assertThat(inventoryItemFailing.getStock()).isEqualTo(stock);
     }
 }

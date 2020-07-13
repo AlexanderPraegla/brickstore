@@ -6,11 +6,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class OrderGatherInventoryItemFailedEvent extends Event<OrderErrorDTO> {
+public class OrderRefundMoneyFailedEvent extends Event<OrderErrorDTO> {
 
     private OrderErrorDTO payload;
 
-    public OrderGatherInventoryItemFailedEvent(long aggregateId, OrderErrorDTO payload) {
+    public OrderRefundMoneyFailedEvent(long aggregateId, OrderErrorDTO payload) {
         super(aggregateId);
         this.payload = payload;
     }

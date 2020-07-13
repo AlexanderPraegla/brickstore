@@ -1,20 +1,20 @@
 package edu.hm.praegla.order.event;
 
-import edu.hm.praegla.order.entity.Order;
+import edu.hm.praegla.order.dto.OrderStatusUpdateDTO;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class OrderDebitAccountSucceededEvent extends Event<Order> {
+public class OrderDebitAccountSucceededEvent extends Event<OrderStatusUpdateDTO> {
 
-    private Order payload;
+    private OrderStatusUpdateDTO payload;
 
-    public OrderDebitAccountSucceededEvent(long aggregateId, Order payload) {
+    public OrderDebitAccountSucceededEvent(long aggregateId, OrderStatusUpdateDTO payload) {
         super(aggregateId);
         this.payload = payload;
     }
 
     @Override
-    public Order getPayload() {
+    public OrderStatusUpdateDTO getPayload() {
         return payload;
     }
 }

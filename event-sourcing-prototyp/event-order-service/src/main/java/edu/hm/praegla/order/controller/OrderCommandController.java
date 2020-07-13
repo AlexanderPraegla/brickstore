@@ -1,6 +1,6 @@
 package edu.hm.praegla.order.controller;
 
-import edu.hm.praegla.order.dto.UpdateOrderStatusDTO;
+import edu.hm.praegla.order.dto.OrderStatusUpdateDTO;
 import edu.hm.praegla.order.entity.Order;
 import edu.hm.praegla.order.service.OrderCommandService;
 import lombok.extern.slf4j.Slf4j;
@@ -39,8 +39,8 @@ public class OrderCommandController {
     }
 
     @PostMapping("/status")
-    public ResponseEntity<?> updateStatus(@Valid @RequestBody UpdateOrderStatusDTO updateOrderStatusDTO) {
-        orderCommandService.updateStatus(updateOrderStatusDTO);
+    public ResponseEntity<?> updateStatus(@Valid @RequestBody OrderStatusUpdateDTO statusUpdateDTO) {
+        orderCommandService.updateStatus(statusUpdateDTO);
         return ResponseEntity.ok().build();
     }
 

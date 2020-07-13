@@ -29,13 +29,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ExtendWith({AddressParameterResolver.class, CustomerParameterResolver.class, InventoryItemParameterResolver.class})
-public class ShoppingCartTestV2 extends BrickstoreRestTest {
+public class ShoppingCartTest extends BrickstoreRestTest {
 
     private final ShoppingCartClient shoppingCartClient;
     private final AccountClient accountClient;
     private final InventoryClient inventoryClient;
 
-    public ShoppingCartTestV2() {
+    public ShoppingCartTest() {
         shoppingCartClient = new ShoppingCartClient(spec);
         accountClient = new AccountClient(spec);
         inventoryClient = new InventoryClient(spec);

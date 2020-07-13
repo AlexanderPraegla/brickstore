@@ -49,8 +49,10 @@ public class MessagingRabbitMqConfig {
     @Bean
     public Declarables orderTopicBindings(@Qualifier(ORDER_TO_INVENTORY_QUEUE) Queue queue, TopicExchange exchange) {
         return new Declarables(queue, exchange,
-                BindingBuilder.bind(queue).to(exchange).with("order.canceled"),
-                BindingBuilder.bind(queue).to(exchange).with("payed.order")
+                BindingBuilder.bind(queue).to(exchange).with("payed.order"),
+                BindingBuilder.bind(queue).to(exchange).with("payed.order.retry"),
+                BindingBuilder.bind(queue).to(exchange).with("refunded.order"),
+                BindingBuilder.bind(queue).to(exchange).with("refunded.order.retry")
         );
     }
 

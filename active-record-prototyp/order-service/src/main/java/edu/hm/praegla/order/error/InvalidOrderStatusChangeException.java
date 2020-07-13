@@ -10,7 +10,7 @@ public class InvalidOrderStatusChangeException extends BrickstoreException {
     }
 
     private static String generateMessage(OrderStatus from, OrderStatus to) {
-        return String.format("The order status change from '%s' to '%s' is invalid", from, to);
+        return String.format("The order status change from '%s' to '%s' is not allowed", from, to);
     }
 
 

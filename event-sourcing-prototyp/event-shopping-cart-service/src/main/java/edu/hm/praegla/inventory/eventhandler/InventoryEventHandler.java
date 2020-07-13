@@ -33,7 +33,7 @@ public class InventoryEventHandler {
     public void processInventoryItemCreatedEvent(@Payload InventoryItemCreatedEvent event) {
         log.info("Received InventoryItemCreatedEvent: {}", event);
 
-        edu.hm.praegla.inventory.entity.InventoryItem payload = event.getPayload();
+        InventoryItem payload = event.getPayload();
         inventoryItemRepository.save(payload);
     }
 

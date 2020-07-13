@@ -7,11 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class OrderGatherInventoryItemSucceededEvent extends Event<OrderStatusUpdateDTO> {
+public class OrderReturnInventoryItemSucceededEvent extends Event<OrderStatusUpdateDTO> {
 
     private OrderStatusUpdateDTO payload;
 
-    public OrderGatherInventoryItemSucceededEvent(long aggregateId, OrderStatusUpdateDTO payload) {
+    public OrderReturnInventoryItemSucceededEvent(long aggregateId, OrderStatusUpdateDTO payload) {
         super(aggregateId);
         this.payload = payload;
     }

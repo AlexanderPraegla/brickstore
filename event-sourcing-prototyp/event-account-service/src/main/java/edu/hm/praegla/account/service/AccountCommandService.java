@@ -10,7 +10,6 @@ import edu.hm.praegla.account.entity.Account;
 import edu.hm.praegla.account.entity.AccountStatus;
 import edu.hm.praegla.account.error.AccountDeactivatedException;
 import edu.hm.praegla.account.error.BalanceInsufficientException;
-import edu.hm.praegla.account.error.BrickstoreException;
 import edu.hm.praegla.account.event.AccountAddressUpdatedEvent;
 import edu.hm.praegla.account.event.AccountCreatedEvent;
 import edu.hm.praegla.account.event.AccountCustomerUpdatedEvent;
@@ -20,9 +19,6 @@ import edu.hm.praegla.account.event.MoneyCreditedEvent;
 import edu.hm.praegla.account.event.MoneyDebitedEvent;
 import edu.hm.praegla.account.repository.EventRepository;
 import edu.hm.praegla.messaging.service.MessagingService;
-import edu.hm.praegla.order.entity.Order;
-import edu.hm.praegla.order.event.OrderDebitAccountFailedEvent;
-import edu.hm.praegla.order.event.OrderDebitAccountSucceededEvent;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -103,18 +99,5 @@ public class AccountCommandService {
         AccountAddressUpdatedEvent event = new AccountAddressUpdatedEvent(accountId, updateAddressDTO);
         eventRepository.save(event);
         messagingService.sendMessage(event, "account.address.updated");
-    }
-
-    public void debitAccountForOrder(Order order) {
-        Event<?> event = null;
-        try {
-            debitMoneyFromAccount(order.getAccountId(), new DebitAccountDTO(order.getTotal()));
-            event = new OrderDebitAccountSucceededEvent(order.getId(), order);
-            messagingService.sendMessage(event, "order.account.debited.succeeded");
-        } catch (BrickstoreException e) {
-            order.setErrorCode(e.getResponseCode());
-            event = new OrderDebitAccountFailedEvent(order.getId(), order);
-            messagingService.sendMessage(event, "order.account.debit.failed");
-        }
     }
 }

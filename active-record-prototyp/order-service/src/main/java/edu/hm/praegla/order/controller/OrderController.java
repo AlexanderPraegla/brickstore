@@ -60,23 +60,24 @@ public class OrderController {
     }
 
     @PostMapping("/status")
-    public ResponseEntity<?> updateStatus(@Valid @RequestBody UpdateOrderStatusDTO updateOrderStatusDTO) {
-        orderService.updateStatus(updateOrderStatusDTO.orderId, updateOrderStatusDTO.status);
+    public ResponseEntity<?> updateStatus(@Valid @RequestBody OrderController.OrderStatusUpdateDTO orderStatusUpdateDTO) {
+        orderService.updateStatus(orderStatusUpdateDTO.getOrderId(), orderStatusUpdateDTO.getStatus());
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/cancellation")
-    public ResponseEntity<?> cancelOrder(@Valid @RequestBody CancelOrderDTO cancelOrderDTO) {
-        orderService.cancelOrder(cancelOrderDTO.orderId);
+    @PostMapping("/{orderId}/cancellation")
+    public ResponseEntity<?> cancelOrder(@PathVariable long orderId) {
+        orderService.cancelOrder(orderId);
         return ResponseEntity.ok().build();
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    private static class UpdateOrderStatusDTO {
+    @Data
+    private static class OrderStatusUpdateDTO {
         @Min(1)
         private long orderId;
         @NotNull
-        public OrderStatus status;
+        private OrderStatus status;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

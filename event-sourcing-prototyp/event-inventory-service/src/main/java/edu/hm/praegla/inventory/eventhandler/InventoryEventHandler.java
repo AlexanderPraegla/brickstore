@@ -1,4 +1,4 @@
-package edu.hm.praegla.inventory.service;
+package edu.hm.praegla.inventory.eventhandler;
 
 import edu.hm.praegla.inventory.entity.InventoryItem;
 import edu.hm.praegla.inventory.entity.InventoryItemStatus;
@@ -8,6 +8,7 @@ import edu.hm.praegla.inventory.event.InventoryItemStatusUpdatedEvent;
 import edu.hm.praegla.inventory.event.InventoryItemStockedUpEvent;
 import edu.hm.praegla.inventory.event.InventoryItemUpdatedEvent;
 import edu.hm.praegla.inventory.repository.InventoryItemRepository;
+import edu.hm.praegla.inventory.service.InventoryQueryService;
 import edu.hm.praegla.messaging.config.MessagingRabbitMqConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -20,12 +21,12 @@ import javax.validation.constraints.Min;
 @Slf4j
 @Component
 @RabbitListener(queues = MessagingRabbitMqConfig.INVENTORY_QUEUE)
-public class InventoryMessageHandler {
+public class InventoryEventHandler {
 
     private final InventoryItemRepository inventoryItemRepository;
     private final InventoryQueryService inventoryQueryService;
 
-    public InventoryMessageHandler(InventoryItemRepository inventoryItemRepository, InventoryQueryService inventoryQueryService) {
+    public InventoryEventHandler(InventoryItemRepository inventoryItemRepository, InventoryQueryService inventoryQueryService) {
         this.inventoryItemRepository = inventoryItemRepository;
         this.inventoryQueryService = inventoryQueryService;
     }

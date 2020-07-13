@@ -1,6 +1,7 @@
 package edu.hm.praegla.order.dto;
 
-import edu.hm.praegla.order.entity.OrderStatus;
+import edu.hm.praegla.inventory.error.ResponseCode;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,9 +10,10 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
-public class UpdateOrderStatusDTO {
+@AllArgsConstructor
+public class OrderErrorDTO {
     @Min(1)
     private long orderId;
     @NotNull
-    private OrderStatus status;
+    private ResponseCode errorCode;
 }

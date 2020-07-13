@@ -1,23 +1,23 @@
 package edu.hm.praegla.order.event;
 
 import edu.hm.praegla.inventory.event.Event;
-import edu.hm.praegla.order.entity.Order;
+import edu.hm.praegla.order.dto.OrderErrorDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class OrderGatherInventoryItemFailedEvent extends Event<Order> {
+public class OrderGatherInventoryItemFailedEvent extends Event<OrderErrorDTO> {
 
-    private Order payload;
+    private OrderErrorDTO payload;
 
-    public OrderGatherInventoryItemFailedEvent(long aggregateId, Order payload) {
+    public OrderGatherInventoryItemFailedEvent(long aggregateId, OrderErrorDTO payload) {
         super(aggregateId);
         this.payload = payload;
     }
 
     @Override
-    public Order getPayload() {
+    public OrderErrorDTO getPayload() {
         return payload;
     }
 }

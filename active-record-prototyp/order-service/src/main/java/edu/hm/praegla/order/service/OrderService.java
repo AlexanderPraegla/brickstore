@@ -10,7 +10,7 @@ import edu.hm.praegla.order.entity.OrderStatus;
 import edu.hm.praegla.order.error.EntityNotFoundException;
 import edu.hm.praegla.order.error.InvalidOrderStatusChangeException;
 import edu.hm.praegla.order.error.NoItemsInShoppingCartException;
-import edu.hm.praegla.order.error.OrderNotCancelabelException;
+import edu.hm.praegla.order.error.OrderNotCancelableException;
 import edu.hm.praegla.order.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
@@ -112,18 +112,21 @@ public class OrderService {
         OrderStatus status = order.getStatus();
 
         if (status == OrderStatus.SHIPPED || status == OrderStatus.DELIVERED) {
-            throw new OrderNotCancelabelException();
+            throw new OrderNotCancelableException();
         }
+        order.setErrorCode(null);
 
-        orderStatusChangeService.createCancellation(order);
         switch (status) {
             case CREATED:
-            case CANCELED_STOCK_RESTORED:
+                orderStatusChangeService.completeCancellation(order);
                 break;
             case PAYED:
+                orderStatusChangeService.createCancellation(order);
                 orderStatusChangeService.refundCancellation(order);
+                orderStatusChangeService.restockCancellation(order);
                 break;
             case PROCESSED:
+                orderStatusChangeService.createCancellation(order);
             case CANCELED:
                 orderStatusChangeService.refundCancellation(order);
                 orderStatusChangeService.restockCancellation(order);
@@ -132,9 +135,8 @@ public class OrderService {
                 orderStatusChangeService.restockCancellation(order);
                 break;
             case CANCELLATION_COMPLETED:
-                return;
+                break;
         }
-        orderStatusChangeService.completeCancellation(order);
     }
 
 }
