@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import edu.hm.praegla.order.entity.Order;
 import edu.hm.praegla.order.entity.OrderStatus;
 import edu.hm.praegla.order.service.OrderService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping(value = "orders", produces = {"application/json"})
+@Tag(name = "Order API")
 public class OrderController {
 
     private final OrderService orderService;

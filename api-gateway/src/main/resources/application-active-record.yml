@@ -2,13 +2,23 @@
 spring:
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
       routes:
-        - id: account-service
+        - id: openapi
+          uri: http://localhost:${server.port}
+          predicates:
+            - Path=/v3/api-docs/**
+          filters:
+            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+        - id: accounts-service
           uri: lb://account-service/
           predicates:
             - Path=/accounts/**,/events/**
           filters:
             - RewritePath=/accounts/actuator/(?<segment>.*), /actuator/$\{segment}
+            - RewritePath=/accounts/v3/api-docs, /v3/api-docs
             #            - TokenRelay=
             - RemoveRequestHeader=Cookie
         - id: inventory-service
@@ -17,21 +27,24 @@ spring:
             - Path=/inventory/**
           filters:
             - RewritePath=/inventory/actuator/(?<segment>.*), /actuator/$\{segment}
+            - RewritePath=/inventory/v3/api-docs, /v3/api-docs
             #            - TokenRelay=
             - RemoveRequestHeader=Cookie
-        - id: shopping-cart-service
+        - id: shopping-carts-service
           uri: lb://shopping-cart-service/
           predicates:
             - Path=/shopping-carts/**
           filters:
             - RewritePath=/shopping-carts/actuator/(?<segment>.*), /actuator/$\{segment}
+            - RewritePath=/shopping-carts/v3/api-docs, /v3/api-docs
             #            - TokenRelay=
             - RemoveRequestHeader=Cookie
-        - id: order-service
+        - id: orders-service
           uri: lb://order-service/
           predicates:
             - Path=/orders/**
           filters:
             - RewritePath=/orders/actuator/(?<segment>.*), /actuator/$\{segment}
+            - RewritePath=/orders/v3/api-docs, /v3/api-docs
             #            - TokenRelay=
             - RemoveRequestHeader=Cookie

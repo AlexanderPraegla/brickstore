@@ -7,6 +7,7 @@ import edu.hm.praegla.account.dto.UpdateAccountStatusDTO;
 import edu.hm.praegla.account.dto.UpdateAddressDTO;
 import edu.hm.praegla.account.dto.UpdateCustomerDTO;
 import edu.hm.praegla.account.service.AccountCommandService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,6 +27,7 @@ import javax.validation.Valid;
 @Validated
 @RestController
 @RequestMapping(value = "accounts", produces = {"application/json"})
+@Tag(name = "Account command API")
 public class AccountCommandController {
 
     private final AccountCommandService accountCommandService;

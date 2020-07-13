@@ -5,6 +5,7 @@ import edu.hm.praegla.account.entity.AccountStatus;
 import edu.hm.praegla.account.entity.Address;
 import edu.hm.praegla.account.entity.Customer;
 import edu.hm.praegla.account.service.AccountService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,6 +30,7 @@ import java.math.BigDecimal;
 @Validated
 @RestController
 @RequestMapping(value = "accounts", produces = {"application/json"})
+@Tag(name = "Account API")
 public class AccountController {
 
     private final AccountService accountService;

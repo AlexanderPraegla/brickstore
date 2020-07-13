@@ -2,6 +2,7 @@ package edu.hm.praegla.inventory.controller;
 
 import edu.hm.praegla.inventory.entity.InventoryItem;
 import edu.hm.praegla.inventory.service.InventoryQueryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequestMapping(value = "inventory", produces = {"application/json"})
+@Tag(name = "Inventory query API")
 public class InventoryQueryController {
 
     private final InventoryQueryService inventoryQueryService;

@@ -4,6 +4,7 @@ import edu.hm.praegla.inventory.dto.UpdateInventoryItemStatusDTO;
 import edu.hm.praegla.inventory.dto.UpdateInventoryItemsStockDTO;
 import edu.hm.praegla.inventory.entity.InventoryItem;
 import edu.hm.praegla.inventory.service.InventoryCommandService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +24,7 @@ import javax.validation.Valid;
 @Validated
 @RestController
 @RequestMapping(value = "inventory", produces = {"application/json"})
+@Tag(name = "Inventory command API")
 public class InventoryCommandController {
 
     private final InventoryCommandService inventoryCommandService;

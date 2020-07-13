@@ -20,11 +20,6 @@ eureka:
 server:
   port: 8103
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
 feign:
   hystrix:
     enabled: true
@@ -34,6 +29,13 @@ feign:
         connectTimeout: 5000
         readTimeout: 5000
         loggerLevel: basic
+
+springdoc:
+  swagger-ui:
+    operations-sorter: method
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  show-actuator: true
 
 #logging:
 #  level:

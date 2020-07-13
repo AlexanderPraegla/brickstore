@@ -2,6 +2,7 @@ package edu.hm.praegla.account.controller;
 
 import edu.hm.praegla.account.entity.Account;
 import edu.hm.praegla.account.service.AccountQueryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequestMapping(value = "accounts", produces = {"application/json"})
+@Tag(name = "Account query API")
 public class AccountQueryController {
 
     private final AccountQueryService accountQueryService;

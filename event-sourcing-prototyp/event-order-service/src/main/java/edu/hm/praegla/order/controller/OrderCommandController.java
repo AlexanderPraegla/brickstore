@@ -3,6 +3,7 @@ package edu.hm.praegla.order.controller;
 import edu.hm.praegla.order.dto.OrderStatusUpdateDTO;
 import edu.hm.praegla.order.entity.Order;
 import edu.hm.praegla.order.service.OrderCommandService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +23,7 @@ import javax.validation.Valid;
 @Validated
 @RestController
 @RequestMapping(value = "orders", produces = {"application/json"})
+@Tag(name = "Order command API")
 public class OrderCommandController {
 
     private final OrderCommandService orderCommandService;

@@ -28,6 +28,12 @@ server:
 #    org.springframework.web.HttpLogging: DEBUG
 #    org.springframework.security: DEBUG
 #    org.springframework.security.oauth2: DEBUG
+springdoc:
+  swagger-ui:
+    operations-sorter: method
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  show-actuator: true
 
 
 

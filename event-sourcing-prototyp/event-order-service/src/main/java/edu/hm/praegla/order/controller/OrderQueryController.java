@@ -2,6 +2,7 @@ package edu.hm.praegla.order.controller;
 
 import edu.hm.praegla.order.entity.Order;
 import edu.hm.praegla.order.service.OrderQueryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +17,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping(value = "orders", produces = {"application/json"})
+@Tag(name = "Order query API")
 public class OrderQueryController {
 
     private final OrderQueryService orderQueryService;

@@ -1,4 +1,4 @@
-package edu.hm.praegla.account;
+package edu.hm.praegla;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,8 +10,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class AccountServiceApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AccountServiceApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(AccountServiceApplication.class, args);
+    }
 
 }

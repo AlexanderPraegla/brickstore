@@ -2,6 +2,7 @@ package edu.hm.praegla.shoppingcart.controller;
 
 import edu.hm.praegla.shoppingcart.dto.ShoppingCartDTO;
 import edu.hm.praegla.shoppingcart.service.ShoppingCartQueryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +17,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping(value = "shopping-carts", produces = {"application/json"})
+@Tag(name = "Shopping cart query API")
 public class ShoppingCartQueryController {
 
     private final ShoppingCartQueryService shoppingCartQueryService;

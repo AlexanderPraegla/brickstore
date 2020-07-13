@@ -2,6 +2,7 @@ package edu.hm.praegla.account.controller;
 
 import edu.hm.praegla.account.event.Event;
 import edu.hm.praegla.account.service.AccountQueryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequestMapping(value = "events", produces = {"application/json"})
+@Tag(name = "Event API")
 public class EventController {
 
     private final AccountQueryService accountQueryService;
