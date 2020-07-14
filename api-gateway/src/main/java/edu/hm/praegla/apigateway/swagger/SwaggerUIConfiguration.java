@@ -1,35 +1,29 @@
 package edu.hm.praegla.apigateway.swagger;
 
-import org.springdoc.core.GroupedOpenApi;
-import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Configuration
 public class SwaggerUIConfiguration {
 
     private final RouteDefinitionLocator locator;
 
+//    private String authUrl = "http://localhost:8080/oauth/";
+
     public SwaggerUIConfiguration(RouteDefinitionLocator locator) {
         this.locator = locator;
     }
 
-    @Bean
-    public List<GroupedOpenApi> apis() {
-        List<RouteDefinition> definitions = locator.getRouteDefinitions().collectList().block();
-        assert definitions != null;
-        return definitions.stream()
-                .filter(routeDefinition -> routeDefinition.getId().matches(".*-service"))
-                .map(routeDefinition -> {
-                    String name = routeDefinition.getId().replaceAll("-service", "");
-                    return GroupedOpenApi.builder()
-                            .pathsToMatch("/" + name + "/**")
-                            .setGroup(name)
-                            .build();
-                }).collect(Collectors.toList());
-    }
+
+//    @Bean
+//    public List<GroupedOpenApi> apis() {
+//        List<GroupedOpenApi> groups = new ArrayList<>();
+//        List<RouteDefinition> definitions = locator.getRouteDefinitions().collectList().block();
+//        definitions.stream().filter(routeDefinition -> routeDefinition.getId().matches(".*-service")).forEach(routeDefinition -> {
+//            String name = routeDefinition.getId().replaceAll("-service", "");
+//            GroupedOpenApi.builder().pathsToMatch("/" + name + "/**").setGroup(name).build();
+//        });
+//        return groups;
+//    }
+
 }

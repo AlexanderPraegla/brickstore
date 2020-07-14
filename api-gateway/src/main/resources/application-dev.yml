@@ -7,11 +7,15 @@ spring:
           enabled: true
       routes:
         - id: openapi
-          uri: http://localhost:${server.port}
+          uri: http://localhost:8080
           predicates:
             - Path=/v3/api-docs/**
           filters:
             - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+        - id: OAuth
+          uri: http://localhost:8095
+          predicates:
+            - Path=/oauth/**
         - id: accounts-service
           uri: lb://account-service/
           predicates:

@@ -36,8 +36,6 @@ feign:
         loggerLevel: basic
 
 springdoc:
-  swagger-ui:
-    operations-sorter: method
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
   show-actuator: true

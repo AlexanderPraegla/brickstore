@@ -30,7 +30,7 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/v3/api-docs")
+                .antMatchers("/v3/api-docs", "/actuator/**")
                 .permitAll()
                 .and()
                 .authorizeRequests()

@@ -19,10 +19,28 @@ management:
       exposure:
         include: "*"
 
-#logging:
-#  level:
-#    root: INFO
-#    org.springframework.web: INFO
+springdoc:
+  swagger-ui:
+    operations-sorter: method
+    oauth:
+      client-id: brickstore-client-prototype
+      client-secret: clientSecretPrototype
+    urls[0]:
+      name: accounts
+      url: /accounts/v3/api-docs
+    urls[1]:
+      name: inventory
+      url: /inventory/v3/api-docs
+    urls[2]:
+      name: orders
+      url: /orders/v3/api-docs
+    urls[3]:
+      name: shopping cart
+      url: /shopping-carts/v3/api-docs
+logging:
+  level:
+    #    root: INFO
+    org.springframework.web: trace
 #    org.springframework.web.HttpLogging: DEBUG
 #    org.springframework.security: DEBUG
 #    org.springframework.security.oauth2: DEBUG
