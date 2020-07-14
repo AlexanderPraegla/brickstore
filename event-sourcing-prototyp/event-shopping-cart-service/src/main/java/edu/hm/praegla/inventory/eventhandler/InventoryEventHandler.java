@@ -1,5 +1,6 @@
 package edu.hm.praegla.inventory.eventhandler;
 
+import edu.hm.praegla.error.EntityNotFoundException;
 import edu.hm.praegla.inventory.entity.InventoryItem;
 import edu.hm.praegla.inventory.entity.InventoryItemStatus;
 import edu.hm.praegla.inventory.event.InventoryItemCreatedEvent;
@@ -9,7 +10,6 @@ import edu.hm.praegla.inventory.event.InventoryItemStockedUpEvent;
 import edu.hm.praegla.inventory.event.InventoryItemUpdatedEvent;
 import edu.hm.praegla.inventory.repository.InventoryItemRepository;
 import edu.hm.praegla.messaging.config.MessagingRabbitMqConfig;
-import edu.hm.praegla.shoppingcart.error.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;

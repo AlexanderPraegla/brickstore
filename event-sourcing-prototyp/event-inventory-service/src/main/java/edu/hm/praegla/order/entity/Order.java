@@ -1,7 +1,7 @@
 package edu.hm.praegla.order.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import edu.hm.praegla.inventory.error.ResponseCode;
+import edu.hm.praegla.error.ResponseCode;
 import lombok.Data;
 
 import java.math.BigDecimal;

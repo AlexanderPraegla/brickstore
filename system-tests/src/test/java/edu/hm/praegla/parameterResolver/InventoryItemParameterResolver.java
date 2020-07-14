@@ -25,7 +25,7 @@ public class InventoryItemParameterResolver implements ParameterResolver {
         return ret;
     }
 
-    public static InventoryItemDTO[] VALID_INVENTORY_ITEMS = {
+    public static final InventoryItemDTO[] VALID_INVENTORY_ITEMS = {
             new InventoryItemDTO(2, "Harry Potter - Große Halle", new BigDecimal("299.99"), "AVAILABLE", 5),
             new InventoryItemDTO(1, "Harry Potter - Hagrids Hütte", new BigDecimal("49.99"), "AVAILABLE", 5),
             new InventoryItemDTO(1, "Harry Potter - Peitschende Weide", new BigDecimal("59.99"), "AVAILABLE", 5),

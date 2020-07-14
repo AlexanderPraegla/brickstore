@@ -19,7 +19,6 @@ spring:
           filters:
             - RewritePath=/accounts/actuator/(?<segment>.*), /actuator/$\{segment}
             - RewritePath=/accounts/v3/api-docs, /v3/api-docs
-            #            - TokenRelay=
             - RemoveRequestHeader=Cookie
         - id: inventory-service
           uri: lb://inventory-service/
@@ -28,7 +27,6 @@ spring:
           filters:
             - RewritePath=/inventory/actuator/(?<segment>.*), /actuator/$\{segment}
             - RewritePath=/inventory/v3/api-docs, /v3/api-docs
-            #            - TokenRelay=
             - RemoveRequestHeader=Cookie
         - id: shopping-carts-service
           uri: lb://shopping-cart-service/
@@ -37,7 +35,6 @@ spring:
           filters:
             - RewritePath=/shopping-carts/actuator/(?<segment>.*), /actuator/$\{segment}
             - RewritePath=/shopping-carts/v3/api-docs, /v3/api-docs
-            #            - TokenRelay=
             - RemoveRequestHeader=Cookie
         - id: orders-service
           uri: lb://order-service/
@@ -46,5 +43,4 @@ spring:
           filters:
             - RewritePath=/orders/actuator/(?<segment>.*), /actuator/$\{segment}
             - RewritePath=/orders/v3/api-docs, /v3/api-docs
-            #            - TokenRelay=
             - RemoveRequestHeader=Cookie

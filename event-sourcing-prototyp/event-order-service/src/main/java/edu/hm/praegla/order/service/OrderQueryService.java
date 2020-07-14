@@ -1,8 +1,8 @@
 package edu.hm.praegla.order.service;
 
+import edu.hm.praegla.error.EntityNotFoundException;
 import edu.hm.praegla.order.entity.Order;
 import edu.hm.praegla.order.entity.OrderStatus;
-import edu.hm.praegla.order.error.EntityNotFoundException;
 import edu.hm.praegla.order.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

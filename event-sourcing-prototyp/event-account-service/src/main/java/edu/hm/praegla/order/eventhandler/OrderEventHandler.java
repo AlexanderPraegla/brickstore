@@ -2,9 +2,9 @@ package edu.hm.praegla.order.eventhandler;
 
 import edu.hm.praegla.account.dto.CreditAccountDTO;
 import edu.hm.praegla.account.dto.DebitAccountDTO;
-import edu.hm.praegla.account.error.BrickstoreException;
 import edu.hm.praegla.account.event.Event;
 import edu.hm.praegla.account.service.AccountCommandService;
+import edu.hm.praegla.error.BrickstoreException;
 import edu.hm.praegla.messaging.config.MessagingRabbitMqConfig;
 import edu.hm.praegla.messaging.service.MessagingService;
 import edu.hm.praegla.order.dto.OrderErrorDTO;

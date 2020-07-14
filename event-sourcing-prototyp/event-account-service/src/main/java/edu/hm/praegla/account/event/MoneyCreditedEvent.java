@@ -2,8 +2,10 @@ package edu.hm.praegla.account.event;
 
 import edu.hm.praegla.account.dto.CreditAccountDTO;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 public class MoneyCreditedEvent extends Event<CreditAccountDTO> {

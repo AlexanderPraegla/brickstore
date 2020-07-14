@@ -2,7 +2,7 @@ package edu.hm.praegla.account.service;
 
 import edu.hm.praegla.account.entity.Account;
 import edu.hm.praegla.account.repository.AccountRepository;
-import edu.hm.praegla.shoppingcart.error.EntityNotFoundException;
+import edu.hm.praegla.error.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

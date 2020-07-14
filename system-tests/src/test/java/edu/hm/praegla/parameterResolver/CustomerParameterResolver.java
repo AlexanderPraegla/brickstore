@@ -24,7 +24,7 @@ public class CustomerParameterResolver implements ParameterResolver {
         return ret;
     }
 
-    public static CustomerDTO[] VALID_CUSTOMERS = {
+    public static final CustomerDTO[] VALID_CUSTOMERS = {
             new CustomerDTO("Martin", "Maier", "Martin.Maier@test.com"),
             new CustomerDTO("Michael", "Schmidt", "Michael.Schmidt@test.com"),
             new CustomerDTO("Peter", "Müller", "Peter.Müller@test.com"),

@@ -1,6 +1,6 @@
 package edu.hm.praegla.order.entity;
 
-import edu.hm.praegla.order.error.ResponseCode;
+import edu.hm.praegla.error.ResponseCode;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;

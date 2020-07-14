@@ -1,9 +1,9 @@
 package edu.hm.praegla.inventory.service;
 
+import edu.hm.praegla.error.EntityNotFoundException;
 import edu.hm.praegla.inventory.entity.InventoryItem;
 import edu.hm.praegla.inventory.entity.InventoryItemStatus;
 import edu.hm.praegla.inventory.repository.InventoryItemRepository;
-import edu.hm.praegla.shoppingcart.error.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -9,6 +9,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+  security:
+    oauth2:
+      resourceId: inventory-service
+      clientId: brickstore-client-prototype
+      userInfoEndpointUrl: http://localhost:8095/user/me
 
 eureka:
   client:

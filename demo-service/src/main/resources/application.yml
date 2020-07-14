@@ -3,9 +3,9 @@ spring:
     name: demo-service
   security:
     oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: https://dev-720149.okta.com/oauth2/default/v1/keys
+      resourceId: demo-service
+      clientId: brickstore-client-demo
+      userInfoEndpointUrl: http://localhost:8095/user/me
 
 eureka:
   client:
@@ -15,11 +15,12 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
     registry-fetch-interval-seconds: 10
 
-#logging:
-#  level:
-#    root: INFO
-#    org.springframework.web: INFO
-#    org.springframework.web.HttpLogging: DEBUG
+
+    #logging:
+    #  level:
+    #    root: INFO
+    #    org.springframework.web: INFO
+    #    org.springframework.web.HttpLogging: DEBUG
 #    org.springframework.security: DEBUG
 #    org.springframework.security.oauth2: DEBUG
 ---

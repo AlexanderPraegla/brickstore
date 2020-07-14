@@ -3,8 +3,10 @@ package edu.hm.praegla.account.event;
 import edu.hm.praegla.account.dto.CreateAccountDTO;
 import edu.hm.praegla.shoppingcart.event.Event;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 public class AccountCreatedEvent extends Event<CreateAccountDTO> {

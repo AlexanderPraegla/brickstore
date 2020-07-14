@@ -2,12 +2,12 @@ package edu.hm.praegla.shoppingcart.service;
 
 import edu.hm.praegla.account.entity.Account;
 import edu.hm.praegla.account.service.AccountQueryService;
+import edu.hm.praegla.error.EntityNotFoundException;
 import edu.hm.praegla.inventory.entity.InventoryItem;
 import edu.hm.praegla.inventory.service.InventoryQueryService;
 import edu.hm.praegla.shoppingcart.dto.LineItemDTO;
 import edu.hm.praegla.shoppingcart.dto.ShoppingCartDTO;
 import edu.hm.praegla.shoppingcart.entity.ShoppingCart;
-import edu.hm.praegla.shoppingcart.error.EntityNotFoundException;
 import edu.hm.praegla.shoppingcart.repository.ShoppingCartRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

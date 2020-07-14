@@ -9,7 +9,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-
+  security:
+    oauth2:
+      resourceId: account-service
+      clientId: brickstore-client-prototype
+      userInfoEndpointUrl: http://localhost:8095/user/me
 eureka:
   client:
     register-with-eureka: true

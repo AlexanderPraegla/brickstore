@@ -12,6 +12,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+  security:
+    oauth2:
+      resourceId: shopping-cart-service
+      clientId: brickstore-client-prototype
+      userInfoEndpointUrl: http://localhost:8095/user/me
 
 eureka:
   client:
@@ -29,6 +34,7 @@ springdoc:
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
   show-actuator: true
+
 #logging:
 #  level:
 #    root: INFO

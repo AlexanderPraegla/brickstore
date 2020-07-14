@@ -2,7 +2,7 @@ package edu.hm.praegla.order.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import edu.hm.praegla.order.error.ResponseCode;
+import edu.hm.praegla.error.ResponseCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

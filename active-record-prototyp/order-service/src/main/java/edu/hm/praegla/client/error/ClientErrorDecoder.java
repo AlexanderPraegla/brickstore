@@ -2,7 +2,7 @@ package edu.hm.praegla.client.error;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.hm.praegla.order.error.ApiError;
+import edu.hm.praegla.error.ApiError;
 import feign.Response;
 import feign.codec.ErrorDecoder;
 import org.apache.commons.io.IOUtils;

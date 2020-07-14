@@ -1,7 +1,7 @@
 package edu.hm.praegla.order.eventhandler;
 
+import edu.hm.praegla.error.BrickstoreException;
 import edu.hm.praegla.inventory.dto.UpdateInventoryItemsStockDTO;
-import edu.hm.praegla.inventory.error.BrickstoreException;
 import edu.hm.praegla.inventory.event.Event;
 import edu.hm.praegla.inventory.service.InventoryCommandService;
 import edu.hm.praegla.messaging.config.MessagingRabbitMqConfig;

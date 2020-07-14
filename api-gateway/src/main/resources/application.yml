@@ -2,19 +2,6 @@
 spring:
   application:
     name: api-gateway
-#  security:
-#    oauth2:
-#      client:
-#        registration:
-#          okta:
-#            client-id: 0oaj9dy3u0j8p0RaP4x6
-#            client-secret: j85ddp-75Dod0yzTtXw4Xzkd4kxB-4WTHz-aqebz
-#        provider:
-#          okta:
-#            authorization-uri: https://dev-720149.okta.com/oauth2/default/v1/authorize
-#            token-uri: https://dev-720149.okta.com/oauth2/default/v1/token
-#            user-info-uri: https://dev-720149.okta.com/oauth2/default/v1/userinfo
-#            jwk-set-uri: https://dev-720149.okta.com/oauth2/default/v1/keys
 
 server:
   port: 8080

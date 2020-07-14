@@ -24,7 +24,7 @@ public class AddressParameterResolver implements ParameterResolver {
         return ret;
     }
 
-    public static AddressDTO[] VALID_ADDRESSES = {
+    public static final AddressDTO[] VALID_ADDRESSES = {
             new AddressDTO("Freising", "85354", "Holzgartenstraße 5a"),
             new AddressDTO("Freising", "85354", "Holzgartenstraße 6a"),
             new AddressDTO("Freising", "85354", "Holzgartenstraße 7a"),

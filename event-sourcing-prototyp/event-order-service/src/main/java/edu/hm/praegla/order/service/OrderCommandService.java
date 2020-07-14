@@ -1,13 +1,13 @@
 package edu.hm.praegla.order.service;
 
+import edu.hm.praegla.error.InvalidOrderStatusChangeException;
+import edu.hm.praegla.error.NoItemsInShoppingCartException;
+import edu.hm.praegla.error.OrderNotCancelableException;
 import edu.hm.praegla.messaging.service.MessagingService;
 import edu.hm.praegla.order.dto.OrderStatusUpdateDTO;
 import edu.hm.praegla.order.entity.Order;
 import edu.hm.praegla.order.entity.OrderItem;
 import edu.hm.praegla.order.entity.OrderStatus;
-import edu.hm.praegla.order.error.InvalidOrderStatusChangeException;
-import edu.hm.praegla.order.error.NoItemsInShoppingCartException;
-import edu.hm.praegla.order.error.OrderNotCancelableException;
 import edu.hm.praegla.order.event.OrderCanceledEvent;
 import edu.hm.praegla.order.event.OrderCreatedEvent;
 import edu.hm.praegla.order.event.OrderPayedEvent;

@@ -1,6 +1,6 @@
 package edu.hm.praegla.order.dto;
 
-import edu.hm.praegla.account.error.ResponseCode;
+import edu.hm.praegla.error.ResponseCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

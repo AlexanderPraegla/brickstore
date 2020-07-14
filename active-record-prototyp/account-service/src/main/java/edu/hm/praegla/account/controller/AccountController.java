@@ -8,8 +8,6 @@ import edu.hm.praegla.account.service.AccountService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,11 +35,6 @@ public class AccountController {
 
     public AccountController(AccountService accountService) {
         this.accountService = accountService;
-    }
-
-    @GetMapping("/jwt")
-    public String getToken(@AuthenticationPrincipal Jwt jwt) {
-        return jwt.getTokenValue();
     }
 
     @PreAuthorize("hasAuthority('admins')")

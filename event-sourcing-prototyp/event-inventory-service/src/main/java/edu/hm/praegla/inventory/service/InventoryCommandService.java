@@ -1,12 +1,12 @@
 package edu.hm.praegla.inventory.service;
 
+import edu.hm.praegla.error.ItemNotOrderableException;
+import edu.hm.praegla.error.NotEnoughStockException;
+import edu.hm.praegla.error.OutOfStockException;
 import edu.hm.praegla.inventory.dto.UpdateInventoryItemStatusDTO;
 import edu.hm.praegla.inventory.dto.UpdateInventoryItemsStockDTO;
 import edu.hm.praegla.inventory.entity.InventoryItem;
 import edu.hm.praegla.inventory.entity.InventoryItemStatus;
-import edu.hm.praegla.inventory.error.ItemNotOrderableException;
-import edu.hm.praegla.inventory.error.NotEnoughStockException;
-import edu.hm.praegla.inventory.error.OutOfStockException;
 import edu.hm.praegla.inventory.event.Event;
 import edu.hm.praegla.inventory.event.InventoryItemCreatedEvent;
 import edu.hm.praegla.inventory.event.InventoryItemGatheredEvent;

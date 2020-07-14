@@ -3,8 +3,10 @@ package edu.hm.praegla.order.event;
 import edu.hm.praegla.account.event.Event;
 import edu.hm.praegla.order.dto.OrderErrorDTO;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 public class OrderDebitAccountFailedEvent extends Event<OrderErrorDTO> {

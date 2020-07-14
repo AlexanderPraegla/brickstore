@@ -1,7 +1,7 @@
 package edu.hm.praegla.client.error;
 
 import com.netflix.hystrix.exception.HystrixBadRequestException;
-import edu.hm.praegla.shoppingcart.error.ResponseCode;
+import edu.hm.praegla.error.ResponseCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 

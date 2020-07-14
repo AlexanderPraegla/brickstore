@@ -3,8 +3,10 @@ package edu.hm.praegla.inventory.event;
 import edu.hm.praegla.inventory.dto.UpdateInventoryItemStatusDTO;
 import edu.hm.praegla.shoppingcart.event.Event;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 public class InventoryItemStatusUpdatedEvent extends Event<UpdateInventoryItemStatusDTO> {

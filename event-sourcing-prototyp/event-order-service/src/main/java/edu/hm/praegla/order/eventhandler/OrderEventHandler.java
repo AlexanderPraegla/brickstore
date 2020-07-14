@@ -1,10 +1,10 @@
 package edu.hm.praegla.order.eventhandler;
 
+import edu.hm.praegla.error.ResponseCode;
 import edu.hm.praegla.messaging.service.MessagingService;
 import edu.hm.praegla.order.dto.OrderStatusUpdateDTO;
 import edu.hm.praegla.order.entity.Order;
 import edu.hm.praegla.order.entity.OrderStatus;
-import edu.hm.praegla.order.error.ResponseCode;
 import edu.hm.praegla.order.event.OrderCanceledEvent;
 import edu.hm.praegla.order.event.OrderCreatedEvent;
 import edu.hm.praegla.order.event.OrderDebitAccountFailedEvent;

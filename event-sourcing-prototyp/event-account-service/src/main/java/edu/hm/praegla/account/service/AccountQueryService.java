@@ -1,10 +1,10 @@
 package edu.hm.praegla.account.service;
 
 import edu.hm.praegla.account.entity.Account;
-import edu.hm.praegla.account.error.EntityNotFoundException;
 import edu.hm.praegla.account.event.Event;
 import edu.hm.praegla.account.repository.AccountRepository;
 import edu.hm.praegla.account.repository.EventRepository;
+import edu.hm.praegla.error.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;

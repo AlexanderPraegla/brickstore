@@ -2,8 +2,10 @@ package edu.hm.praegla.shoppingcart.event;
 
 import edu.hm.praegla.shoppingcart.dto.AddShoppingCartItemDTO;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 public class ItemAddedToShoppingCartEvent extends Event<AddShoppingCartItemDTO> {
