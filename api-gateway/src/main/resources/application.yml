@@ -37,11 +37,12 @@ springdoc:
     urls[3]:
       name: shopping cart
       url: /shopping-carts/v3/api-docs
-logging:
-  level:
+
+    #logging:
+    #  level:
+    #    org.springframework.cloud.gateway: DEBUG
     #    root: INFO
-    org.springframework.web: trace
+#    org.springframework.web: trace
 #    org.springframework.web.HttpLogging: DEBUG
 #    org.springframework.security: DEBUG
 #    org.springframework.security.oauth2: DEBUG
-#    org.springframework.cloud.gateway: DEBUG

@@ -6,16 +6,10 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: openapi
-          uri: http://localhost:8080
-          predicates:
-            - Path=/v3/api-docs/**
-          filters:
-            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
         - id: OAuth
           uri: http://localhost:8095
           predicates:
-            - Path=/oauth/**
+            - Path=/oauth/**,/user/me
         - id: accounts-service
           uri: lb://account-service/
           predicates:

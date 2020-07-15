@@ -1,0 +1,106 @@
+version: '3.4'
+networks:
+  brickstore-network:
+    external: true
+
+services:
+  postgres-db:
+    image: "postgres"
+    ports:
+      - "6000:5432"
+    environment:
+      - POSTGRES_USER=alex
+      - POSTGRES_PASSWORD=test123
+      - POSTGRES_DB=brickstore-dev
+    networks:
+      - brickstore-network
+
+  discovery-service:
+    build: ./discovery-service
+    container_name: discovery-service
+    image: discovery-service:latest
+    expose:
+      - "8761"
+    ports:
+      - "8761:8761"
+    networks:
+      - brickstore-network
+
+  gateway:
+    build: ./api-gateway
+    container_name: gateway
+    image: api-gateway:latest
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - discovery-service
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker-compose"
+    networks:
+      - brickstore-network
+
+  http-account-service:
+    build: ./active-record-prototyp/account-service
+    container_name: http-account-service
+    image: http-account-service:latest
+    expose:
+      - "8100"
+    ports:
+      - "8100:8100"
+    depends_on:
+      - discovery-service
+      - postgres-db
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker-compose,test"
+    networks:
+      - brickstore-network
+
+  http-inventory-service:
+    build: ./active-record-prototyp/inventory-service
+    container_name: http-inventory-service
+    image: http-inventory-service:latest
+    expose:
+      - "8101"
+    ports:
+      - "8101:8101"
+    depends_on:
+      - discovery-service
+      - postgres-db
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker-compose,test"
+    networks:
+      - brickstore-network
+
+  http-order-service:
+    build: ./active-record-prototyp/order-service
+    container_name: http-order-service
+    image: http-order-service:latest
+    expose:
+      - "8103"
+    ports:
+      - "8103:8103"
+    depends_on:
+      - discovery-service
+      - postgres-db
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker-compose,test"
+    networks:
+      - brickstore-network
+
+  http-shopping-cart-service:
+    build: ./active-record-prototyp/shopping-cart-service
+    container_name: http-shopping-cart-service-service
+    image: http-shopping-cart-service-service:latest
+    expose:
+      - "8102"
+    ports:
+      - "8102:8102"
+    depends_on:
+      - discovery-service
+      - postgres-db
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker-compose,test"
+    networks:
+      - brickstore-network

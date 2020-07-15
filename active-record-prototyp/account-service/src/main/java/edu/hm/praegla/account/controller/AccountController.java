@@ -6,6 +6,7 @@ import edu.hm.praegla.account.entity.Address;
 import edu.hm.praegla.account.entity.Customer;
 import edu.hm.praegla.account.service.AccountService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -31,6 +32,13 @@ import java.math.BigDecimal;
 @Tag(name = "Account API")
 public class AccountController {
 
+    @Value("${spring.gateway.host}")
+    private String host;
+    @Value("${spring.gateway.port}")
+    private String port;
+    @Value("${spring.gateway.scheme}")
+    private String scheme;
+
     private final AccountService accountService;
 
     public AccountController(AccountService accountService) {
@@ -54,7 +62,7 @@ public class AccountController {
     public ResponseEntity<?> createAccount(UriComponentsBuilder b, @Valid @RequestBody CreateAccountDTO createAccountDTO) {
         Account account = accountService.createAccount(createAccountDTO.customer, createAccountDTO.address);
 
-        UriComponents uriComponents = b.path("/accounts/{accountId}").buildAndExpand(account.getId());
+        UriComponents uriComponents = b.scheme(scheme).host(host).port(port).path("/accounts/{accountId}").buildAndExpand(account.getId());
         return ResponseEntity.created(uriComponents.toUri()).build();
     }
 

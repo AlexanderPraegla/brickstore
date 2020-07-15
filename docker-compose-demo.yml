@@ -32,6 +32,16 @@ services:
       - "8761"
     ports:
       - "8761:8761"
+  oauth-server:
+    build: ./oauth-server
+    container_name: oauth-server
+    image: oauth-server:latest
+    expose:
+      - "8095"
+    ports:
+      - "8095:8095"
+    environment:
+      - "spring.datasource.url=demo,docker-compose"
   gateway:
     build: ./api-gateway
     container_name: gateway

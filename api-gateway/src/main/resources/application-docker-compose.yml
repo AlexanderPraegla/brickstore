@@ -3,3 +3,46 @@ eureka:
     service-url:
       defaultZone: http://discovery-service:8761/eureka/
 
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: OAuth
+          uri: http://oauth-server:8095
+          predicates:
+            - Path=/oauth/**,/user/me
+        - id: accounts-service
+          uri: lb://account-service/
+          predicates:
+            - Path=/accounts/**,/events/**
+          filters:
+            - RewritePath=/accounts/actuator/(?<segment>.*), /actuator/$\{segment}
+            - RewritePath=/accounts/v3/api-docs, /v3/api-docs
+            - RemoveRequestHeader=Cookie
+        - id: inventory-service
+          uri: lb://inventory-service/
+          predicates:
+            - Path=/inventory/**
+          filters:
+            - RewritePath=/inventory/actuator/(?<segment>.*), /actuator/$\{segment}
+            - RewritePath=/inventory/v3/api-docs, /v3/api-docs
+            - RemoveRequestHeader=Cookie
+        - id: shopping-carts-service
+          uri: lb://shopping-cart-service/
+          predicates:
+            - Path=/shopping-carts/**
+          filters:
+            - RewritePath=/shopping-carts/actuator/(?<segment>.*), /actuator/$\{segment}
+            - RewritePath=/shopping-carts/v3/api-docs, /v3/api-docs
+            - RemoveRequestHeader=Cookie
+        - id: orders-service
+          uri: lb://order-service/
+          predicates:
+            - Path=/orders/**
+          filters:
+            - RewritePath=/orders/actuator/(?<segment>.*), /actuator/$\{segment}
+            - RewritePath=/orders/v3/api-docs, /v3/api-docs
+            - RemoveRequestHeader=Cookie

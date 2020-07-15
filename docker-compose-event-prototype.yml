@@ -1,0 +1,124 @@
+version: '3.4'
+services:
+  mongo-db:
+    image: mongo:4.0.4
+    container_name: mongo_database
+    restart: always
+    entrypoint: [ "/usr/bin/mongod",  "--bind_ip_all", "--replSet", "rs0"]
+    ports:
+      - "27017:27017"
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+  postgres-db:
+    image: "postgres"
+    ports:
+      - "6000:5432"
+    environment:
+      - POSTGRES_USER=alex
+      - POSTGRES_PASSWORD=test123
+      - POSTGRES_DB=brickstore-dev
+  discovery-service:
+    build: ./discovery-service
+    container_name: discovery-service
+    image: discovery-service:latest
+    expose:
+      - "8761"
+    ports:
+      - "8761:8761"
+  oauth-server:
+    build: ./oauth-server
+    container_name: oauth-server
+    image: oauth-server:latest
+    expose:
+      - "8095"
+    ports:
+      - "8095:8095"
+    depends_on:
+      - postgres-db
+    links:
+      - postgres-db
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker-compose"
+  gateway:
+    build: ./api-gateway
+    container_name: gateway
+    image: api-gateway:latest
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - discovery-service
+    links:
+      - discovery-service
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker-compose"
+
+  event-account-service:
+    build: ./event-sourcing-prototyp/event-account-service
+    container_name: event-account-service
+    image: event-account-service:latest
+    expose:
+      - "8100"
+    ports:
+      - "8100:8100"
+    depends_on:
+      - discovery-service
+      - rabbitmq
+    links:
+      - discovery-service
+      - rabbitmq
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker-compose"
+  event-inventory-service:
+    build: ./event-sourcing-prototyp/event-inventory-service
+    container_name: event-inventory-service
+    image: event-inventory-service:latest
+    expose:
+      - "8101"
+    ports:
+      - "8101:8101"
+    depends_on:
+      - discovery-service
+      - rabbitmq
+    links:
+      - discovery-service
+      - rabbitmq
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker-compose"
+  event-order-service:
+    build: ./event-sourcing-prototyp/event-order-service
+    container_name: event-order-service
+    image: event-order-service:latest
+    expose:
+      - "8103"
+    ports:
+      - "8103:8103"
+    depends_on:
+      - discovery-service
+      - rabbitmq
+    links:
+      - discovery-service
+      - rabbitmq
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker-compose"
+  event-shopping-cart-service:
+    build: ./event-sourcing-prototyp/event-shopping-cart-service
+    container_name: event-shopping-cart-service-service
+    image: event-shopping-cart-service-service:latest
+    expose:
+      - "8102"
+    ports:
+      - "8102:8102"
+    depends_on:
+      - discovery-service
+      - rabbitmq
+    links:
+      - discovery-service
+      - rabbitmq
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker-compose"

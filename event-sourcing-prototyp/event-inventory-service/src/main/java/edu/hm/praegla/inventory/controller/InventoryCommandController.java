@@ -6,6 +6,7 @@ import edu.hm.praegla.inventory.entity.InventoryItem;
 import edu.hm.praegla.inventory.service.InventoryCommandService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -27,6 +28,13 @@ import javax.validation.Valid;
 @Tag(name = "Inventory command API")
 public class InventoryCommandController {
 
+    @Value("${spring.gateway.host}")
+    private String host;
+    @Value("${spring.gateway.port}")
+    private String port;
+    @Value("${spring.gateway.scheme}")
+    private String scheme;
+
     private final InventoryCommandService inventoryCommandService;
 
     public InventoryCommandController(InventoryCommandService inventoryCommandService) {
@@ -38,7 +46,7 @@ public class InventoryCommandController {
     public ResponseEntity<?> createInventoryItem(UriComponentsBuilder b, @Valid @RequestBody InventoryItem inventoryItem) {
         InventoryItem account = inventoryCommandService.createInventoryItem(inventoryItem);
 
-        UriComponents uriComponents = b.path("/inventory/{inventoryItemId}").buildAndExpand(account.getId());
+        UriComponents uriComponents = b.scheme(scheme).host(host).port(port).path("/inventory/{inventoryItemId}").buildAndExpand(account.getId());
         return ResponseEntity.created(uriComponents.toUri()).build();
     }
 

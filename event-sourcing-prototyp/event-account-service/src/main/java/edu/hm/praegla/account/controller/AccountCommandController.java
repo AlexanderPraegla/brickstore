@@ -9,6 +9,7 @@ import edu.hm.praegla.account.dto.UpdateCustomerDTO;
 import edu.hm.praegla.account.service.AccountCommandService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -30,6 +31,13 @@ import javax.validation.Valid;
 @Tag(name = "Account command API")
 public class AccountCommandController {
 
+    @Value("${spring.gateway.host}")
+    private String host;
+    @Value("${spring.gateway.port}")
+    private String port;
+    @Value("${spring.gateway.scheme}")
+    private String scheme;
+
     private final AccountCommandService accountCommandService;
 
     public AccountCommandController(AccountCommandService accountCommandService) {
@@ -40,7 +48,7 @@ public class AccountCommandController {
     @PutMapping
     public ResponseEntity<?> createAccount(UriComponentsBuilder b, @Valid @RequestBody CreateAccountDTO account) {
         CreateAccountDTO createdAccount = accountCommandService.createAccountCommand(account);
-        UriComponents uriComponents = b.path("/accounts/{accountId}").buildAndExpand(createdAccount.getId());
+        UriComponents uriComponents = b.scheme(scheme).host(host).port(port).path("/accounts/{accountId}").buildAndExpand(createdAccount.getId());
         return ResponseEntity.created(uriComponents.toUri()).build();
     }
 

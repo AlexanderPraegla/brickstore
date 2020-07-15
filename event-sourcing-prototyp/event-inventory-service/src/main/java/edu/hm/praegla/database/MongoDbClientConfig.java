@@ -1,4 +1,4 @@
-package edu.hm.praegla.swagger;
+package edu.hm.praegla.database;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -33,4 +33,6 @@ public class MongoDbClientConfig extends AbstractMongoClientConfiguration {
     public MongoTransactionManager transactionManager(MongoDatabaseFactory mongoDatabaseFactory) {
         return new MongoTransactionManager(mongoDatabaseFactory);
     }
+
+
 }

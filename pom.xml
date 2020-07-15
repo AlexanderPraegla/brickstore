@@ -16,6 +16,7 @@
         <module>api-gateway</module>
         <module>demo-service</module>
         <module>system-tests</module>
+        <module>oauth-server</module>
     </modules>
 
     <build>

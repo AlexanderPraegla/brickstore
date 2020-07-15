@@ -2,3 +2,18 @@ eureka:
   client:
     service-url:
       defaultZone: http://discovery-service:8761/eureka/
+
+spring:
+  data:
+    mongodb:
+      host: mongo-db
+      port: 27017
+      database: inventory-service-db
+      uri: mongodb://mongo-db:27017/inventory-service-db?replicaSet=rs0
+  rabbitmq:
+    host: rabbitmq
+  security:
+    oauth2:
+      resourceId: shopping-cart-service
+      clientId: brickstore-client-prototype
+      userInfoEndpointUrl: http://gateway:8080/user/me

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -32,6 +33,13 @@ import java.util.List;
 @RequestMapping(value = "orders", produces = {"application/json"})
 @Tag(name = "Order API")
 public class OrderController {
+
+    @Value("${spring.gateway.host}")
+    private String host;
+    @Value("${spring.gateway.port}")
+    private String port;
+    @Value("${spring.gateway.scheme}")
+    private String scheme;
 
     private final OrderService orderService;
 
@@ -62,7 +70,7 @@ public class OrderController {
     public ResponseEntity<?> createOrder(UriComponentsBuilder b, @Valid @RequestBody CreateOrderDTO createOrderDTO) {
         Order order = orderService.createOrder(createOrderDTO.accountId);
 
-        UriComponents uriComponents = b.path("/orders/{orderId}").buildAndExpand(order.getId());
+        UriComponents uriComponents = b.scheme(scheme).host(host).port(port).path("/orders/{orderId}").buildAndExpand(order.getId());
         return ResponseEntity.created(uriComponents.toUri()).build();
     }
 

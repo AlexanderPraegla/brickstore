@@ -15,9 +15,11 @@ spring:
       ddl-auto: create
   security:
     oauth2:
-      resourceId: inventory-service
-      clientId: brickstore-client-prototype
-      userInfoEndpointUrl: http://localhost:8095/user/me
+      userInfoEndpointUrl: http://localhost:8080/user/me
+  gateway:
+    host: localhost
+    port: 8080
+    scheme: http
 
 eureka:
   client:

@@ -13,7 +13,12 @@ spring:
     oauth2:
       resourceId: account-service
       clientId: brickstore-client-prototype
-      userInfoEndpointUrl: http://localhost:8095/user/me
+      userInfoEndpointUrl: http://localhost:8080/user/me
+  gateway:
+    host: localhost
+    port: 8080
+    scheme: http
+
 eureka:
   client:
     register-with-eureka: true
