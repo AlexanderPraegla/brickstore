@@ -4,9 +4,9 @@ import edu.hm.praegla.BrickstoreRestTest;
 import edu.hm.praegla.account.dto.AccountDTO;
 import edu.hm.praegla.account.dto.AddressDTO;
 import edu.hm.praegla.account.dto.CustomerDTO;
-import edu.hm.praegla.client.AccountClient;
-import edu.hm.praegla.client.InventoryClient;
-import edu.hm.praegla.client.ShoppingCartClient;
+import edu.hm.praegla.client.AccountTestTestClient;
+import edu.hm.praegla.client.InventoryTestTestClient;
+import edu.hm.praegla.client.ShoppingCartTestTestClient;
 import edu.hm.praegla.error.dto.ApiErrorDTO;
 import edu.hm.praegla.inventory.dto.InventoryItemDTO;
 import edu.hm.praegla.parameterResolver.AddressParameterResolver;
@@ -31,14 +31,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith({AddressParameterResolver.class, CustomerParameterResolver.class, InventoryItemParameterResolver.class})
 public class ShoppingCartTest extends BrickstoreRestTest {
 
-    private final ShoppingCartClient shoppingCartClient;
-    private final AccountClient accountClient;
-    private final InventoryClient inventoryClient;
+    private final ShoppingCartTestTestClient shoppingCartTestClient;
+    private final AccountTestTestClient accountTestClient;
+    private final InventoryTestTestClient inventoryTestClient;
 
     public ShoppingCartTest() {
-        shoppingCartClient = new ShoppingCartClient(spec);
-        accountClient = new AccountClient(spec);
-        inventoryClient = new InventoryClient(spec);
+        shoppingCartTestClient = new ShoppingCartTestTestClient(spec);
+        accountTestClient = new AccountTestTestClient(spec);
+        inventoryTestClient = new InventoryTestTestClient(spec);
     }
 
     @Nested
@@ -50,14 +50,14 @@ public class ShoppingCartTest extends BrickstoreRestTest {
 
         @BeforeAll
         void beforeAll(CustomerDTO customerDTO, AddressDTO addressDTO) {
-            testAccount = accountClient.createAccount(customerDTO, addressDTO);
+            testAccount = accountTestClient.createAccount(customerDTO, addressDTO);
         }
 
         @RepeatedTest(value = 3)
         @Order(1)
         public void shouldAddItemsToShoppingCart(InventoryItemDTO inventoryItemDTO) {
-            InventoryItemDTO inventoryItem = inventoryClient.createInventoryItem(inventoryItemDTO);
-            shoppingCartClient.addShoppingCartItem(testAccount.getId(), inventoryItem.getId(), 1)
+            InventoryItemDTO inventoryItem = inventoryTestClient.createInventoryItem(inventoryItemDTO);
+            shoppingCartTestClient.addShoppingCartItem(testAccount.getId(), inventoryItem.getId(), 1)
                     .then()
                     .statusCode(200);
         }
@@ -65,21 +65,21 @@ public class ShoppingCartTest extends BrickstoreRestTest {
         @Test
         @Order(2)
         public void shouldHaveThreeItemsInShoppingCart() {
-            ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCartByAccountId(testAccount.getId());
+            ShoppingCartDTO shoppingCart = shoppingCartTestClient.getShoppingCartByAccountId(testAccount.getId());
             assertThat(shoppingCart.getLineItems()).hasSize(3);
         }
 
         @Test
         @Order(3)
         public void shouldRemoveItemFromShoppingCart() {
-            ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCartByAccountId(testAccount.getId());
+            ShoppingCartDTO shoppingCart = shoppingCartTestClient.getShoppingCartByAccountId(testAccount.getId());
             LineItemDTO lineItem = shoppingCart.getLineItems().get(0);
 
-            shoppingCartClient.deleteShoppingCartItem(lineItem.getLineItemId(), testAccount.getId())
+            shoppingCartTestClient.deleteShoppingCartItem(lineItem.getLineItemId(), testAccount.getId())
                     .then()
                     .statusCode(200);
 
-            shoppingCart = shoppingCartClient.getShoppingCartByAccountId(testAccount.getId());
+            shoppingCart = shoppingCartTestClient.getShoppingCartByAccountId(testAccount.getId());
 
             int expectedCartSize = 2;
             assertThat(shoppingCart.getLineItems()).hasSize(expectedCartSize);
@@ -95,18 +95,18 @@ public class ShoppingCartTest extends BrickstoreRestTest {
 
         @BeforeEach
         void beforeEach(CustomerDTO customerDTO, AddressDTO addressDTO, InventoryItemDTO inventoryItemDTO) {
-            testAccount = accountClient.createAccount(customerDTO, addressDTO);
-            testInventoryItem = inventoryClient.createInventoryItem(inventoryItemDTO);
+            testAccount = accountTestClient.createAccount(customerDTO, addressDTO);
+            testInventoryItem = inventoryTestClient.createInventoryItem(inventoryItemDTO);
         }
 
         @Test
         public void shouldFailAddingItemToCartWithDeactivatedAccount() {
             int quantity = 2;
 
-            accountClient.updateAccountStatus(testAccount.getId(), "DEACTIVATED")
+            accountTestClient.updateAccountStatus(testAccount.getId(), "DEACTIVATED")
                     .then()
                     .statusCode(200);
-            ApiErrorDTO apiErrorDTO = shoppingCartClient.addShoppingCartItem(testAccount.getId(), testInventoryItem.getId(), quantity)
+            ApiErrorDTO apiErrorDTO = shoppingCartTestClient.addShoppingCartItem(testAccount.getId(), testInventoryItem.getId(), quantity)
                     .then()
                     .statusCode(400)
                     .extract()
@@ -118,11 +118,11 @@ public class ShoppingCartTest extends BrickstoreRestTest {
         @Test
         public void shouldFailAddingDeactivatedItemToCart() {
             int quantity = 1;
-            inventoryClient.updateInventoryItemStatus(testInventoryItem.getId(), "DEACTIVATED")
+            inventoryTestClient.updateInventoryItemStatus(testInventoryItem.getId(), "DEACTIVATED")
                     .then()
                     .statusCode(200);
 
-            ApiErrorDTO apiErrorDTO = shoppingCartClient.addShoppingCartItem(testAccount.getId(), testInventoryItem.getId(), quantity)
+            ApiErrorDTO apiErrorDTO = shoppingCartTestClient.addShoppingCartItem(testAccount.getId(), testInventoryItem.getId(), quantity)
                     .then()
                     .statusCode(400)
                     .extract()
@@ -135,11 +135,11 @@ public class ShoppingCartTest extends BrickstoreRestTest {
         public void shouldFailAddingOutOfStockItemToCart() {
             testInventoryItem.setStock(0);
             testInventoryItem.setStatus("OUT_OF_STOCK");
-            inventoryClient.updateInventoryItem(testInventoryItem);
+            inventoryTestClient.updateInventoryItem(testInventoryItem);
 
             int quantity = 1;
 
-            ApiErrorDTO apiErrorDTO = shoppingCartClient.addShoppingCartItem(testAccount.getId(), testInventoryItem.getId(), quantity)
+            ApiErrorDTO apiErrorDTO = shoppingCartTestClient.addShoppingCartItem(testAccount.getId(), testInventoryItem.getId(), quantity)
                     .then()
                     .statusCode(400)
                     .extract()

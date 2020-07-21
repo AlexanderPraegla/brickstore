@@ -1,7 +1,7 @@
 package edu.hm.praegla.inventory;
 
 import edu.hm.praegla.BrickstoreRestTest;
-import edu.hm.praegla.client.InventoryClient;
+import edu.hm.praegla.client.InventoryTestTestClient;
 import edu.hm.praegla.error.dto.ApiErrorDTO;
 import edu.hm.praegla.inventory.dto.InventoryItemDTO;
 import edu.hm.praegla.parameterResolver.InventoryItemParameterResolver;
@@ -21,16 +21,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(InventoryItemParameterResolver.class)
 public class InventoryTest extends BrickstoreRestTest {
 
-    private final InventoryClient inventoryClient;
+    private final InventoryTestTestClient inventoryTestClient;
     private InventoryItemDTO testInventoryItem;
 
     public InventoryTest() {
-        this.inventoryClient = new InventoryClient(spec);
+        this.inventoryTestClient = new InventoryTestTestClient(spec);
     }
 
     @BeforeEach
     public void beforeEach(InventoryItemDTO inventoryItemDTO) {
-        testInventoryItem = inventoryClient.createInventoryItem(inventoryItemDTO);
+        testInventoryItem = inventoryTestClient.createInventoryItem(inventoryItemDTO);
     }
 
     @Test
@@ -43,7 +43,7 @@ public class InventoryTest extends BrickstoreRestTest {
         inventoryItemDTO.setDeliveryTime(8);
         inventoryItemDTO.setStatus("AVAILABLE");
 
-        InventoryItemDTO createdInventoryItem = inventoryClient.createInventoryItem(inventoryItemDTO);
+        InventoryItemDTO createdInventoryItem = inventoryTestClient.createInventoryItem(inventoryItemDTO);
         assertThat(createdInventoryItem).isEqualToIgnoringGivenFields(inventoryItemDTO, "id");
     }
 
@@ -56,20 +56,20 @@ public class InventoryTest extends BrickstoreRestTest {
         testInventoryItem.setDeliveryTime(1);
         testInventoryItem.setStatus("AVAILABLE");
 
-        inventoryClient.updateInventoryItem(testInventoryItem);
+        inventoryTestClient.updateInventoryItem(testInventoryItem);
 
-        InventoryItemDTO updatedInventoryItem = inventoryClient.getInventoryItemById(testInventoryItem.getId());
+        InventoryItemDTO updatedInventoryItem = inventoryTestClient.getInventoryItemById(testInventoryItem.getId());
         assertThat(updatedInventoryItem).isEqualTo(testInventoryItem);
     }
 
     @Test
     @Order(3)
     public void shouldDeactivateInventoryItem() {
-        inventoryClient.updateInventoryItemStatus(testInventoryItem.getId(), "DEACTIVATED")
+        inventoryTestClient.updateInventoryItemStatus(testInventoryItem.getId(), "DEACTIVATED")
                 .then()
                 .statusCode(200);
 
-        InventoryItemDTO item = inventoryClient.getInventoryItemById(testInventoryItem.getId());
+        InventoryItemDTO item = inventoryTestClient.getInventoryItemById(testInventoryItem.getId());
         assertThat(item.getStatus()).isEqualTo("DEACTIVATED");
     }
 
@@ -81,19 +81,19 @@ public class InventoryTest extends BrickstoreRestTest {
         int expectedStock = 1;
 
         testInventoryItem.setStock(newStock);
-        inventoryClient.updateInventoryItem(testInventoryItem);
+        inventoryTestClient.updateInventoryItem(testInventoryItem);
 
-        Response response = inventoryClient.gatherInventoryItem(testInventoryItem.getId(), gatherQuantity);
+        Response response = inventoryTestClient.gatherInventoryItem(testInventoryItem.getId(), gatherQuantity);
         response.then()
                 .statusCode(200);
 
-        testInventoryItem = inventoryClient.getInventoryItemById(testInventoryItem.getId());
+        testInventoryItem = inventoryTestClient.getInventoryItemById(testInventoryItem.getId());
         assertThat(testInventoryItem.getStock()).isEqualTo(expectedStock);
     }
 
     @Test
     public void shouldGatherNegativeQuantityInventoryItem() {
-        Response response = inventoryClient.gatherInventoryItem(testInventoryItem.getId(), -1);
+        Response response = inventoryTestClient.gatherInventoryItem(testInventoryItem.getId(), -1);
         response.then()
                 .statusCode(400);
     }
@@ -104,9 +104,9 @@ public class InventoryTest extends BrickstoreRestTest {
         int gatherQuantity = 2;
 
         testInventoryItem.setStock(newStock);
-        inventoryClient.updateInventoryItem(testInventoryItem);
+        inventoryTestClient.updateInventoryItem(testInventoryItem);
 
-        Response response = inventoryClient.gatherInventoryItem(testInventoryItem.getId(), gatherQuantity);
+        Response response = inventoryTestClient.gatherInventoryItem(testInventoryItem.getId(), gatherQuantity);
         ApiErrorDTO apiErrorDTO = response.then()
                 .statusCode(400)
                 .extract()
@@ -120,11 +120,11 @@ public class InventoryTest extends BrickstoreRestTest {
     public void shouldGatherCompleteStockOfInventoryItem() {
         int gatherQuantity = 5;
 
-        Response response = inventoryClient.gatherInventoryItem(testInventoryItem.getId(), gatherQuantity);
+        Response response = inventoryTestClient.gatherInventoryItem(testInventoryItem.getId(), gatherQuantity);
         response.then()
                 .statusCode(200);
 
-        testInventoryItem = inventoryClient.getInventoryItemById(testInventoryItem.getId());
+        testInventoryItem = inventoryTestClient.getInventoryItemById(testInventoryItem.getId());
         assertThat(testInventoryItem.getStock()).isEqualTo(0);
         assertThat(testInventoryItem.getStatus()).isEqualTo("OUT_OF_STOCK");
 
@@ -137,9 +137,9 @@ public class InventoryTest extends BrickstoreRestTest {
 
         testInventoryItem.setStock(newStock);
         testInventoryItem.setStatus("OUT_OF_STOCK");
-        inventoryClient.updateInventoryItem(testInventoryItem);
+        inventoryTestClient.updateInventoryItem(testInventoryItem);
 
-        Response response = inventoryClient.gatherInventoryItem(testInventoryItem.getId(), gatherQuantity);
+        Response response = inventoryTestClient.gatherInventoryItem(testInventoryItem.getId(), gatherQuantity);
         ApiErrorDTO apiErrorDTO = response.then()
                 .statusCode(400)
                 .extract()
@@ -156,9 +156,9 @@ public class InventoryTest extends BrickstoreRestTest {
 
         testInventoryItem.setStock(newStock);
         testInventoryItem.setStatus("DEACTIVATED");
-        inventoryClient.updateInventoryItem(testInventoryItem);
+        inventoryTestClient.updateInventoryItem(testInventoryItem);
 
-        Response response = inventoryClient.gatherInventoryItem(testInventoryItem.getId(), gatherQuantity);
+        Response response = inventoryTestClient.gatherInventoryItem(testInventoryItem.getId(), gatherQuantity);
         ApiErrorDTO apiErrorDTO = response.then()
                 .statusCode(400)
                 .extract()
@@ -170,11 +170,11 @@ public class InventoryTest extends BrickstoreRestTest {
 
     @Test
     public void shouldStockUpInventoryItem() {
-        Response response = inventoryClient.stockUpInventoryItem(testInventoryItem.getId(), 10);
+        Response response = inventoryTestClient.stockUpInventoryItem(testInventoryItem.getId(), 10);
         response.then()
                 .statusCode(200);
 
-        testInventoryItem = inventoryClient.getInventoryItemById(testInventoryItem.getId());
+        testInventoryItem = inventoryTestClient.getInventoryItemById(testInventoryItem.getId());
         assertThat(testInventoryItem.getStock()).isEqualTo(15);
         assertThat(testInventoryItem.getStatus()).isEqualTo("AVAILABLE");
     }
@@ -186,17 +186,17 @@ public class InventoryTest extends BrickstoreRestTest {
 
         testInventoryItem.setStock(newStock);
         testInventoryItem.setStatus("OUT_OF_STOCK");
-        inventoryClient.updateInventoryItem(testInventoryItem);
+        inventoryTestClient.updateInventoryItem(testInventoryItem);
 
-        testInventoryItem = inventoryClient.getInventoryItemById(testInventoryItem.getId());
+        testInventoryItem = inventoryTestClient.getInventoryItemById(testInventoryItem.getId());
         assertThat(testInventoryItem.getStock()).isEqualTo(0);
         assertThat(testInventoryItem.getStatus()).isEqualTo("OUT_OF_STOCK");
 
-        Response response = inventoryClient.stockUpInventoryItem(testInventoryItem.getId(), stockUpQuantity);
+        Response response = inventoryTestClient.stockUpInventoryItem(testInventoryItem.getId(), stockUpQuantity);
         response.then()
                 .statusCode(200);
 
-        InventoryItemDTO item = inventoryClient.getInventoryItemById(testInventoryItem.getId());
+        InventoryItemDTO item = inventoryTestClient.getInventoryItemById(testInventoryItem.getId());
         assertThat(item.getStock()).isEqualTo(2);
         assertThat(item.getStatus()).isEqualTo("AVAILABLE");
     }
@@ -204,16 +204,16 @@ public class InventoryTest extends BrickstoreRestTest {
     @Test
     public void shouldStockUpDeactivatedInventoryItem() {
         testInventoryItem.setStatus("DEACTIVATED");
-        inventoryClient.updateInventoryItem(testInventoryItem);
+        inventoryTestClient.updateInventoryItem(testInventoryItem);
 
         int stockUpQuantity = 3;
         int expectedStock = 8;
 
-        Response response = inventoryClient.stockUpInventoryItem(testInventoryItem.getId(), stockUpQuantity);
+        Response response = inventoryTestClient.stockUpInventoryItem(testInventoryItem.getId(), stockUpQuantity);
         response.then()
                 .statusCode(200);
 
-        InventoryItemDTO item = inventoryClient.getInventoryItemById(testInventoryItem.getId());
+        InventoryItemDTO item = inventoryTestClient.getInventoryItemById(testInventoryItem.getId());
         assertThat(item.getStock()).isEqualTo(expectedStock);
         assertThat(item.getStatus()).isEqualTo("DEACTIVATED");
     }

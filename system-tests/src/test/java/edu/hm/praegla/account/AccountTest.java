@@ -4,7 +4,7 @@ import edu.hm.praegla.BrickstoreRestTest;
 import edu.hm.praegla.account.dto.AccountDTO;
 import edu.hm.praegla.account.dto.AddressDTO;
 import edu.hm.praegla.account.dto.CustomerDTO;
-import edu.hm.praegla.client.AccountClient;
+import edu.hm.praegla.client.AccountTestTestClient;
 import edu.hm.praegla.error.dto.ApiErrorDTO;
 import edu.hm.praegla.parameterResolver.AddressParameterResolver;
 import edu.hm.praegla.parameterResolver.CustomerParameterResolver;
@@ -23,16 +23,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith({AddressParameterResolver.class, CustomerParameterResolver.class})
 public class AccountTest extends BrickstoreRestTest {
 
-    private final AccountClient accountClient;
+    private final AccountTestTestClient accountTestClient;
     private AccountDTO testAccount;
 
     public AccountTest() {
-        accountClient = new AccountClient(spec);
+        accountTestClient = new AccountTestTestClient(spec);
     }
 
     @BeforeEach
     public void beforeEach(CustomerDTO customerDTO, AddressDTO addressDTO) {
-        testAccount = accountClient.createAccount(customerDTO, addressDTO);
+        testAccount = accountTestClient.createAccount(customerDTO, addressDTO);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class AccountTest extends BrickstoreRestTest {
     public void shouldCreateNewAccount() {
         CustomerDTO customerDTO = new CustomerDTO("Bob", "Andrew", "bob.andrew@dreifragezeichen.com");
         AddressDTO addressDTO = new AddressDTO("Rocky Beach", "97468", "Am Schrottplatz 3");
-        AccountDTO createdAccount = accountClient.createAccount(customerDTO, addressDTO);
+        AccountDTO createdAccount = accountTestClient.createAccount(customerDTO, addressDTO);
 
         assertThat(createdAccount.getCustomer()).isEqualToIgnoringGivenFields(customerDTO, "id");
         assertThat(createdAccount.getAddress()).isEqualToIgnoringGivenFields(addressDTO, "id");
@@ -51,10 +51,10 @@ public class AccountTest extends BrickstoreRestTest {
     @Test
     @Order(2)
     public void shouldSetAccountStatusDeactivated() {
-        accountClient.updateAccountStatus(testAccount.getId(), "DEACTIVATED")
+        accountTestClient.updateAccountStatus(testAccount.getId(), "DEACTIVATED")
                 .then()
                 .statusCode(200);
-        AccountDTO account = accountClient.getAccountById(testAccount.getId());
+        AccountDTO account = accountTestClient.getAccountById(testAccount.getId());
         assertThat(account.getStatus()).isEqualTo("DEACTIVATED");
     }
 
@@ -65,10 +65,10 @@ public class AccountTest extends BrickstoreRestTest {
         String newLastname = "Shaw";
         String newEmail = "Henry.Shaw@dreifragezeichen.com";
 
-        accountClient.modifyCustomer(testAccount.getId(), newFirstname, newLastname, newEmail)
+        accountTestClient.modifyCustomer(testAccount.getId(), newFirstname, newLastname, newEmail)
                 .then()
                 .statusCode(200);
-        AccountDTO account = accountClient.getAccountById(testAccount.getId());
+        AccountDTO account = accountTestClient.getAccountById(testAccount.getId());
 
         assertThat(account.getCustomer().getFirstname()).isEqualTo(newFirstname);
         assertThat(account.getCustomer().getLastname()).isEqualTo(newLastname);
@@ -82,10 +82,10 @@ public class AccountTest extends BrickstoreRestTest {
         String newCity = "Santa Babara";
         String newPostalcode = "36784";
 
-        accountClient.modifyAddress(testAccount.getId(), newStreet, newCity, newPostalcode)
+        accountTestClient.modifyAddress(testAccount.getId(), newStreet, newCity, newPostalcode)
                 .then()
                 .statusCode(200);
-        AccountDTO account = accountClient.getAccountById(testAccount.getId());
+        AccountDTO account = accountTestClient.getAccountById(testAccount.getId());
 
         assertThat(account.getAddress().getStreet()).isEqualTo(newStreet);
         assertThat(account.getAddress().getCity()).isEqualTo(newCity);
@@ -95,8 +95,8 @@ public class AccountTest extends BrickstoreRestTest {
     @Test
     @Order(5)
     public void shouldActivateNewAccountByChargingAccount() {
-        accountClient.chargeAccount(testAccount.getId(), new BigDecimal("17.42"));
-        AccountDTO account = accountClient.getAccountById(testAccount.getId());
+        accountTestClient.chargeAccount(testAccount.getId(), new BigDecimal("17.42"));
+        AccountDTO account = accountTestClient.getAccountById(testAccount.getId());
 
         assertThat(account.getBalance()).isEqualTo(new BigDecimal("17.42"));
         assertThat(account.getStatus()).isEqualTo("ACTIVATED");
@@ -105,39 +105,39 @@ public class AccountTest extends BrickstoreRestTest {
     @Test
     @Order(6)
     public void shouldDebitAccountWithEnoughBalance() {
-        accountClient.chargeAccount(testAccount.getId(), new BigDecimal("10.00"));
+        accountTestClient.chargeAccount(testAccount.getId(), new BigDecimal("10.00"));
 
-        accountClient.debitAccount(testAccount.getId(), new BigDecimal("5.50"))
+        accountTestClient.debitAccount(testAccount.getId(), new BigDecimal("5.50"))
                 .then()
                 .statusCode(200);
 
-        AccountDTO account = accountClient.getAccountById(testAccount.getId());
+        AccountDTO account = accountTestClient.getAccountById(testAccount.getId());
         assertThat(account.getBalance()).isEqualTo(new BigDecimal("4.50"));
     }
 
     @Test
     @Order(7)
     public void shouldDenyDebitAccountWithNotEnoughBalance() {
-        accountClient.chargeAccount(testAccount.getId(), new BigDecimal("10.00"));
+        accountTestClient.chargeAccount(testAccount.getId(), new BigDecimal("10.00"));
 
-        ApiErrorDTO apiErrorDTO = accountClient.debitAccount(testAccount.getId(), new BigDecimal("11.00"))
+        ApiErrorDTO apiErrorDTO = accountTestClient.debitAccount(testAccount.getId(), new BigDecimal("11.00"))
                 .then()
                 .statusCode(400)
                 .extract().as(ApiErrorDTO.class);
         assertThat(apiErrorDTO.getResponseCode()).isEqualTo("BALANCE_INSUFFICIENT");
 
-        AccountDTO account = accountClient.getAccountById(testAccount.getId());
+        AccountDTO account = accountTestClient.getAccountById(testAccount.getId());
         assertThat(account.getBalance()).isEqualTo(new BigDecimal("10.00"));
     }
 
     @Test
     @Order(8)
     public void shouldDenyChargeToDeactivatedAccount() {
-        accountClient.updateAccountStatus(testAccount.getId(), "DEACTIVATED")
+        accountTestClient.updateAccountStatus(testAccount.getId(), "DEACTIVATED")
                 .then()
                 .statusCode(200);
 
-        ApiErrorDTO apiErrorDTO = accountClient.chargeAccount(testAccount.getId(), new BigDecimal("10.00"))
+        ApiErrorDTO apiErrorDTO = accountTestClient.chargeAccount(testAccount.getId(), new BigDecimal("10.00"))
                 .then()
                 .statusCode(400)
                 .extract().as(ApiErrorDTO.class);

@@ -17,8 +17,6 @@ public class MessagingRabbitMqConfig {
     public static final String EVENT_EXCHANGE = "event_exchange";
 
     public static final String ORDER_QUEUE = "order_queue";
-    public static final String INVENTORY_TO_ORDER_QUEUE = "inventory_to_order_queue";
-    public static final String ACCOUNT_TO_ORDER_QUEUE = "account_to_order_queue";
 
     private static final boolean QUEUE_DURABLE = false;
     private static final boolean EXCHANGE_DURABLE = false;
@@ -27,18 +25,6 @@ public class MessagingRabbitMqConfig {
     @Bean
     @Qualifier(ORDER_QUEUE)
     public Queue orderQueue() {
-        return new Queue(ORDER_QUEUE, QUEUE_DURABLE);
-    }
-
-    @Bean
-    @Qualifier(INVENTORY_TO_ORDER_QUEUE)
-    public Queue inventoryQueue() {
-        return new Queue(INVENTORY_TO_ORDER_QUEUE, QUEUE_DURABLE);
-    }
-
-    @Bean
-    @Qualifier(ACCOUNT_TO_ORDER_QUEUE)
-    public Queue accountQueue() {
         return new Queue(ORDER_QUEUE, QUEUE_DURABLE);
     }
 

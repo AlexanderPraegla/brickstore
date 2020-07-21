@@ -4,10 +4,10 @@ import edu.hm.praegla.BrickstoreRestTest;
 import edu.hm.praegla.account.dto.AccountDTO;
 import edu.hm.praegla.account.dto.AddressDTO;
 import edu.hm.praegla.account.dto.CustomerDTO;
-import edu.hm.praegla.client.AccountClient;
-import edu.hm.praegla.client.InventoryClient;
-import edu.hm.praegla.client.OrderClient;
-import edu.hm.praegla.client.ShoppingCartClient;
+import edu.hm.praegla.client.AccountTestTestClient;
+import edu.hm.praegla.client.InventoryTestTestClient;
+import edu.hm.praegla.client.OrderTestTestClient;
+import edu.hm.praegla.client.ShoppingCartTestTestClient;
 import edu.hm.praegla.inventory.dto.InventoryItemDTO;
 import edu.hm.praegla.order.dto.OrderDTO;
 import edu.hm.praegla.order.dto.OrderItemDTO;
@@ -34,16 +34,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith({AddressParameterResolver.class, CustomerParameterResolver.class, InventoryItemParameterResolver.class})
 public class OrderTest extends BrickstoreRestTest {
 
-    private final InventoryClient inventoryClient;
-    private final AccountClient accountClient;
-    private final OrderClient orderClient;
-    private final ShoppingCartClient shoppingCartClient;
+    private final InventoryTestTestClient inventoryTestClient;
+    private final AccountTestTestClient accountTestClient;
+    private final OrderTestTestClient orderTestClient;
+    private final ShoppingCartTestTestClient shoppingCartTestClient;
 
     public OrderTest() {
-        inventoryClient = new InventoryClient(spec);
-        orderClient = new OrderClient(spec);
-        accountClient = new AccountClient(spec);
-        shoppingCartClient = new ShoppingCartClient(spec);
+        inventoryTestClient = new InventoryTestTestClient(spec);
+        orderTestClient = new OrderTestTestClient(spec);
+        accountTestClient = new AccountTestTestClient(spec);
+        shoppingCartTestClient = new ShoppingCartTestTestClient(spec);
     }
 
 
@@ -56,23 +56,23 @@ public class OrderTest extends BrickstoreRestTest {
 
         @BeforeEach
         public void beforeEach(CustomerDTO customerDTO, AddressDTO addressDTO, InventoryItemDTO inventoryItemDTO) {
-            AccountDTO testAccount = accountClient.createAccount(customerDTO, addressDTO);
-            accountClient.chargeAccount(testAccount.getId(), new BigDecimal("200.00"));
+            AccountDTO testAccount = accountTestClient.createAccount(customerDTO, addressDTO);
+            accountTestClient.chargeAccount(testAccount.getId(), new BigDecimal("200.00"));
 
             inventoryItemDTO.setPrice(new BigDecimal("19.99"));
-            testInventoryItem = inventoryClient.createInventoryItem(inventoryItemDTO);
-            shoppingCartClient.addShoppingCartItem(testAccount.getId(), testInventoryItem.getId(), 5);
-            ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCartByAccountId(testAccount.getId());
-            testOrder = orderClient.createProcessedOrder(testAccount, shoppingCart);
+            testInventoryItem = inventoryTestClient.createInventoryItem(inventoryItemDTO);
+            shoppingCartTestClient.addShoppingCartItem(testAccount.getId(), testInventoryItem.getId(), 5);
+            ShoppingCartDTO shoppingCart = shoppingCartTestClient.getShoppingCartByAccountId(testAccount.getId());
+            testOrder = orderTestClient.createProcessedOrder(testAccount, shoppingCart);
         }
 
         @Test
         public void shouldNotChangeOrderTotalWhenInventoryItemPriceIsChanged() {
 
             testInventoryItem.setPrice(new BigDecimal("109.99"));
-            inventoryClient.updateInventoryItem(testInventoryItem);
+            inventoryTestClient.updateInventoryItem(testInventoryItem);
 
-            OrderDTO order = orderClient.getOrder(testOrder.getId());
+            OrderDTO order = orderTestClient.getOrder(testOrder.getId());
             assertThat(order.getTotal()).isEqualTo(new BigDecimal("99.95"));
 
             OrderItemDTO orderItemDTO = order.getOrderItems().get(0);
@@ -91,23 +91,23 @@ public class OrderTest extends BrickstoreRestTest {
 
         @BeforeAll
         public void beforeAll(CustomerDTO customerDTO, AddressDTO addressDTO, InventoryItemDTO inventoryItemDTO) {
-            AccountDTO testAccount = accountClient.createAccount(customerDTO, addressDTO);
-            accountClient.chargeAccount(testAccount.getId(), new BigDecimal("200.00"));
+            AccountDTO testAccount = accountTestClient.createAccount(customerDTO, addressDTO);
+            accountTestClient.chargeAccount(testAccount.getId(), new BigDecimal("200.00"));
 
             inventoryItemDTO.setPrice(new BigDecimal("19.99"));
-            InventoryItemDTO testInventoryItem = inventoryClient.createInventoryItem(inventoryItemDTO);
-            shoppingCartClient.addShoppingCartItem(testAccount.getId(), testInventoryItem.getId(), 5);
-            ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCartByAccountId(testAccount.getId());
-            testOrder = orderClient.createProcessedOrder(testAccount, shoppingCart);
+            InventoryItemDTO testInventoryItem = inventoryTestClient.createInventoryItem(inventoryItemDTO);
+            shoppingCartTestClient.addShoppingCartItem(testAccount.getId(), testInventoryItem.getId(), 5);
+            ShoppingCartDTO shoppingCart = shoppingCartTestClient.getShoppingCartByAccountId(testAccount.getId());
+            testOrder = orderTestClient.createProcessedOrder(testAccount, shoppingCart);
         }
 
         @ParameterizedTest
         @ValueSource(strings = {"SHIPPED", "DELIVERED"})
         public void shouldChangeOrderStatus(String status) {
-            orderClient.updateOrderStatus(testOrder.getId(), status)
+            orderTestClient.updateOrderStatus(testOrder.getId(), status)
                     .then()
                     .statusCode(200);
-            OrderDTO order = orderClient.getOrder(testOrder.getId());
+            OrderDTO order = orderTestClient.getOrder(testOrder.getId());
             assertThat(order.getStatus()).isEqualTo(status);
         }
     }
