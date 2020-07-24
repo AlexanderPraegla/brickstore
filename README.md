@@ -17,7 +17,7 @@
 
 ## Start des Prototypen
 
-### Start Up
+### Start Up (docker-compose)
 * _mvn clean install_ zum Bauen des gesamten Projekts
 * _docker-compose -f docker-compose-http-prototype.yml up --build_ für den HTTP basierten Prototypen
 * _docker-compose -f docker-compose-event-prototype.yml up --build_ für den Event basierten Prototypen
@@ -40,4 +40,14 @@ ClientId und ClientSecret sind bereits ausgefüllt
     * _rs.initiate()_ 
 * _mvn clean test_ im Order "system-tests" ausführen
 
+## Lokale MongoDb
+Wird der Event-basierte Prototyp nicht mittels docker-compose gestartet, so ist es nötig eine lokale MongoDb zu konfigurieren und mit einem replica-set zu starten. \
+Gestartet wird die Datenbank mit _mongod --port 27017 --dbpath /srv/mongodb/db0 --replSet rs0 --bind_ip localhost_ wobei "--dbpath /srv/mongodb/db0" optional sind und den Pfad angeben, wo die Daten im System abgelegt werden.
+Anschließend muss wie bei docker-compose auf die CLI der MongoDb mit dem Befehl _mongo_ zugriffen und _rs.initiate()_ ausgeführt werden.  
 
+## RabbitMQ Docker Image
+Für den lokalen Setup ohne docker-compose muss RabbitMQ manuell gestartet werden.
+docker run -d -p 127.0.0.1:5672:5672 -p 127.0.0.1:15672:15672 --name my-rabbit rabbitmq:3-management
+
+* Username: guest
+* Passwort: guest

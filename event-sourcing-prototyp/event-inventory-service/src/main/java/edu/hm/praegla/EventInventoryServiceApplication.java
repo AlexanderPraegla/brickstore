@@ -23,6 +23,10 @@ public class EventInventoryServiceApplication {
         SpringApplication.run(EventInventoryServiceApplication.class, args);
     }
 
+    /**
+    /**
+     * Collections used inside a transaction can not be created by mongo db. So they have to be created manually at start up
+     */
     @EventListener
     public void onApplicationEvent(ContextRefreshedEvent event) {
         MongoClient mongoClient = MongoClients.create(mongoUri);
