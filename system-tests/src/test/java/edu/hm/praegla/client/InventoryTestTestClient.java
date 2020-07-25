@@ -22,7 +22,7 @@ public class InventoryTestTestClient extends ApiTestClient {
         return getResourceById("inventory/{inventoryItemId}", inventoryItemId, InventoryItemDTO.class);
     }
 
-    public List<InventoryItemDTO> getInventoryItems() {
+    public List<InventoryItemDTO> getAvailableInventoryItems() {
         return given(spec)
                 .when()
                 .get("inventory/available")

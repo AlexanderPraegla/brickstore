@@ -88,6 +88,13 @@ public class InventoryTest extends BrickstoreRestTest {
     }
 
     @Test
+    public void shouldGetAllAvailable() {
+        List<InventoryItemDTO> items = inventoryTestClient.getAvailableInventoryItems();
+        assertThat(items).isNotEmpty();
+        assertThat(items.size()).isGreaterThanOrEqualTo(1);
+    }
+
+    @Test
     public void shouldGatherInventoryItemWithEnoughStock() {
         int newStock = 3;
         int gatherQuantity = 2;

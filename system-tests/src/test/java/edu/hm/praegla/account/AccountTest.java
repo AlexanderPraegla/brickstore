@@ -94,7 +94,7 @@ public class AccountTest extends BrickstoreRestTest {
 
     @Test
     @Order(5)
-    public void shouldActivateNewAccountByChargingAccount() {
+    public void shouldActivateNewAccountByCreditAccount() {
         accountTestClient.creditAccount(testAccount.getId(), new BigDecimal("17.42"));
         AccountDTO account = accountTestClient.getAccountById(testAccount.getId());
 
