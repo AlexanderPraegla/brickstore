@@ -38,7 +38,6 @@ public class OrderEventHandler {
     }
 
     @RabbitHandler
-    @SendTo
     public void process(@Payload OrderCreatedEvent event) {
         log.info("Received OrderCreatedEvent: {}", event);
 
