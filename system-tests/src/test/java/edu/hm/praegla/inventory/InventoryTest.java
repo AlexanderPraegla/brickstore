@@ -14,6 +14,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -73,6 +74,18 @@ public class InventoryTest extends BrickstoreRestTest {
         assertThat(item.getStatus()).isEqualTo("DEACTIVATED");
     }
 
+    @Test
+    @Order(4)
+    public void shouldFindAllItemsMatchingSearchName() {
+        testInventoryItem.setName("Harry Potter - Winkelgasse");
+        inventoryTestClient.updateInventoryItem(testInventoryItem);
+
+        String searchTerm = "Winkelgasse";
+        int resultCount = 1;
+
+        List<InventoryItemDTO> items = inventoryTestClient.searchInventoryItem(searchTerm);
+        assertThat(items).hasSize(resultCount);
+    }
 
     @Test
     public void shouldGatherInventoryItemWithEnoughStock() {

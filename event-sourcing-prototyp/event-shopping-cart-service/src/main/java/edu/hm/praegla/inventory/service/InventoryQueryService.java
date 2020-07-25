@@ -21,18 +21,6 @@ public class InventoryQueryService {
         this.inventoryItemRepository = inventoryItemRepository;
     }
 
-    public Iterable<InventoryItem> getInventoryItems() {
-        return inventoryItemRepository.findAll();
-    }
-
-    public List<InventoryItem> getAvailableInventoryItems() {
-        return inventoryItemRepository.findAllByStatus(InventoryItemStatus.AVAILABLE);
-    }
-
-    public List<InventoryItem> searchInventoryItems(String name) {
-        return inventoryItemRepository.findAllByNameContainingIgnoreCase(name);
-    }
-
     public InventoryItem getInventoryItem(long inventoryItemId) {
         return inventoryItemRepository.findById(inventoryItemId).orElseThrow(() -> new EntityNotFoundException(InventoryItem.class, "id", inventoryItemId));
     }
