@@ -84,7 +84,7 @@ public class InventoryTest extends BrickstoreRestTest {
         int resultCount = 1;
 
         List<InventoryItemDTO> items = inventoryTestClient.searchInventoryItem(searchTerm);
-        assertThat(items).hasSize(resultCount);
+        assertThat(items).isNotEmpty();
     }
 
     @Test

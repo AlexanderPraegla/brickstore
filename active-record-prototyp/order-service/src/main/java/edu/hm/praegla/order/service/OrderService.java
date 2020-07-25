@@ -1,14 +1,13 @@
 package edu.hm.praegla.order.service;
 
 import edu.hm.praegla.client.account.AccountClient;
-import edu.hm.praegla.client.account.dto.AccountDTO;
 import edu.hm.praegla.client.error.FeignBadRequestException;
 import edu.hm.praegla.client.shoppingcart.ShoppingCartClient;
-import edu.hm.praegla.client.shoppingcart.dto.ShoppingCartDTO;
 import edu.hm.praegla.error.EntityNotFoundException;
 import edu.hm.praegla.error.InvalidOrderStatusChangeException;
 import edu.hm.praegla.error.NoItemsInShoppingCartException;
 import edu.hm.praegla.error.OrderNotCancelableException;
+import edu.hm.praegla.order.dto.CreateOrderDTO;
 import edu.hm.praegla.order.entity.Order;
 import edu.hm.praegla.order.entity.OrderStatus;
 import edu.hm.praegla.order.repository.OrderRepository;
@@ -55,17 +54,14 @@ public class OrderService {
         return orderRepository.findAllByAccountId(accountId, Sort.by(Sort.Direction.DESC, "createdOn"));
     }
 
-    public Order createOrder(long accountId) {
-        log.info("Create new order for accountId={}", accountId);
-        ShoppingCartDTO shoppingCart = shoppingCartClient.getShoppingCart(accountId);
+    public Order createOrder(CreateOrderDTO orderDTO) {
+        log.info("Create new order for accountId={}", orderDTO.getAccountId());
 
-        if (shoppingCart.getLineItems().size() == 0) {
+        if (orderDTO.getOrderItems().size() == 0) {
             throw new NoItemsInShoppingCartException();
         }
 
-        AccountDTO account = accountClient.getAccount(accountId);
-
-        Order order = orderStatusChangeService.saveOrder(account, shoppingCart);
+        Order order = orderStatusChangeService.saveOrder(orderDTO);
 
         //TODO check total from shopping cart vs total from order
 

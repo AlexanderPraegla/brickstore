@@ -1,6 +1,7 @@
 package edu.hm.praegla.order.controller;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import edu.hm.praegla.order.dto.CreateOrderDTO;
 import edu.hm.praegla.order.entity.Order;
 import edu.hm.praegla.order.entity.OrderStatus;
 import edu.hm.praegla.order.service.OrderService;
@@ -68,7 +69,7 @@ public class OrderController {
     @PreAuthorize("hasAuthority('customers')")
     @PutMapping
     public ResponseEntity<?> createOrder(UriComponentsBuilder b, @Valid @RequestBody CreateOrderDTO createOrderDTO) {
-        Order order = orderService.createOrder(createOrderDTO.accountId);
+        Order order = orderService.createOrder(createOrderDTO);
 
         UriComponents uriComponents = b.scheme(scheme).host(host).port(port).path("/orders/{orderId}").buildAndExpand(order.getId());
         return ResponseEntity.created(uriComponents.toUri()).build();
@@ -95,12 +96,6 @@ public class OrderController {
         private long orderId;
         @NotNull
         private OrderStatus status;
-    }
-
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    private static class CreateOrderDTO {
-        @Min(1)
-        public long accountId;
     }
 
     @Data

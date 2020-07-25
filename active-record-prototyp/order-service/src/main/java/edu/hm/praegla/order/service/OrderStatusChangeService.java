@@ -1,13 +1,13 @@
 package edu.hm.praegla.order.service;
 
 import edu.hm.praegla.client.account.AccountClient;
-import edu.hm.praegla.client.account.dto.AccountDTO;
 import edu.hm.praegla.client.account.dto.CreditAccountDTO;
 import edu.hm.praegla.client.account.dto.DebitAccountDTO;
 import edu.hm.praegla.client.inventory.InventoryClient;
 import edu.hm.praegla.client.inventory.dto.UpdateInventoryItemsStockDTO;
 import edu.hm.praegla.client.shoppingcart.dto.ShoppingCartDTO;
 import edu.hm.praegla.error.InvalidOrderStatusChangeException;
+import edu.hm.praegla.order.dto.CreateOrderDTO;
 import edu.hm.praegla.order.entity.Order;
 import edu.hm.praegla.order.entity.OrderItem;
 import edu.hm.praegla.order.entity.OrderStatus;
@@ -40,18 +40,17 @@ public class OrderStatusChangeService {
         this.accountClient = accountClient;
     }
 
-    protected Order saveOrder(AccountDTO account, ShoppingCartDTO shoppingCartDTO) {
-        log.info("Save new order for accountId={}", account.getId());
+    protected Order saveOrder(CreateOrderDTO orderDTO) {
+        log.info("Save new order for accountId={}", orderDTO.getAccountId());
         Order order = new Order();
-        order.setAccountId(account.getId());
+        order.setAccountId(orderDTO.getAccountId());
         order.setStatus(OrderStatus.CREATED);
-        BigDecimal total = calcTotalShoppingCart(shoppingCartDTO);
-        order.setTotal(total);
-        order.setShippingAddress(getShippingAddressFromAccount(account));
+        order.setTotal(orderDTO.getTotal());
+        order.setShippingAddress(getShippingAddressFromOrderDTO(orderDTO));
         order = orderRepository.save(order);
 
         List<OrderItem> orderItems = new ArrayList<>();
-        for (OrderItem orderItem : getOrderItemsFromShoppingCart(shoppingCartDTO)) {
+        for (OrderItem orderItem : getOrderItemsFromShoppingCart(orderDTO)) {
             orderItem.setOrder(order);
             OrderItem item = orderItemRepository.save(orderItem);
             orderItems.add(item);
@@ -62,7 +61,7 @@ public class OrderStatusChangeService {
     }
 
     protected void payOrder(Order order) {
-        log.info("Pay order with orderId={} for accountId={}", order.getId(), order.getAccountId());
+        log.info("Debit {} from accountId={} for orderId={}", order.getTotal(), order.getAccountId(), order.getId());
         accountClient.debitAccount(order.getAccountId(), new DebitAccountDTO(order.getTotal()));
         order.setStatus(OrderStatus.PAYED);
         orderRepository.save(order);
@@ -140,8 +139,8 @@ public class OrderStatusChangeService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public List<OrderItem> getOrderItemsFromShoppingCart(ShoppingCartDTO shoppingCart) {
-        return shoppingCart.getLineItems()
+    public List<OrderItem> getOrderItemsFromShoppingCart(CreateOrderDTO orderDTO) {
+        return orderDTO.getOrderItems()
                 .stream()
                 .map(lineItemDTO -> {
                     OrderItem orderItem = new OrderItem();
@@ -155,12 +154,12 @@ public class OrderStatusChangeService {
                 .collect(Collectors.toList());
     }
 
-    private ShippingAddress getShippingAddressFromAccount(AccountDTO accountDTO) {
+    private ShippingAddress getShippingAddressFromOrderDTO(CreateOrderDTO orderDTO) {
         ShippingAddress shippingAddress = new ShippingAddress();
-        shippingAddress.setCustomerName(accountDTO.getCustomer().getFirstname() + " " + accountDTO.getCustomer().getLastname());
-        shippingAddress.setCity(accountDTO.getAddress().getCity());
-        shippingAddress.setStreet(accountDTO.getAddress().getStreet());
-        shippingAddress.setPostalCode(accountDTO.getAddress().getPostalCode());
+        shippingAddress.setCustomerName(orderDTO.getShippingAddress().getCustomerName());
+        shippingAddress.setCity(orderDTO.getShippingAddress().getCity());
+        shippingAddress.setStreet(orderDTO.getShippingAddress().getStreet());
+        shippingAddress.setPostalCode(orderDTO.getShippingAddress().getPostalCode());
         return shippingAddress;
     }
 }
