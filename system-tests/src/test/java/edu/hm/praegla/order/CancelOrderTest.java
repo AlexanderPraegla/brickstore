@@ -49,7 +49,7 @@ public class CancelOrderTest extends BrickstoreRestTest {
         int orderQuantity = 5;
 
         testAccount = accountTestClient.createAccount(customerDTO, addressDTO);
-        accountTestClient.chargeAccount(testAccount.getId(), new BigDecimal(INITIAL_ACCOUNT_BALANCE));
+        accountTestClient.creditAccount(testAccount.getId(), new BigDecimal(INITIAL_ACCOUNT_BALANCE));
 
         inventoryItemDTO.setPrice(new BigDecimal("19.99"));
         testInventoryItem = inventoryTestClient.createInventoryItem(inventoryItemDTO);

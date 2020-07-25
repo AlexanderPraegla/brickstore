@@ -56,7 +56,7 @@ public class CreateOrderTests extends BrickstoreRestTest {
 
     @Test
     public void shouldCreateOrder(InventoryItemDTO inventoryItemOne, InventoryItemDTO inventoryItemTwo) {
-        accountTestClient.chargeAccount(testAccount.getId(), new BigDecimal("200.00"));
+        accountTestClient.creditAccount(testAccount.getId(), new BigDecimal("200.00"));
 
         inventoryItemOne.setPrice(new BigDecimal("29.99"));
         inventoryItemTwo.setPrice(new BigDecimal("19.99"));
@@ -101,7 +101,7 @@ public class CreateOrderTests extends BrickstoreRestTest {
             "'OUT_OF_STOCK', 0, 'OUT_OF_STOCK', 2",
             "'ITEM_NOT_ORDERABLE', 10, 'DEACTIVATED', 3"})
     public void shouldFailCreateOrderCausedByInventoryItem(String responseCode, int stock, String inventoryStatus, int orderQuantity, InventoryItemDTO inventoryItemDTO) {
-        accountTestClient.chargeAccount(testAccount.getId(), new BigDecimal("200.00"));
+        accountTestClient.creditAccount(testAccount.getId(), new BigDecimal("200.00"));
 
         InventoryItemDTO inventoryItem = inventoryTestClient.createInventoryItem(inventoryItemDTO);
         shoppingCartTestClient.addShoppingCartItem(testAccount.getId(), inventoryItem.getId(), orderQuantity);
@@ -130,7 +130,7 @@ public class CreateOrderTests extends BrickstoreRestTest {
     @CsvSource({"'BALANCE_INSUFFICIENT', 10.00, 'ACTIVATED', 5",
             "'ACCOUNT_DEACTIVATED', 200.00, 'DEACTIVATED', 5"})
     public void shouldFailCreateOrderCausedByAccount(String responseCode, BigDecimal newBalance, String accountStatus, int orderQuantity, InventoryItemDTO inventoryItemDTO) {
-        accountTestClient.chargeAccount(testAccount.getId(), newBalance);
+        accountTestClient.creditAccount(testAccount.getId(), newBalance);
 
         inventoryItemDTO.setPrice(new BigDecimal("19.99"));
         InventoryItemDTO inventoryItem = inventoryTestClient.createInventoryItem(inventoryItemDTO);
@@ -157,7 +157,7 @@ public class CreateOrderTests extends BrickstoreRestTest {
             "'OUT_OF_STOCK', 0, 'OUT_OF_STOCK', 2",
             "'ITEM_NOT_ORDERABLE', 10, 'DEACTIVATED', 3"})
     public void shouldFailCreateOrderWithTwoItemCausedByInventoryItem(String responseCode, int stock, String inventoryStatus, int orderQuantity, InventoryItemDTO inventoryItemDTO, InventoryItemDTO inventoryItemFailingDTO) {
-        accountTestClient.chargeAccount(testAccount.getId(), new BigDecimal("2000.00"));
+        accountTestClient.creditAccount(testAccount.getId(), new BigDecimal("2000.00"));
 
         inventoryItemDTO.setPrice(new BigDecimal("20.99"));
         InventoryItemDTO inventoryItem = inventoryTestClient.createInventoryItem(inventoryItemDTO);

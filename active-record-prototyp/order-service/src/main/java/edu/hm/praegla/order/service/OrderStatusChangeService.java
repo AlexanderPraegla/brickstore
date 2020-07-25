@@ -107,7 +107,7 @@ public class OrderStatusChangeService {
 
     protected void refundCancellation(Order order) {
         log.info("Refund total for order with orderId={} for accountId={}", order.getId(), order.getAccountId());
-        accountClient.chargeAccount(order.getAccountId(), new CreditAccountDTO(order.getTotal()));
+        accountClient.creditAccount(order.getAccountId(), new CreditAccountDTO(order.getTotal()));
 
         order.setStatus(OrderStatus.CANCELED_AMOUNT_REFUNDED);
         orderRepository.save(order);

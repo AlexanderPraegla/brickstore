@@ -95,7 +95,7 @@ public class AccountTest extends BrickstoreRestTest {
     @Test
     @Order(5)
     public void shouldActivateNewAccountByChargingAccount() {
-        accountTestClient.chargeAccount(testAccount.getId(), new BigDecimal("17.42"));
+        accountTestClient.creditAccount(testAccount.getId(), new BigDecimal("17.42"));
         AccountDTO account = accountTestClient.getAccountById(testAccount.getId());
 
         assertThat(account.getBalance()).isEqualTo(new BigDecimal("17.42"));
@@ -105,7 +105,7 @@ public class AccountTest extends BrickstoreRestTest {
     @Test
     @Order(6)
     public void shouldDebitAccountWithEnoughBalance() {
-        accountTestClient.chargeAccount(testAccount.getId(), new BigDecimal("10.00"));
+        accountTestClient.creditAccount(testAccount.getId(), new BigDecimal("10.00"));
 
         accountTestClient.debitAccount(testAccount.getId(), new BigDecimal("5.50"))
                 .then()
@@ -118,7 +118,7 @@ public class AccountTest extends BrickstoreRestTest {
     @Test
     @Order(7)
     public void shouldDenyDebitAccountWithNotEnoughBalance() {
-        accountTestClient.chargeAccount(testAccount.getId(), new BigDecimal("10.00"));
+        accountTestClient.creditAccount(testAccount.getId(), new BigDecimal("10.00"));
 
         ApiErrorDTO apiErrorDTO = accountTestClient.debitAccount(testAccount.getId(), new BigDecimal("11.00"))
                 .then()
@@ -132,12 +132,12 @@ public class AccountTest extends BrickstoreRestTest {
 
     @Test
     @Order(8)
-    public void shouldDenyChargeToDeactivatedAccount() {
+    public void shouldDenyCreditToDeactivatedAccount() {
         accountTestClient.updateAccountStatus(testAccount.getId(), "DEACTIVATED")
                 .then()
                 .statusCode(200);
 
-        ApiErrorDTO apiErrorDTO = accountTestClient.chargeAccount(testAccount.getId(), new BigDecimal("10.00"))
+        ApiErrorDTO apiErrorDTO = accountTestClient.creditAccount(testAccount.getId(), new BigDecimal("10.00"))
                 .then()
                 .statusCode(400)
                 .extract().as(ApiErrorDTO.class);

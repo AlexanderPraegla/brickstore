@@ -57,7 +57,7 @@ public class OrderTest extends BrickstoreRestTest {
         @BeforeEach
         public void beforeEach(CustomerDTO customerDTO, AddressDTO addressDTO, InventoryItemDTO inventoryItemDTO) {
             AccountDTO testAccount = accountTestClient.createAccount(customerDTO, addressDTO);
-            accountTestClient.chargeAccount(testAccount.getId(), new BigDecimal("200.00"));
+            accountTestClient.creditAccount(testAccount.getId(), new BigDecimal("200.00"));
 
             inventoryItemDTO.setPrice(new BigDecimal("19.99"));
             testInventoryItem = inventoryTestClient.createInventoryItem(inventoryItemDTO);
@@ -92,7 +92,7 @@ public class OrderTest extends BrickstoreRestTest {
         @BeforeAll
         public void beforeAll(CustomerDTO customerDTO, AddressDTO addressDTO, InventoryItemDTO inventoryItemDTO) {
             AccountDTO testAccount = accountTestClient.createAccount(customerDTO, addressDTO);
-            accountTestClient.chargeAccount(testAccount.getId(), new BigDecimal("200.00"));
+            accountTestClient.creditAccount(testAccount.getId(), new BigDecimal("200.00"));
 
             inventoryItemDTO.setPrice(new BigDecimal("19.99"));
             InventoryItemDTO testInventoryItem = inventoryTestClient.createInventoryItem(inventoryItemDTO);

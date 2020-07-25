@@ -16,7 +16,7 @@ public interface AccountClient {
     AccountDTO getAccount(@PathVariable long accountId);
 
     @RequestMapping(method = RequestMethod.POST, value = "accounts/{accountId}/credit")
-    void chargeAccount(@PathVariable long accountId, @RequestBody CreditAccountDTO creditAccountDTO);
+    void creditAccount(@PathVariable long accountId, @RequestBody CreditAccountDTO creditAccountDTO);
 
     @RequestMapping(method = RequestMethod.POST, value = "accounts/{accountId}/debit")
     void debitAccount(@PathVariable long accountId, @RequestBody DebitAccountDTO debitAccountDTO);

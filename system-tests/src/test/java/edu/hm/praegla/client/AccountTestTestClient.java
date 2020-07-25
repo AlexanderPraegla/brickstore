@@ -61,7 +61,7 @@ public class AccountTestTestClient extends ApiTestClient {
                 .post("accounts/{accountId}/status", accountId);
     }
 
-    public Response chargeAccount(long accountId, BigDecimal amount) {
+    public Response creditAccount(long accountId, BigDecimal amount) {
         Map<String, BigDecimal> body = new HashMap<>();
         body.put("creditAmount", amount);
         return given(spec)
