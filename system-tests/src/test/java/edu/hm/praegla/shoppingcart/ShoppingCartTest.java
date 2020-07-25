@@ -25,6 +25,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -39,6 +41,19 @@ public class ShoppingCartTest extends BrickstoreRestTest {
         shoppingCartTestClient = new ShoppingCartTestTestClient(spec);
         accountTestClient = new AccountTestTestClient(spec);
         inventoryTestClient = new InventoryTestTestClient(spec);
+    }
+
+    @Test
+    public void shouldGetAllAvailableShoppingCarts(CustomerDTO customerDTO, AddressDTO addressDTO, InventoryItemDTO inventoryItemDTO) {
+        AccountDTO testAccount = accountTestClient.createAccount(customerDTO, addressDTO);
+        InventoryItemDTO inventoryItem = inventoryTestClient.createInventoryItem(inventoryItemDTO);
+        shoppingCartTestClient.addShoppingCartItem(testAccount.getId(), inventoryItem.getId(), 1)
+                .then()
+                .statusCode(200);
+
+        List<ShoppingCartDTO> shoppingCarts = shoppingCartTestClient.getShoppingCarts();
+        assertThat(shoppingCarts).isNotEmpty();
+        assertThat(shoppingCarts.size()).isGreaterThanOrEqualTo(1);
     }
 
     @Nested
