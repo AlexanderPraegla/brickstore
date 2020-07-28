@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>edu.hm.brickstore</groupId>
-	<artifactId>account-service</artifactId>
+	<artifactId>http-based-account-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>account-service</name>
+	<name>http-based-account-service</name>
 	<description>Account microservice for brickstore</description>
 
 	<properties>

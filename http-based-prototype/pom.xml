@@ -10,17 +10,16 @@
     <packaging>pom</packaging>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>event-sourcing-prototyp</artifactId>
+    <artifactId>http-based-prototype</artifactId>
 
     <modules>
-        <module>event-account-service</module>
-        <module>event-inventory-service</module>
-        <module>event-shopping-cart-service</module>
-                <module>event-order-service</module>
+        <module>http-based-account-service</module>
+        <module>http-based-inventory-service</module>
+        <module>http-based-shopping-cart-service</module>
+        <module>http-based-order-service</module>
     </modules>
 
     <build>
         <defaultGoal>clean install</defaultGoal>
     </build>
-
 </project>

@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>edu.hm.brickstore</groupId>
-    <artifactId>event-inventory-service</artifactId>
+    <artifactId>event-based-inventory-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>event-inventory-service</name>
+    <name>event-based-inventory-service</name>
     <description>Inventory microservice for brickstore</description>
 
     <properties>

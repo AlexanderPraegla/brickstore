@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>edu.hm.brickstore</groupId>
-    <artifactId>order-service</artifactId>
+    <artifactId>http-based-order-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>order-service</name>
+    <name>http-based-order-service</name>
     <description>order microservice for brickstore</description>
 
     <properties>

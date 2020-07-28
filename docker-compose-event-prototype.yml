@@ -58,10 +58,10 @@ services:
     environment:
       - "SPRING_PROFILES_ACTIVE=docker-compose"
 
-  event-account-service:
-    build: ./event-sourcing-prototyp/event-account-service
-    container_name: event-account-service
-    image: event-account-service:latest
+  event-based-account-service:
+    build: ./event-based-sourcing-prototype/event-based-account-service
+    container_name: event-based-account-service
+    image: event-based-account-service:latest
     expose:
       - "8100"
     ports:
@@ -74,10 +74,10 @@ services:
       - rabbitmq
     environment:
       - "SPRING_PROFILES_ACTIVE=docker-compose"
-  event-inventory-service:
-    build: ./event-sourcing-prototyp/event-inventory-service
-    container_name: event-inventory-service
-    image: event-inventory-service:latest
+  event-based-inventory-service:
+    build: ./event-based-sourcing-prototype/event-based-inventory-service
+    container_name: event-based-inventory-service
+    image: event-based-inventory-service:latest
     expose:
       - "8101"
     ports:
@@ -90,10 +90,10 @@ services:
       - rabbitmq
     environment:
       - "SPRING_PROFILES_ACTIVE=docker-compose"
-  event-order-service:
-    build: ./event-sourcing-prototyp/event-order-service
-    container_name: event-order-service
-    image: event-order-service:latest
+  event-based-order-service:
+    build: ./event-based-sourcing-prototype/event-based-order-service
+    container_name: event-based-order-service
+    image: event-based-order-service:latest
     expose:
       - "8103"
     ports:
@@ -106,10 +106,10 @@ services:
       - rabbitmq
     environment:
       - "SPRING_PROFILES_ACTIVE=docker-compose"
-  event-shopping-cart-service:
-    build: ./event-sourcing-prototyp/event-shopping-cart-service
-    container_name: event-shopping-cart-service-service
-    image: event-shopping-cart-service-service:latest
+  event-based-shopping-cart-service:
+    build: ./event-based-sourcing-prototype/event-based-shopping-cart-service
+    container_name: event-based-shopping-cart-service-service
+    image: event-based-shopping-cart-service-service:latest
     expose:
       - "8102"
     ports:

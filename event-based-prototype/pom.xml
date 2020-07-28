@@ -10,16 +10,17 @@
     <packaging>pom</packaging>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>active-record-prototyp</artifactId>
+    <artifactId>event-based-sourcing-prototyp</artifactId>
 
     <modules>
-        <module>account-service</module>
-        <module>inventory-service</module>
-        <module>shopping-cart-service</module>
-        <module>order-service</module>
+        <module>event-based-account-service</module>
+        <module>event-based-inventory-service</module>
+        <module>event-based-shopping-cart-service</module>
+        <module>event-based-order-service</module>
     </modules>
 
     <build>
         <defaultGoal>clean install</defaultGoal>
     </build>
+
 </project>

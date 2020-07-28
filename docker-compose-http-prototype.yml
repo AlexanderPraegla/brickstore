@@ -41,10 +41,10 @@ services:
     environment:
       - "SPRING_PROFILES_ACTIVE=docker-compose"
 
-  http-account-service:
-    build: ./active-record-prototyp/account-service
-    container_name: http-account-service
-    image: http-account-service:latest
+  http-based-account-service:
+    build: ./http-based-prototype/http-based-account-service
+    container_name: http-based-account-service
+    image: http-based-account-service:latest
     expose:
       - "8100"
     ports:
@@ -53,10 +53,10 @@ services:
       - discovery-service
     environment:
       - "SPRING_PROFILES_ACTIVE=docker-compose"
-  http-inventory-service:
-    build: ./active-record-prototyp/inventory-service
-    container_name: http-inventory-service
-    image: http-inventory-service:latest
+  http-based-inventory-service:
+    build: ./http-based-prototype/http-based-inventory-service
+    container_name: http-based-inventory-service
+    image: http-based-inventory-service:latest
     expose:
       - "8101"
     ports:
@@ -65,10 +65,10 @@ services:
       - discovery-service
     environment:
       - "SPRING_PROFILES_ACTIVE=docker-compose"
-  http-order-service:
-    build: ./active-record-prototyp/order-service
-    container_name: http-order-service
-    image: http-order-service:latest
+  http-based-order-service:
+    build: ./http-based-prototype/http-based-order-service
+    container_name: http-based-order-service
+    image: http-based-order-service:latest
     expose:
       - "8103"
     ports:
@@ -77,10 +77,10 @@ services:
       - discovery-service
     environment:
       - "SPRING_PROFILES_ACTIVE=docker-compose"
-  http-shopping-cart-service:
-    build: ./active-record-prototyp/shopping-cart-service
-    container_name: http-shopping-cart-service-service
-    image: http-shopping-cart-service-service:latest
+  http-based-shopping-cart-service:
+    build: ./http-based-prototype/http-based-shopping-cart-service
+    container_name: http-based-shopping-cart-service-service
+    image: http-based-shopping-cart-service-service:latest
     expose:
       - "8102"
     ports:
