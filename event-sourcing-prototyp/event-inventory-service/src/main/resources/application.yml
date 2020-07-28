@@ -7,9 +7,6 @@ spring:
       port: 27017
       database: inventory-service-db
       uri: mongodb://localhost:27017/inventory-service-db?replicaSet=rs0
-  #      password: admin
-  #      username: adminpwd
-  #      authentication-database: auth_db
   jpa:
     hibernate:
       ddl-auto: create

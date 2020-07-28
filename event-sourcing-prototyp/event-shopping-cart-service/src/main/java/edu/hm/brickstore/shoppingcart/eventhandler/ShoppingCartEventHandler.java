@@ -15,7 +15,9 @@ import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-
+/**
+ * Event handler for all shopping cart events for the query model
+ */
 @Slf4j
 @Component
 @RabbitListener(queues = MessagingRabbitMqConfig.SHOPPING_CART_QUEUE)

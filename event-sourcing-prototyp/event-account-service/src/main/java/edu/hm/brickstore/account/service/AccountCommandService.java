@@ -43,8 +43,9 @@ public class AccountCommandService {
         this.messagingService = messagingService;
     }
 
-    public CreateAccountDTO createAccountCommand(CreateAccountDTO createAccountDTO) {
+    public CreateAccountDTO createAccount(CreateAccountDTO createAccountDTO) {
         log.info("Create new account for customer={} with address={}", createAccountDTO.getCustomer(), createAccountDTO.getAddress());
+
         long accountId = sequenceGenerator.generateSequence(Account.SEQUENCE_NAME);
         createAccountDTO.setId(accountId);
 
@@ -58,6 +59,7 @@ public class AccountCommandService {
 
     public void debitMoneyFromAccount(long accountId, DebitAccountDTO debitAccountDTO) {
         log.info("Debit {} from accountId={}", debitAccountDTO.getDebitAmount(), accountId);
+
         Account account = accountQueryService.getAccount(accountId);
 
         if (account.getStatus() == AccountStatus.DEACTIVATED) {
@@ -76,10 +78,13 @@ public class AccountCommandService {
 
     public void creditMoneyToAccount(long accountId, CreditAccountDTO creditAccountDTO) {
         log.info("Credit {} to accountId={}", creditAccountDTO.getCreditAmount(), accountId);
+
         Account account = accountQueryService.getAccount(accountId);
+
         if (account.getStatus() == AccountStatus.DEACTIVATED) {
             throw new AccountDeactivatedException();
         }
+
         MoneyCreditedEvent event = new MoneyCreditedEvent(accountId, creditAccountDTO);
         eventRepository.save(event);
         messagingService.sendMessage(event, "account.balance.credited");
@@ -87,7 +92,10 @@ public class AccountCommandService {
 
     public void updateStatus(long accountId, @Valid UpdateAccountStatusDTO updateAccountStatusDTO) {
         log.info("Update status for accountId={} to {}", accountId, updateAccountStatusDTO.getStatus());
+
+        //This is neccessary to check if the account exists. If not an EntityNotFoundException is thrown
         Account account = accountQueryService.getAccount(accountId);
+
         Event<UpdateAccountStatusDTO> event = new AccountStatusUpdatedEvent(accountId, updateAccountStatusDTO);
         eventRepository.save(event);
         messagingService.sendMessage(event, "account.status.updated");
@@ -95,7 +103,10 @@ public class AccountCommandService {
 
     public void updateCustomer(long accountId, UpdateCustomerDTO updateCustomerDTO) {
         log.info("Update customer information for accountId={}", accountId);
+
+        //This is neccessary to check if the account exists. If not an EntityNotFoundException is thrown
         Account account = accountQueryService.getAccount(accountId);
+
         AccountCustomerUpdatedEvent event = new AccountCustomerUpdatedEvent(accountId, updateCustomerDTO);
         eventRepository.save(event);
         messagingService.sendMessage(event, "account.customer.updated");

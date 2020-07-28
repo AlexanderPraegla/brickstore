@@ -9,6 +9,9 @@ import org.springframework.data.mongodb.MongoDatabaseFactory;
 import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 
+/**
+ * Adding transaction manager to mongoDB.
+ */
 @SuppressWarnings("NullableProblems")
 @Configuration
 public class MongoDbClientConfig extends AbstractMongoClientConfiguration {

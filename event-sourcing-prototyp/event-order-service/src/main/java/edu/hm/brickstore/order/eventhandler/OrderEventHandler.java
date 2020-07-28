@@ -29,7 +29,9 @@ import org.springframework.stereotype.Component;
 
 import static edu.hm.brickstore.messaging.config.MessagingRabbitMqConfig.ORDER_QUEUE;
 
-
+/**
+ * Event handler for all order events
+ */
 @Slf4j
 @Component
 @RabbitListener(queues = ORDER_QUEUE)

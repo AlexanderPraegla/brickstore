@@ -23,15 +23,18 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
+/**
+ * Command event handler for all external events from the order-service concerning the account-service
+ */
 @Slf4j
 @Component
 @RabbitListener(queues = MessagingRabbitMqConfig.ORDER_TO_ACCOUNT_QUEUE)
-public class OrderEventHandler {
+public class OrderCommandEventHandler {
 
     private final AccountCommandService accountCommandService;
     private final MessagingService messagingService;
 
-    public OrderEventHandler(AccountCommandService accountCommandService, MessagingService messagingService) {
+    public OrderCommandEventHandler(AccountCommandService accountCommandService, MessagingService messagingService) {
         this.accountCommandService = accountCommandService;
         this.messagingService = messagingService;
     }

@@ -37,7 +37,11 @@ public class OrderCommandService {
         this.messagingService = messagingService;
     }
 
-
+    /**
+     * Trigger the workflow to create an order
+     * @param order
+     * @return
+     */
     public Order createOrder(Order order) {
         log.info("Create new order for accountId={}", order.getAccountId());
         long orderId = sequenceGeneratorService.generateSequence(Order.SEQUENCE_NAME);
@@ -59,6 +63,10 @@ public class OrderCommandService {
         return order;
     }
 
+    /**
+     * Update the status of an order manually
+     * @param statusUpdateDTO
+     */
     public void updateStatus(OrderStatusUpdateDTO statusUpdateDTO) {
         log.info("Update status for orderId={} to {}", statusUpdateDTO.getOrderId(), statusUpdateDTO.getStatus());
         OrderStatus newStatus = statusUpdateDTO.getStatus();
@@ -87,6 +95,10 @@ public class OrderCommandService {
         messagingService.sendMessage(event, "order.status.updated");
     }
 
+    /**
+     * Trigger the workflow to cancel an order
+     * @param orderId
+     */
     public void cancelOrder(long orderId) {
         log.info("Cancel order with orderId={}", orderId);
         Order order = orderQueryService.getOrder(orderId);
@@ -122,7 +134,7 @@ public class OrderCommandService {
 
     }
 
-    protected void payOrder(Order order) {
+    private void payOrder(Order order) {
         if (order.getStatus() != OrderStatus.CREATED) {
             throw new InvalidOrderStatusChangeException(order.getStatus(), OrderStatus.PAYED);
         }
@@ -132,7 +144,7 @@ public class OrderCommandService {
         messagingService.sendMessage(event, "create.order.retry");
     }
 
-    protected void gatherOrderInventoryItems(Order order) {
+    private void gatherOrderInventoryItems(Order order) {
         if (order.getStatus() != OrderStatus.PAYED) {
             throw new InvalidOrderStatusChangeException(order.getStatus(), OrderStatus.PROCESSED);
         }
@@ -142,7 +154,7 @@ public class OrderCommandService {
         messagingService.sendMessage(debitedEvent, "payed.order.retry");
     }
 
-    protected void shipOrder(Order order, OrderStatusUpdateDTO statusUpdateDTO) {
+    private void shipOrder(Order order, OrderStatusUpdateDTO statusUpdateDTO) {
         if (order.getStatus() != OrderStatus.PROCESSED) {
             throw new InvalidOrderStatusChangeException(order.getStatus(), OrderStatus.SHIPPED);
         }
@@ -152,7 +164,7 @@ public class OrderCommandService {
         messagingService.sendMessage(event, "order.status.updated");
     }
 
-    protected void deliverOrder(Order order, OrderStatusUpdateDTO statusUpdateDTO) {
+    private void deliverOrder(Order order, OrderStatusUpdateDTO statusUpdateDTO) {
         if (order.getStatus() != OrderStatus.SHIPPED) {
             throw new InvalidOrderStatusChangeException(order.getStatus(), OrderStatus.DELIVERED);
         }

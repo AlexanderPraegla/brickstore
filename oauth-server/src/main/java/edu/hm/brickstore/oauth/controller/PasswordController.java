@@ -17,6 +17,12 @@ public class PasswordController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * This endpoint exists only for testing purpose.
+     * If you need to create an new user, use this endpoint to encrypt a new password.
+     * @param password Password that should be encrypted
+     * @return encrypted password
+     */
     @PostMapping
     public String generatePassword(@RequestBody String password) {
         return passwordEncoder.encode(password);

@@ -18,6 +18,9 @@ import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.Min;
 
+/**
+ * Event handler for all internal inventory events for the query model
+ */
 @Slf4j
 @Component
 @RabbitListener(queues = MessagingRabbitMqConfig.INVENTORY_QUEUE)

@@ -65,6 +65,10 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
         clients.withClientDetails(jdbcClientDetailsService);
     }
 
+    /**
+     * Set the signing key for the JWT tokens
+     * @return
+     */
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
@@ -81,6 +85,10 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
         return defaultTokenServices;
     }
 
+    /**
+     * Configure the password encoder that is used to validate passwords.
+     * @return
+     */
     @Bean
     public PasswordEncoder userPasswordEncoder() {
         return new BCryptPasswordEncoder(bcryptStrength);

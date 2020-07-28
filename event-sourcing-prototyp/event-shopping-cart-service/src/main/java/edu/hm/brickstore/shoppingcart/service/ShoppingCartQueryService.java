@@ -2,7 +2,6 @@ package edu.hm.brickstore.shoppingcart.service;
 
 import edu.hm.brickstore.account.entity.Account;
 import edu.hm.brickstore.account.service.AccountQueryService;
-import edu.hm.brickstore.error.EntityNotFoundException;
 import edu.hm.brickstore.inventory.entity.InventoryItem;
 import edu.hm.brickstore.inventory.service.InventoryQueryService;
 import edu.hm.brickstore.shoppingcart.dto.LineItemDTO;
@@ -27,13 +26,15 @@ public class ShoppingCartQueryService {
     private final ShoppingCartRepository shoppingCartRepository;
     private final InventoryQueryService inventoryQueryService;
     private final AccountQueryService accountQueryService;
+    private final SequenceGeneratorService sequenceGeneratorService;
 
     public ShoppingCartQueryService(ShoppingCartRepository shoppingCartRepository,
                                     InventoryQueryService inventoryQueryService,
-                                    AccountQueryService accountQueryService) {
+                                    AccountQueryService accountQueryService, SequenceGeneratorService sequenceGeneratorService) {
         this.shoppingCartRepository = shoppingCartRepository;
         this.inventoryQueryService = inventoryQueryService;
         this.accountQueryService = accountQueryService;
+        this.sequenceGeneratorService = sequenceGeneratorService;
     }
 
     public List<ShoppingCartDTO> getShoppingCarts() {
@@ -51,7 +52,19 @@ public class ShoppingCartQueryService {
 
     public ShoppingCart getShoppingCart(long accountId) {
         log.info("Get shopping cart for accountId={}", accountId);
-        return shoppingCartRepository.findByAccountId(accountId).orElseThrow(() -> new EntityNotFoundException(ShoppingCart.class, "accountId", accountId));
+        Optional<ShoppingCart> shoppingCartOptional = shoppingCartRepository.findByAccountId(accountId);
+
+        if (shoppingCartOptional.isPresent()) {
+            return shoppingCartOptional.get();
+        } else {
+            ShoppingCart shoppingCart = new ShoppingCart();
+            shoppingCart.setId(sequenceGeneratorService.generateSequence(ShoppingCart.SEQUENCE_NAME));
+
+            Account account = accountQueryService.getAccount(accountId);
+            shoppingCart.setAccountId(accountId);
+            shoppingCart.setCustomerName(account.getCustomerName());
+            return shoppingCartRepository.save(shoppingCart);
+        }
     }
 
     private ShoppingCartDTO getShoppingCartDTO(ShoppingCart shoppingCart) {

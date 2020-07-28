@@ -10,6 +10,11 @@ import java.security.Principal;
 @RequestMapping("/user")
 public class UserController {
 
+    /**
+     * this endpoint is used to authorize an user in the resource servers and get the user information
+     * @param principal
+     * @return
+     */
     @GetMapping("/me")
     public Principal userInfo(Principal principal) {
         return principal;

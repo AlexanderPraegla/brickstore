@@ -43,6 +43,7 @@ public class InventoryCommandService {
 
     public InventoryItem createInventoryItem(InventoryItem inventoryItem) {
         log.info("Create new inventory item: {}", inventoryItem);
+
         long inventoryItemId = sequenceGenerator.generateSequence(InventoryItem.SEQUENCE_NAME);
         inventoryItem.setId(inventoryItemId);
 
@@ -55,6 +56,8 @@ public class InventoryCommandService {
     }
 
     public void updateInventoryItem(long inventoryItemId, InventoryItem inventoryItem) {
+        log.info("Updating inventory item with id={}", inventoryItemId);
+
         InventoryItemUpdatedEvent event = new InventoryItemUpdatedEvent(inventoryItemId, inventoryItem);
         eventRepository.save(event);
 
@@ -71,6 +74,7 @@ public class InventoryCommandService {
 
     private InventoryItemGatheredEvent gatherInventoryItem(UpdateInventoryItemsStockDTO.Item item) {
         log.info("Gather {} from inventory item with inventoryItemId={}", item.getQuantity(), item.getInventoryItemId());
+
         InventoryItem inventoryItem = inventoryQueryService.getInventoryItem(item.getInventoryItemId());
         @Min(0) int currentStock = inventoryItem.getStock();
 
@@ -102,6 +106,7 @@ public class InventoryCommandService {
 
     private InventoryItemStockedUpEvent stockUpInventoryItem(UpdateInventoryItemsStockDTO.Item item) {
         log.info("Add {} to inventory item with inventoryItemId={}", item.getQuantity(), item.getInventoryItemId());
+
         long inventoryItemId = item.getInventoryItemId();
         //Necessary for API error response if entity does not exist
         InventoryItem inventoryItem = inventoryQueryService.getInventoryItem(inventoryItemId);
@@ -114,6 +119,8 @@ public class InventoryCommandService {
 
     public void updateStatus(long inventoryItemId, @Valid UpdateInventoryItemStatusDTO updateInventoryItemStatusDTO) {
         log.info("Update status of inventory item with inventoryItemId={} to {}", inventoryItemId, updateInventoryItemStatusDTO.getStatus());
+
+        //Necessary for API error response if entity does not exist
         InventoryItem inventoryItem = inventoryQueryService.getInventoryItem(inventoryItemId);
 
         InventoryItemStatusUpdatedEvent event = new InventoryItemStatusUpdatedEvent(inventoryItemId, updateInventoryItemStatusDTO);

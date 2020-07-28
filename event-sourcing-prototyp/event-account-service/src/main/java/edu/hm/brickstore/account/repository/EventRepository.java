@@ -8,5 +8,4 @@ import java.util.List;
 
 public interface EventRepository extends MongoRepository<Event, String> {
 
-    List<Event> findAllByAggregateId(long id, Sort sort);
 }

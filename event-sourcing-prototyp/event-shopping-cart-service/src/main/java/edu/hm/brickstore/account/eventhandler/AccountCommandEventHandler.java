@@ -21,21 +21,20 @@ import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * Command event handler for all external events from the account-service concerning the order-service
+ */
 @Slf4j
 @Component
 @RabbitListener(queues = MessagingRabbitMqConfig.ACCOUNT_TO_SHOPPING_CART_QUEUE)
-public class AccountEventHandler {
+public class AccountCommandEventHandler {
 
     private final AccountRepository accountRepository;
     private final AccountQueryService accountQueryService;
-    private final ShoppingCartRepository shoppingCartRepository;
-    private final SequenceGeneratorService sequenceGeneratorService;
 
-    public AccountEventHandler(AccountRepository accountRepository, AccountQueryService accountQueryService, ShoppingCartRepository shoppingCartRepository, SequenceGeneratorService sequenceGeneratorService) {
+    public AccountCommandEventHandler(AccountRepository accountRepository, AccountQueryService accountQueryService) {
         this.accountRepository = accountRepository;
         this.accountQueryService = accountQueryService;
-        this.shoppingCartRepository = shoppingCartRepository;
-        this.sequenceGeneratorService = sequenceGeneratorService;
     }
 
     @RabbitHandler
@@ -51,12 +50,6 @@ public class AccountEventHandler {
         account.setCustomerName(customerName);
         account.setStatus(AccountStatus.CREATED);
         accountRepository.save(account);
-
-        ShoppingCart shoppingCart = new ShoppingCart();
-        shoppingCart.setId(sequenceGeneratorService.generateSequence(ShoppingCart.SEQUENCE_NAME));
-        shoppingCart.setAccountId(accountId);
-        shoppingCart.setCustomerName(customerName);
-        shoppingCartRepository.save(shoppingCart);
     }
 
     @RabbitHandler

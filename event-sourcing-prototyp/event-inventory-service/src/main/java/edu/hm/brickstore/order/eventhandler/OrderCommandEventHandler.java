@@ -25,15 +25,18 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Command event handler for all external events from the order-service concerning the inventory-service
+ */
 @Slf4j
 @Component
 @RabbitListener(queues = MessagingRabbitMqConfig.ORDER_TO_INVENTORY_QUEUE)
-public class OrderEventHandler {
+public class OrderCommandEventHandler {
 
     private final InventoryCommandService inventoryCommandService;
     private final MessagingService messagingService;
 
-    public OrderEventHandler(InventoryCommandService inventoryCommandService, MessagingService messagingService) {
+    public OrderCommandEventHandler(InventoryCommandService inventoryCommandService, MessagingService messagingService) {
         this.inventoryCommandService = inventoryCommandService;
         this.messagingService = messagingService;
     }

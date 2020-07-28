@@ -23,6 +23,9 @@ import org.springframework.stereotype.Component;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
+/**
+ * Event handler for all internal account events for the query model
+ */
 @Slf4j
 @Component
 @RabbitListener(queues = MessagingRabbitMqConfig.ACCOUNT_QUEUE)

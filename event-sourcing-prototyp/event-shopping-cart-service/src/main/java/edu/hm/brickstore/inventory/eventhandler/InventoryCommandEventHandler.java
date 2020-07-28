@@ -18,14 +18,17 @@ import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.Min;
 
+/**
+ * Command event handler for all external events from the inventory-service concerning the order-service
+ */
 @Slf4j
 @Component
 @RabbitListener(queues = MessagingRabbitMqConfig.INVENTORY_TO_SHOPPING_CART_QUEUE)
-public class InventoryEventHandler {
+public class InventoryCommandEventHandler {
 
     private final InventoryItemRepository inventoryItemRepository;
 
-    public InventoryEventHandler(InventoryItemRepository inventoryItemRepository) {
+    public InventoryCommandEventHandler(InventoryItemRepository inventoryItemRepository) {
         this.inventoryItemRepository = inventoryItemRepository;
     }
 

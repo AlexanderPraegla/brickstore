@@ -47,7 +47,7 @@ public class AccountCommandController {
     @PreAuthorize("hasAuthority('admins')")
     @PutMapping
     public ResponseEntity<?> createAccount(UriComponentsBuilder b, @Valid @RequestBody CreateAccountDTO account) {
-        CreateAccountDTO createdAccount = accountCommandService.createAccountCommand(account);
+        CreateAccountDTO createdAccount = accountCommandService.createAccount(account);
         UriComponents uriComponents = b.scheme(scheme).host(host).port(port).path("/accounts/{accountId}").buildAndExpand(createdAccount.getId());
         return ResponseEntity.created(uriComponents.toUri()).build();
     }

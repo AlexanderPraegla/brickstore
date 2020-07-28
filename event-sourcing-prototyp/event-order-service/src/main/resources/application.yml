@@ -6,9 +6,6 @@ spring:
       host: localhost
       port: 27017
       database: order-service-db
-  #      password: admin
-  #      username: adminpwd
-  #      authentication-database: auth_db
   jpa:
     hibernate:
       ddl-auto: create
