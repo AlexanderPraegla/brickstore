@@ -4,11 +4,11 @@ import edu.hm.brickstore.BrickstoreRestTest;
 import edu.hm.brickstore.account.dto.AccountDTO;
 import edu.hm.brickstore.account.dto.AddressDTO;
 import edu.hm.brickstore.account.dto.CustomerDTO;
-import edu.hm.brickstore.client.AccountTestTestClient;
+import edu.hm.brickstore.client.AccountTestClient;
 import edu.hm.brickstore.client.AwaitilityHelper;
-import edu.hm.brickstore.client.InventoryTestTestClient;
-import edu.hm.brickstore.client.OrderTestTestClient;
-import edu.hm.brickstore.client.ShoppingCartTestTestClient;
+import edu.hm.brickstore.client.InventoryTestClient;
+import edu.hm.brickstore.client.OrderTestClient;
+import edu.hm.brickstore.client.ShoppingCartTestClient;
 import edu.hm.brickstore.error.dto.ApiErrorDTO;
 import edu.hm.brickstore.inventory.dto.InventoryItemDTO;
 import edu.hm.brickstore.order.dto.OrderDTO;
@@ -27,16 +27,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith({AddressParameterResolver.class, CustomerParameterResolver.class, InventoryItemParameterResolver.class})
 public class CancelOrderTest extends BrickstoreRestTest {
 
-    private final InventoryTestTestClient inventoryTestClient;
-    private final AccountTestTestClient accountTestClient;
-    private final OrderTestTestClient orderTestClient;
-    private final ShoppingCartTestTestClient shoppingCartTestClient;
+    private final InventoryTestClient inventoryTestClient;
+    private final AccountTestClient accountTestClient;
+    private final OrderTestClient orderTestClient;
+    private final ShoppingCartTestClient shoppingCartTestClient;
 
     public CancelOrderTest() {
-        inventoryTestClient = new InventoryTestTestClient(spec);
-        orderTestClient = new OrderTestTestClient(spec);
-        accountTestClient = new AccountTestTestClient(spec);
-        shoppingCartTestClient = new ShoppingCartTestTestClient(spec);
+        inventoryTestClient = new InventoryTestClient(spec);
+        orderTestClient = new OrderTestClient(spec);
+        accountTestClient = new AccountTestClient(spec);
+        shoppingCartTestClient = new ShoppingCartTestClient(spec);
     }
 
     public static final int INITIAL_ITEM_STOCK = 5;

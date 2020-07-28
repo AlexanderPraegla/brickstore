@@ -9,9 +9,9 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 
-public class ShoppingCartTestTestClient extends ApiTestClient {
+public class ShoppingCartTestClient extends ApiTestClient {
 
-    public ShoppingCartTestTestClient(RequestSpecification spec) {
+    public ShoppingCartTestClient(RequestSpecification spec) {
         super(spec);
     }
 

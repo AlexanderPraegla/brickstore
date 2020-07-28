@@ -1,7 +1,7 @@
 package edu.hm.brickstore.inventory;
 
 import edu.hm.brickstore.BrickstoreRestTest;
-import edu.hm.brickstore.client.InventoryTestTestClient;
+import edu.hm.brickstore.client.InventoryTestClient;
 import edu.hm.brickstore.error.dto.ApiErrorDTO;
 import edu.hm.brickstore.inventory.dto.InventoryItemDTO;
 import edu.hm.brickstore.parameterResolver.InventoryItemParameterResolver;
@@ -22,11 +22,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith(InventoryItemParameterResolver.class)
 public class InventoryTest extends BrickstoreRestTest {
 
-    private final InventoryTestTestClient inventoryTestClient;
+    private final InventoryTestClient inventoryTestClient;
     private InventoryItemDTO testInventoryItem;
 
     public InventoryTest() {
-        this.inventoryTestClient = new InventoryTestTestClient(spec);
+        this.inventoryTestClient = new InventoryTestClient(spec);
     }
 
     @BeforeEach

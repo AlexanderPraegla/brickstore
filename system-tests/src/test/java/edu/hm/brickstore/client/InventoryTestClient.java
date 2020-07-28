@@ -12,9 +12,9 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class InventoryTestTestClient extends ApiTestClient {
+public class InventoryTestClient extends ApiTestClient {
 
-    public InventoryTestTestClient(RequestSpecification spec) {
+    public InventoryTestClient(RequestSpecification spec) {
         super(spec);
     }
 

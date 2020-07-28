@@ -14,9 +14,9 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
-public class AccountTestTestClient extends ApiTestClient {
+public class AccountTestClient extends ApiTestClient {
 
-    public AccountTestTestClient(RequestSpecification spec) {
+    public AccountTestClient(RequestSpecification spec) {
         super(spec);
     }
 

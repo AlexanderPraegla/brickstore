@@ -18,9 +18,9 @@ import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 
-public class OrderTestTestClient extends ApiTestClient {
+public class OrderTestClient extends ApiTestClient {
 
-    public OrderTestTestClient(RequestSpecification spec) {
+    public OrderTestClient(RequestSpecification spec) {
         super(spec);
     }
 

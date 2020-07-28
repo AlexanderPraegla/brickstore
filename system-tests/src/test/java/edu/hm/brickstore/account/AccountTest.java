@@ -4,7 +4,7 @@ import edu.hm.brickstore.BrickstoreRestTest;
 import edu.hm.brickstore.account.dto.AccountDTO;
 import edu.hm.brickstore.account.dto.AddressDTO;
 import edu.hm.brickstore.account.dto.CustomerDTO;
-import edu.hm.brickstore.client.AccountTestTestClient;
+import edu.hm.brickstore.client.AccountTestClient;
 import edu.hm.brickstore.error.dto.ApiErrorDTO;
 import edu.hm.brickstore.parameterResolver.AddressParameterResolver;
 import edu.hm.brickstore.parameterResolver.CustomerParameterResolver;
@@ -23,11 +23,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith({AddressParameterResolver.class, CustomerParameterResolver.class})
 public class AccountTest extends BrickstoreRestTest {
 
-    private final AccountTestTestClient accountTestClient;
+    private final AccountTestClient accountTestClient;
     private AccountDTO testAccount;
 
     public AccountTest() {
-        accountTestClient = new AccountTestTestClient(spec);
+        accountTestClient = new AccountTestClient(spec);
     }
 
     @BeforeEach

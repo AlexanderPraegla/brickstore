@@ -4,9 +4,9 @@ import edu.hm.brickstore.BrickstoreRestTest;
 import edu.hm.brickstore.account.dto.AccountDTO;
 import edu.hm.brickstore.account.dto.AddressDTO;
 import edu.hm.brickstore.account.dto.CustomerDTO;
-import edu.hm.brickstore.client.AccountTestTestClient;
-import edu.hm.brickstore.client.InventoryTestTestClient;
-import edu.hm.brickstore.client.ShoppingCartTestTestClient;
+import edu.hm.brickstore.client.AccountTestClient;
+import edu.hm.brickstore.client.InventoryTestClient;
+import edu.hm.brickstore.client.ShoppingCartTestClient;
 import edu.hm.brickstore.error.dto.ApiErrorDTO;
 import edu.hm.brickstore.inventory.dto.InventoryItemDTO;
 import edu.hm.brickstore.parameterResolver.AddressParameterResolver;
@@ -33,14 +33,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ExtendWith({AddressParameterResolver.class, CustomerParameterResolver.class, InventoryItemParameterResolver.class})
 public class ShoppingCartTest extends BrickstoreRestTest {
 
-    private final ShoppingCartTestTestClient shoppingCartTestClient;
-    private final AccountTestTestClient accountTestClient;
-    private final InventoryTestTestClient inventoryTestClient;
+    private final ShoppingCartTestClient shoppingCartTestClient;
+    private final AccountTestClient accountTestClient;
+    private final InventoryTestClient inventoryTestClient;
 
     public ShoppingCartTest() {
-        shoppingCartTestClient = new ShoppingCartTestTestClient(spec);
-        accountTestClient = new AccountTestTestClient(spec);
-        inventoryTestClient = new InventoryTestTestClient(spec);
+        shoppingCartTestClient = new ShoppingCartTestClient(spec);
+        accountTestClient = new AccountTestClient(spec);
+        inventoryTestClient = new InventoryTestClient(spec);
     }
 
     @Test
