@@ -5,7 +5,6 @@ import edu.hm.brickstore.client.account.dto.CreditAccountDTO;
 import edu.hm.brickstore.client.account.dto.DebitAccountDTO;
 import edu.hm.brickstore.client.inventory.InventoryClient;
 import edu.hm.brickstore.client.inventory.dto.UpdateInventoryItemsStockDTO;
-import edu.hm.brickstore.client.shoppingcart.dto.ShoppingCartDTO;
 import edu.hm.brickstore.error.InvalidOrderStatusChangeException;
 import edu.hm.brickstore.order.dto.CreateOrderDTO;
 import edu.hm.brickstore.order.entity.Order;
@@ -18,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,6 +38,11 @@ public class OrderStatusChangeService {
         this.accountClient = accountClient;
     }
 
+    /**
+     * Create new order instance with status CREATED and save it to the database
+     * @param orderDTO
+     * @return
+     */
     protected Order saveOrder(CreateOrderDTO orderDTO) {
         log.info("Save new order for accountId={}", orderDTO.getAccountId());
         Order order = new Order();
@@ -60,6 +63,10 @@ public class OrderStatusChangeService {
         return order;
     }
 
+    /**
+     * Debit the order total from the account. If successful, the status of the order is updated to PAYED
+     * @param order
+     */
     protected void payOrder(Order order) {
         log.info("Debit {} from accountId={} for orderId={}", order.getTotal(), order.getAccountId(), order.getId());
         accountClient.debitAccount(order.getAccountId(), new DebitAccountDTO(order.getTotal()));
@@ -67,6 +74,10 @@ public class OrderStatusChangeService {
         orderRepository.save(order);
     }
 
+    /**
+     * Gather inventory items from the inventory. If successful, the status of the order is updated to PROCESSED
+     * @param order
+     */
     protected void gatherOrderInventoryItems(Order order) {
         log.info("Gather inventory items for order with orderId={} for accountId={}", order.getId(), order.getAccountId());
         List<UpdateInventoryItemsStockDTO.Item> items = order.getOrderItems().stream()
@@ -79,6 +90,10 @@ public class OrderStatusChangeService {
         orderRepository.save(order);
     }
 
+    /**
+     * Update the order to status SHIPPED. Only possible for orders with status PROCESSED
+     * @param order
+     */
     protected void shipOrder(Order order) {
         log.info("Ship order with orderId={} for accountId={}", order.getId(), order.getAccountId());
         if (order.getStatus() != OrderStatus.PROCESSED) {
@@ -89,6 +104,10 @@ public class OrderStatusChangeService {
         orderRepository.save(order);
     }
 
+    /**
+     * Update the order to status DELIVERED. Only possible for orders with status SHIPPED
+     * @param order
+     */
     protected void deliverOrder(Order order) {
         log.info("Deliver order with orderId={} for accountId={}", order.getId(), order.getAccountId());
         if (order.getStatus() != OrderStatus.SHIPPED) {
@@ -99,12 +118,20 @@ public class OrderStatusChangeService {
         orderRepository.save(order);
     }
 
+    /**
+     * Set order status to CANCELED
+     * @param order
+     */
     protected void createCancellation(Order order) {
         log.info("Cancel order with orderId={} for accountId={}", order.getId(), order.getAccountId());
         order.setStatus(OrderStatus.CANCELED);
         orderRepository.save(order);
     }
 
+    /**
+     * Return money from order to customer account.
+     * @param order
+     */
     protected void refundCancellation(Order order) {
         log.info("Refund total for order with orderId={} for accountId={}", order.getId(), order.getAccountId());
         accountClient.creditAccount(order.getAccountId(), new CreditAccountDTO(order.getTotal()));
@@ -113,6 +140,10 @@ public class OrderStatusChangeService {
         orderRepository.save(order);
     }
 
+    /**
+     * Return the reserved quantity of the inventory items back to the inventory.
+     * @param order
+     */
     protected void restockCancellation(Order order) {
         log.info("Return inventory items for order with orderId={} for accountId={}", order.getId(), order.getAccountId());
         List<UpdateInventoryItemsStockDTO.Item> items = order.getOrderItems().stream()
@@ -126,20 +157,22 @@ public class OrderStatusChangeService {
         orderRepository.save(order);
     }
 
+    /**
+     * Update order status to CANCELLATION_COMPLETED to indicate that the cancellation process is completed.
+     * @param order
+     */
     protected void completeCancellation(Order order) {
         log.info("Complete order cancellation for orderId={} and accountId={}", order.getId(), order.getAccountId());
         order.setStatus(OrderStatus.CANCELLATION_COMPLETED);
         orderRepository.save(order);
     }
 
-    private BigDecimal calcTotalShoppingCart(ShoppingCartDTO shoppingCartDTO) {
-        return shoppingCartDTO.getLineItems()
-                .stream()
-                .map(item -> item.getPrice().multiply(new BigDecimal(item.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    public List<OrderItem> getOrderItemsFromShoppingCart(CreateOrderDTO orderDTO) {
+    /**
+     * Extract list of {@link OrderItem} from the {@link CreateOrderDTO}
+     * @param orderDTO
+     * @return
+     */
+    private List<OrderItem> getOrderItemsFromShoppingCart(CreateOrderDTO orderDTO) {
         return orderDTO.getOrderItems()
                 .stream()
                 .map(lineItemDTO -> {
@@ -154,6 +187,11 @@ public class OrderStatusChangeService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Extract new instance of {@link ShippingAddress} from the {@link CreateOrderDTO}
+     * @param orderDTO
+     * @return
+     */
     private ShippingAddress getShippingAddressFromOrderDTO(CreateOrderDTO orderDTO) {
         ShippingAddress shippingAddress = new ShippingAddress();
         shippingAddress.setCustomerName(orderDTO.getShippingAddress().getCustomerName());

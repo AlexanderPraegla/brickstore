@@ -1,8 +1,6 @@
 package edu.hm.brickstore.order.service;
 
-import edu.hm.brickstore.client.account.AccountClient;
 import edu.hm.brickstore.client.error.FeignBadRequestException;
-import edu.hm.brickstore.client.shoppingcart.ShoppingCartClient;
 import edu.hm.brickstore.error.EntityNotFoundException;
 import edu.hm.brickstore.error.InvalidOrderStatusChangeException;
 import edu.hm.brickstore.error.NoItemsInShoppingCartException;
@@ -27,14 +25,10 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final OrderStatusChangeService orderStatusChangeService;
-    private final AccountClient accountClient;
-    private final ShoppingCartClient shoppingCartClient;
 
-    public OrderService(OrderRepository orderRepository, OrderStatusChangeService orderStatusChangeService, AccountClient accountClient, ShoppingCartClient shoppingCartClient) {
+    public OrderService(OrderRepository orderRepository, OrderStatusChangeService orderStatusChangeService) {
         this.orderRepository = orderRepository;
         this.orderStatusChangeService = orderStatusChangeService;
-        this.shoppingCartClient = shoppingCartClient;
-        this.accountClient = accountClient;
     }
 
     public List<Order> getOpenOrders() {
@@ -54,6 +48,11 @@ public class OrderService {
         return orderRepository.findAllByAccountId(accountId, Sort.by(Sort.Direction.DESC, "createdOn"));
     }
 
+    /**
+     * Execute the workflow to create an order
+     * @param orderDTO
+     * @return
+     */
     public Order createOrder(CreateOrderDTO orderDTO) {
         log.info("Create new order for accountId={}", orderDTO.getAccountId());
 
@@ -85,6 +84,11 @@ public class OrderService {
         return order;
     }
 
+    /**
+     * Update the status of an order manually
+     * @param orderId
+     * @param status
+     */
     public void updateStatus(long orderId, OrderStatus status) {
         log.info("Update status for orderId={} to {}", orderId, status);
         Order order = getOrder(orderId);
@@ -106,6 +110,10 @@ public class OrderService {
         }
     }
 
+    /**
+     * Execute the workflow to cancel an order
+     * @param orderId
+     */
     public void cancelOrder(long orderId) {
         log.info("Cancel order with orderId={}", orderId);
         Order order = getOrder(orderId);

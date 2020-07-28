@@ -10,6 +10,9 @@ import org.apache.commons.io.IOUtils;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
+/**
+ * Decoding all status 400 errors from remote calls to an instance of {@link ApiError}
+ */
 public class ClientErrorDecoder implements ErrorDecoder {
 
     @Override

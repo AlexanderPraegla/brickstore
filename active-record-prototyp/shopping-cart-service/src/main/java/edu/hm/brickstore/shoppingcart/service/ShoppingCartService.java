@@ -95,7 +95,11 @@ public class ShoppingCartService {
         }
     }
 
-
+    /**
+     * Transform a object of {@link ShoppingCart} to {@link ShoppingCartDTO}
+     * @param shoppingCart
+     * @return
+     */
     private ShoppingCartDTO getShoppingCartDTO(ShoppingCart shoppingCart) {
         AccountDTO account = accountClient.getAccount(shoppingCart.getAccountId());
 
@@ -108,6 +112,11 @@ public class ShoppingCartService {
         return shoppingCartDTO;
     }
 
+    /**
+     * Transform all line items of {@link ShoppingCart} to a list of {@link LineItemDTO}
+     * @param shoppingCart
+     * @return
+     */
     private List<LineItemDTO> getLineItemDTOsOfShoppingCart(ShoppingCart shoppingCart) {
         return shoppingCart.getLineItems()
                 .stream()

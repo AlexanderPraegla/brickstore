@@ -11,6 +11,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Configuration
 public class TestSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    /**
+     * disable all security for 'test' profile
+     * @param web
+     */
     @Override
     public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/**");
