@@ -45,7 +45,7 @@ services:
       - "SPRING_PROFILES_ACTIVE=docker-compose"
 
   event-based-account-service:
-    build: ./event-based-sourcing-prototype/event-based-account-service
+    build: ./event-based-prototype/event-based-account-service
     container_name: event-based-account-service
     image: event-based-account-service:latest
     expose:
@@ -61,7 +61,7 @@ services:
     environment:
       - "SPRING_PROFILES_ACTIVE=docker-compose,test"
   event-based-inventory-service:
-    build: ./event-based-sourcing-prototype/event-based-inventory-service
+    build: ./event-based-prototype/event-based-inventory-service
     container_name: event-based-inventory-service
     image: event-based-inventory-service:latest
     expose:
@@ -77,7 +77,7 @@ services:
     environment:
       - "SPRING_PROFILES_ACTIVE=docker-compose,test"
   event-based-order-service:
-    build: ./event-based-sourcing-prototype/event-based-order-service
+    build: ./event-based-prototype/event-based-order-service
     container_name: event-based-order-service
     image: event-based-order-service:latest
     expose:
@@ -93,7 +93,7 @@ services:
     environment:
       - "SPRING_PROFILES_ACTIVE=docker-compose,test"
   event-based-shopping-cart-service:
-    build: ./event-based-sourcing-prototype/event-based-shopping-cart-service
+    build: ./event-based-prototype/event-based-shopping-cart-service
     container_name: event-based-shopping-cart-service-service
     image: event-based-shopping-cart-service-service:latest
     expose:
