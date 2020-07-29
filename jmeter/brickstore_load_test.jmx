@@ -93,7 +93,7 @@
             <connectTime>true</connectTime>
           </value>
         </objProp>
-        <stringProp name="filename">/home/alex/Projects/brickstore/jmeter/summary-event-based.csv</stringProp>
+        <stringProp name="filename"></stringProp>
       </ResultCollector>
       <hashTree/>
       <ResultCollector guiclass="RespTimeGraphVisualizer" testclass="ResultCollector" testname="Response Time Graph" enabled="true">
@@ -130,7 +130,8 @@
             <connectTime>true</connectTime>
           </value>
         </objProp>
-        <stringProp name="filename">/home/alex/Projects/brickstore/jmeter/response-time-event-based.csv</stringProp>
+        <stringProp name="filename"></stringProp>
+        <stringProp name="RespTimeGraph.interval">60000</stringProp>
       </ResultCollector>
       <hashTree/>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="200 Users" enabled="true">
