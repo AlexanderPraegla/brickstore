@@ -38,23 +38,6 @@ public class MessagingRabbitMqConfig {
         return BindingBuilder.bind(queue).to(exchange).with("order.#");
     }
 
-//    @Bean
-//    public Declarables inventoryTopicBindings(@Qualifier(INVENTORY_QUEUE) Queue queue, TopicExchange exchange) {
-//        return new Declarables(queue, exchange,
-//                BindingBuilder.bind(queue).to(exchange).with("order.canceled"),
-//                BindingBuilder.bind(queue).to(exchange).with("order.account.xxx")
-//        );
-//    }
-//
-//    @Bean
-//    public Declarables accountTopicBindings(@Qualifier(ACCOUNT_QUEUE) Queue queue, TopicExchange exchange) {
-//        return new Declarables(queue, exchange,
-//                BindingBuilder.bind(queue).to(exchange).with("order.canceled"),
-//                BindingBuilder.bind(queue).to(exchange).with("order.account.xxx")
-//        );
-//    }
-
-
     @Bean
     public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
