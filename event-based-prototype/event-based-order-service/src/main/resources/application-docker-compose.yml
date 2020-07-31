@@ -13,6 +13,6 @@ spring:
     host: rabbitmq
   security:
     oauth2:
-      resourceId: shopping-cart-service
+      resourceId: order-service
       clientId: brickstore-client-prototype
       userInfoEndpointUrl: http://gateway:8080/user/me

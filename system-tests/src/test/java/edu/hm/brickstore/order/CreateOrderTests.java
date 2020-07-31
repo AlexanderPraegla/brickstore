@@ -59,8 +59,8 @@ public class CreateOrderTests extends BrickstoreRestTest {
         accountTestClient.creditAccount(testAccount.getId(), new BigDecimal("200.00"));
 
         inventoryItemOne.setPrice(new BigDecimal("29.99"));
-        inventoryItemTwo.setPrice(new BigDecimal("19.99"));
         inventoryItemOne = inventoryTestClient.createInventoryItem(inventoryItemOne);
+        inventoryItemTwo.setPrice(new BigDecimal("19.99"));
         inventoryItemTwo = inventoryTestClient.createInventoryItem(inventoryItemTwo);
 
         shoppingCartTestClient.addShoppingCartItem(testAccount.getId(), inventoryItemOne.getId(), 2);
